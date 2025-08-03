@@ -78,8 +78,7 @@ chore/56/update-eslint  // eslint 설정 수정
 ```
 frontend/
 ├─ .github/ (이슈 템플릿, PR 템플릿)
-│  ├─ ISSUE_TEMPLATE/
-│  │  └─ Issue_template.md
+│  ├─ ISSUE_TEMPLATE.md
 │  └─ pull_request_template.md
 │                
 ├─ public/ (추후 PWA 관련 파일 추가 필요)               
