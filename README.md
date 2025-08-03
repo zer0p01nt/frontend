@@ -1,70 +1,65 @@
-# Getting Started with Create React App
+# <div align="center">니은다섯팀 프론트엔드 레포지토리</div>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+## 참고 사항
+- 프론트엔드 개발자 2명만 주로 쓰는 레포이므로, 이슈 기능은 쓰지 않아도 무방합니다.
+  - 이슈를 쓰지 않는 경우, 브랜치명은 "feat/기능이름" 정도로만 해도 충분합니다.
+  - 아래 브랜치 전략은 참고사항으로만 봐주세요.
+- 마찬가지로 2명만 주로 쓰는 레포이므로, PR은 코드 리뷰 없이 스스로 Merge하면 됩니다!
+- 배포 전까지 모든 PR은 main이 아닌 develop으로 보내주세요. 혹시나 하는 상황을 대비하기 위함입니다.
+  - 마찬가지로 서로 다른 기능에 대해 새로 브랜치를 팔 때도 develop에서 파 주세요.
+- 오류가 발생하거나 상의해야 할 상황이 생기면 언제든 카톡, 디스코드!! 😉😉
 
-In the project directory, you can run:
 
-### `npm start`
+## 작업 전까지 해야 할 것!
+- [ ] CSS는 어떤 식으로 작업할지 정하기 : styled-components, TailwindCSS 등
+- [ ] 역할 분담 : 파트를 어떻게 나눌지, 어떤 부분을 맡아 작업할지
+- [ ] develop 브랜치 생성
+- [ ] 더미 데이터 생성 : API 명세서 바탕으로 MockData 생성 (추후 json server 열어서 작업할 수도...?)
+- [ ] 작업 시작~
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 커밋 메세지 컨벤션
+- 커밋의 시작은 아래의 목록을 참고하여 gitmoji & 커밋이름 삽입
+  - VS Code 확장프로그램 "Gitmoji"를 사용하면 편합니다.  
+- 커밋의 끝맺음은 "~ 기능 추가", "~ 작업", "~ 개발" 과 같이 명사로 통일
+```
+🎉Init: 프로젝트 세팅
+✨Feat: 새로운 기능 추가
+🐛Fix: 버그 수정
+🎨Design: UI 스타일/디자인 수정
+♻️Refactor: 코드 리팩토링
+✏️Typo: 오타 수정,타입 수정
+🚚Rename: 폴더 구조 이동, 파일명 변경
+🍱Assets: 이미지, 폰트 등 리소스 추가/삭제
+🔥Del: 파일 삭제
+📚Docs: 문서 수정, 목데이터 작업 등
+🔧Chore: 설정파일 보완, 환경 설정
+➕Deps: 새로운 라이브러리 설치
+➖Deps: 불필요한 라이브러리 삭제
+🔙: 커밋 내용 복구
+```
+예시
+```
+✨Feat: 메인페이지 개발
+♻️Refactor: 등록 플로우 - 글 작성 페이지 로직 정리
+```
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 브랜치 전략
+|태그이름|설명|
+|--------|-------|
+|main|실제 배포용 브랜치|
+|develop|개발용 브랜치(기능 통합용)|
+|feat/이슈번호/기능이름|새로운 기능 개발 시|
+|refactor/이슈번호/기능이름|코드 리팩토링|
+|fix/이슈번호/버그이름|버그 수정|
+|design/이슈번호/요소|디자인 및 스타일 변경|
+|chore/이슈번호/내용|설정, 의존성 등 기타 작업|
 
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+예시
+```
+feat/12/login-page  // 로그인 기능 개발
+refactor/34/reduce-duplicated-code  // 코드 리팩토링
+chore/56/update-eslint  // eslint 설정 수정
+```
