@@ -1,6 +1,15 @@
 # <div align="center">니은다섯팀 프론트엔드 레포지토리</div>
 
 
+## 개발 시작하기
+```
+git clone https://github.com/2025-LIKELION-HACKATHON-NIEUNDASEOT/frontend.git
+cd frontend
+npm install
+npm start
+```
+
+
 ## 참고 사항
 - 프론트엔드 개발자 2명만 주로 쓰는 레포이므로, 이슈 기능은 쓰지 않아도 무방합니다.
   - 이슈를 쓰지 않는 경우, 브랜치명은 "feat/기능이름" 정도로만 해도 충분합니다.
@@ -63,3 +72,43 @@ feat/12/login-page  // 로그인 기능 개발
 refactor/34/reduce-duplicated-code  // 코드 리팩토링
 chore/56/update-eslint  // eslint 설정 수정
 ```
+
+
+## 폴더 구조 (추후 수정 예정)
+```
+frontend/
+├─ .github/ (이슈 템플릿, PR 템플릿)
+│  ├─ ISSUE_TEMPLATE/
+│  │  └─ Issue_template.md
+│  └─ pull_request_template.md
+│                
+├─ public/ (추후 PWA 관련 파일 추가 필요)               
+│  ├─ favicon.ico     
+│  ├─ index.html  
+│  ├─ logo192.png
+│  ├─ logo512.png
+│  ├─ manifest.json
+│  └─ robots.txt             
+│
+├─ src/
+│  ├─ assets/ (이미지 파일 등의 정적 파일)            
+│  │
+│  ├─ components/ (재사용되는 컴포넌트 파일)       
+│  │
+│  ├─ hooks/ (api fetch 등 재사용되는 hook 파일)               
+│  │
+│  ├─ pages/ (홈 화면 등 페이지 파일)             
+│  │
+│  ├─ services/ (푸시 알림 등 서비스 관련 파일)         
+│  │
+│  ├─ styles/ (css 관련 파일)           
+│  │
+│  ├─ App.js            
+│  └─ index.js          
+│
+├─ .gitignore
+├─ package-lock.json                  
+├─ package.json
+└─ README.md
+```
+- 현재는 빈 폴더를 푸시하기 위해 .gitkeep 파일을 넣어뒀지만, 작업 시 모두 삭제하고 작업합니다.
