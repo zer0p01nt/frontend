@@ -5,6 +5,7 @@
 ```
 git clone https://github.com/2025-LIKELION-HACKATHON-NIEUNDASEOT/frontend.git
 cd frontend
+git checkout develop
 npm install
 npm start
 ```
@@ -21,9 +22,9 @@ npm start
 
 
 ## 작업 전까지 해야 할 것!
-- [ ] CSS는 어떤 식으로 작업할지 정하기 : styled-components, TailwindCSS 등
+- [x] CSS는 어떤 식으로 작업할지 정하기 : **styled-components**
+- [x] develop 브랜치 생성
 - [ ] 역할 분담 : 파트를 어떻게 나눌지, 어떤 부분을 맡아 작업할지
-- [ ] develop 브랜치 생성
 - [ ] 더미 데이터 생성 : API 명세서 바탕으로 MockData 생성 (추후 json server 열어서 작업할 수도...?)
 - [ ] 작업 시작~
 
@@ -74,7 +75,7 @@ chore/56/update-eslint  // eslint 설정 수정
 ```
 
 
-## 폴더 구조 (추후 수정 예정)
+## 폴더 구조 (develop 기준. 추후 수정 예정)
 ```
 frontend/
 ├─ .github/ (이슈 템플릿, PR 템플릿)
@@ -83,7 +84,10 @@ frontend/
 │  │  └─ issue_template.md
 │  └─ pull_request_template.md
 │                
-├─ public/ (추후 PWA 관련 파일 추가 필요)               
+├─ public/ (추후 PWA 관련 파일 추가 필요)
+│  ├─ fonts/ (정적 경로에서 폰트 관리)
+│  │  ├─ fonts.css
+│  │  └─ PretendardVariable.woff2               
 │  ├─ favicon.ico     
 │  ├─ index.html  
 │  ├─ logo192.png
@@ -102,7 +106,8 @@ frontend/
 │  │
 │  ├─ services/ (푸시 알림 등 서비스 관련 파일)         
 │  │
-│  ├─ styles/ (css 관련 파일)           
+│  ├─ styles/ (css 관련 파일)
+│  │  └─ GlobalStyle.jsx (전역 스타일 관리)           
 │  │
 │  ├─ App.js            
 │  └─ index.js          
