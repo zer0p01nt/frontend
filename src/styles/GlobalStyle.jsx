@@ -3,6 +3,29 @@ import { createGlobalStyle } from "styled-components";
 // 추후 모바일 환경 관련 Global css 추가 필요
 const GlobalStyle = createGlobalStyle`
   :root {
+    // Text Styles
+    // font-size
+    --Heading-xl-font-size: 20px;
+    --Heading-lg-font-size: 18px;
+    --Heading-md-font-size: 16px;
+    --Heading-sm-font-size: 14px;
+    --Body-lg-font-size: 16px;
+    --Body-md-font-size: 14px;
+    --Body-sm-font-size: 12px;
+
+    // line-height
+    --Heading-xl-line-height: 30px;
+    --Heading-lg-line-height: 27px;
+    --Heading-md-line-height: 24px;
+    --Heading-sm-line-height: 21px;
+    --Body-lg-line-height: 24px;
+    --Body-md-line-height: 21px;
+    --Body-sm-line-height: 18px;
+
+    // letter-spacing
+    // 0 아니면 이 변수만 씁니다
+    --letter-spacing: -0.20000000298023224px;
+
     // Effect Styles
     --shadow-default: 2px 2px 4px 0 rgba(163, 161, 161, 0.20);
 
