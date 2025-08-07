@@ -2,6 +2,10 @@ import { createGlobalStyle } from "styled-components";
 
 // 추후 모바일 환경 관련 Global css 추가 필요
 const GlobalStyle = createGlobalStyle`
+  :root {
+    --color-base-white: #FEFEFE;
+  }
+
   html {
   box-sizing: border-box;
   }
@@ -9,6 +13,7 @@ const GlobalStyle = createGlobalStyle`
   body {
   margin: 0;
   padding: 0;
+  background-color: var(--color-base-white);
   }
 
   *,

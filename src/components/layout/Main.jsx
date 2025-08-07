@@ -6,7 +6,6 @@ const MainWrapper = styled.div`
   max-width: 393px;
   margin: 0 auto;
   min-height: 100vh;
-  background-color: #ffffff;
 `;
 
 export default function Main({ children }) {
