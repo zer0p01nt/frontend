@@ -82,12 +82,18 @@ frontend/
 │  ├─ ISSUE_TEMPLATE/
 │  │  ├─ config.yml
 │  │  └─ issue_template.md
+│  │
 │  └─ pull_request_template.md
 │                
 ├─ public/ (추후 PWA 관련 파일 추가 필요)
+│  ├─ data/ (정적 경로에서 MockData 관리)
+│  │  ├─ CardList.json
+│  │  └─ Detail.json
+│  │
 │  ├─ fonts/ (정적 경로에서 폰트 관리)
 │  │  ├─ fonts.css
-│  │  └─ PretendardVariable.woff2               
+│  │  └─ PretendardVariable.woff2
+│  │               
 │  ├─ favicon.ico     
 │  ├─ index.html  
 │  ├─ logo192.png
@@ -96,9 +102,17 @@ frontend/
 │  └─ robots.txt             
 │
 ├─ src/
-│  ├─ assets/ (이미지 파일 등의 정적 파일)            
+│  ├─ assets/ (이미지 파일 등의 정적 파일)
+│  │  └─ Navigator (Navigator icon 파일 폴더)             
 │  │
-│  ├─ components/ (재사용되는 컴포넌트 파일)       
+│  ├─ components/ (재사용되는 컴포넌트 파일)
+│  │  ├─ layout (전체 레이아웃 관련)
+│  │  │  └─ Main.jsx
+│  │  │
+│  │  └─ Navigator
+│  │    ├─ Navigator.jsx
+│  │    ├─ NavigatorIcons.js
+│  │    └─ NavigatorStyle.jsx           
 │  │
 │  ├─ hooks/ (api fetch 등 재사용되는 hook 파일)               
 │  │
