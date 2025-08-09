@@ -15,17 +15,19 @@ npm start
 - 프론트엔드 개발자 2명만 주로 쓰는 레포이므로, 이슈 기능은 쓰지 않아도 무방합니다.
   - 이슈를 쓰지 않는 경우, 브랜치명은 "feat/기능이름" 정도로만 해도 충분합니다.
   - 아래 브랜치 전략은 참고사항으로만 봐주세요.
-- 마찬가지로 2명만 주로 쓰는 레포이므로, PR은 코드 리뷰 없이 스스로 Merge하면 됩니다!
-- 배포 전까지 모든 PR은 main이 아닌 develop으로 보내주세요. 혹시나 하는 상황을 대비하기 위함입니다.
+- 마찬가지로 2명만 주로 쓰는 레포이므로, **PR은 코드 리뷰 없이 스스로 Merge하면 됩니다!**
+- **배포 전까지 모든 PR은 main이 아닌 develop으로 보내주세요.** 혹시나 하는 상황을 대비하기 위함입니다.
   - 마찬가지로 서로 다른 기능에 대해 새로 브랜치를 팔 때도 develop에서 파 주세요.
+- **GoToTop 버튼은 꼭 ButtonWrapper로 감싸서 사용해주세요! 참고 : https://github.com/2025-LIKELION-HACKATHON-NIEUNDASEOT/frontend/pull/6**
 - 오류가 발생하거나 상의해야 할 상황이 생기면 언제든 카톡, 디스코드!! 😉😉
 
 
 ## 작업 전까지 해야 할 것!
 - [x] CSS는 어떤 식으로 작업할지 정하기 : **styled-components**
 - [x] develop 브랜치 생성
+- [x] 더미 데이터 생성 : API 명세서 바탕으로 MockData 생성
+- [x] App.js Route 설정
 - [ ] 역할 분담 : 파트를 어떻게 나눌지, 어떤 부분을 맡아 작업할지
-- [ ] 더미 데이터 생성 : API 명세서 바탕으로 MockData 생성 (추후 json server 열어서 작업할 수도...?)
 - [ ] 작업 시작~
 
 
@@ -82,12 +84,18 @@ frontend/
 │  ├─ ISSUE_TEMPLATE/
 │  │  ├─ config.yml
 │  │  └─ issue_template.md
+│  │
 │  └─ pull_request_template.md
 │                
 ├─ public/ (추후 PWA 관련 파일 추가 필요)
+│  ├─ data/ (정적 경로에서 MockData 관리)
+│  │  ├─ CardList.json
+│  │  └─ Detail.json
+│  │
 │  ├─ fonts/ (정적 경로에서 폰트 관리)
 │  │  ├─ fonts.css
-│  │  └─ PretendardVariable.woff2               
+│  │  └─ PretendardVariable.woff2
+│  │               
 │  ├─ favicon.ico     
 │  ├─ index.html  
 │  ├─ logo192.png
@@ -96,9 +104,9 @@ frontend/
 │  └─ robots.txt             
 │
 ├─ src/
-│  ├─ assets/ (이미지 파일 등의 정적 파일)            
+│  ├─ assets/ (이미지 파일 등의 정적 파일)        
 │  │
-│  ├─ components/ (재사용되는 컴포넌트 파일)       
+│  ├─ components/ (재사용되는 컴포넌트 파일)        
 │  │
 │  ├─ hooks/ (api fetch 등 재사용되는 hook 파일)               
 │  │
