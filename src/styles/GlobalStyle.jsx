@@ -112,13 +112,21 @@ const GlobalStyle = createGlobalStyle`
   }
 
   html {
-  box-sizing: border-box;
+    box-sizing: border-box;
+    /* 스크롤 없애는 설정. 작업 끝나고 주석 해제 */
+    /* overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none; */
   }
 
+  /* html::-webkit-scrollbar {
+    display: none;
+  } */
+
   body {
-  margin: 0;
-  padding: 0;
-  background-color: var(--color-base-white);
+    margin: 0;
+    padding: 0;
+    background-color: var(--color-base-white);
   }
 
   *,
