@@ -142,6 +142,13 @@ const GlobalStyle = createGlobalStyle`
     -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
     outline: none;
   }
+
+  input, button {
+    margin: 0;
+    padding: 0;
+    border: none;
+    background-color: transparent;
+  }
 `;
 
 export default GlobalStyle;
