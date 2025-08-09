@@ -1,36 +1,40 @@
-import styled from "styled-components";
+import { Outlet, Route, Routes } from "react-router-dom";
 import Main from "./components/layout/Main";
 import Navigator from "./components/Navigator/Navigator";
-import SearchInputField from "./components/SearchInputField/SearchInputField";
 import GlobalStyle from "./styles/GlobalStyle";
+import Home from "./pages/Home/Home";
+import Detail from "./pages/Detail/Detail";
 
-// UI 테스트용 스타일 컴포넌트입니다
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-`;
+// Navigator를 띄우는 레이아웃
+function WithNav() {
+  return (
+    <>
+      <Navigator />
+      <Outlet />
+    </>
+  );
+}
+
+// Navigator가 없는 레이아웃
+function WithoutNav() {
+  return <Outlet />;
+}
 
 function App() {
   return (
     <>
       <GlobalStyle />
       <Main>
-        <Container>
-          <div
-            style={{
-              textAlign: "center",
-              backgroundColor: "pink",
-              width: "100%",
-            }}
-          >
-            🦁 니은다섯 프론트엔드 레포지토리 입니다 🦁
-          </div>
-          <SearchInputField />
-        </Container>
-        <Navigator />
+        <Routes>
+          <Route element={<WithNav />}>
+            {/* Navigator가 있는 경우 이쪽에 route를 만들어주세요 */}
+            <Route index element={<Home />} />
+          </Route>
+          <Route element={<WithoutNav />}>
+            {/* Navigator가 없는 경우 이쪽에 route를 만들어주세요 */}
+            <Route path='/detail' element={<Detail />} />
+          </Route>
+        </Routes>
       </Main>
     </>
   );
