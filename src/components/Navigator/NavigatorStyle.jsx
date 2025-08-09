@@ -12,6 +12,7 @@ export const NavContainer = styled.div`
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
+  background-color: var(--color-base-white);
 `;
 
 export const NavItem = styled.div`
