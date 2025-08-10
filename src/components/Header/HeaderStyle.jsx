@@ -44,7 +44,6 @@ export const HeaderTitle = styled.div`
   font-weight: 700;
   line-height: var(--Heading-xl-line-height);
   letter-spacing: var(--letter-spacing);
-  text-align: center;
 `;
 
 export const HeaderScrap = styled.button`
