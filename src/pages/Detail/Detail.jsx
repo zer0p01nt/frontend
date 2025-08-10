@@ -16,6 +16,7 @@ export default function Detail() {
   // scrap 로직 추가 예정
   return (
     <>
+      {/* fixed 되는 컴포넌트들 */}
       <Header
         hasBack={true}
         title={data.title}
@@ -27,6 +28,8 @@ export default function Detail() {
         <B.ButtonCircle icon='/logo192.png' $isVisible={true} />
         {/* 캐릭터 이미지로 교체 예정 */}
       </B.ButtonWrapper>
+
+      {/* 페이지 UI */}
       <S.DetailContainer>
         <S.InfoBox>
           <S.BadgeWrapper>
