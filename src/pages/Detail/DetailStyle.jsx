@@ -22,37 +22,10 @@ export const InfoBox = styled.div`
   box-shadow: 0px 2px 4px 0 rgba(163, 161, 161, 0.2);
 `;
 
-// Badge 컴포넌트 임시 생성 => 추후 교체 예정
 export const BadgeWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-`;
-
-export const RegionBadge = styled.span`
-  display: flex;
-  padding: 6px 12px;
-  justify-content: center;
-  align-items: center;
-  background-color: var(--color-blue-100);
-  border-radius: var(--border-radius-rounded);
-  color: var(--color-blue-600);
-  font-size: var(--Body-sm-font-size);
-  font-weight: 600;
-  line-height: var(--Body-sm-line-height);
-`;
-
-export const KeywordBadge = styled.span`
-  display: flex;
-  padding: 6px 12px;
-  justify-content: center;
-  align-items: center;
-  background-color: var(--color-teal-100);
-  border-radius: var(--border-radius-rounded);
-  color: var(--color-teal-700);
-  font-size: var(--Body-sm-font-size);
-  font-weight: 600;
-  line-height: var(--Body-sm-line-height);
 `;
 
 export const Title = styled.div`
