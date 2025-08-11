@@ -5,19 +5,19 @@ const getBadgeColors = (color) => {
   switch (color) {
     case "pink":
       return {
-        background: "var(--color-pink-50)",
-        text: "var(--color-pink-400-sub)",
+        background: "var(--color-pink-100)",
+        text: "var(--color-pink-600)",
       };
     case "teal":
       return {
-        background: "var(--color-teal-50)",
-        text: "var(--color-teal-400-sub)",
+        background: "var(--color-teal-100)",
+        text: "var(--color-teal-700)",
       };
     case "blue":
     default:
       return {
-        background: "var(--color-blue-50)",
-        text: "var(--color-blue-400-main)",
+        background: "var(--color-blue-100)",
+        text: "var(--color-blue-600)",
       };
   }
 };
