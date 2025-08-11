@@ -26,7 +26,7 @@ export const ButtonCircle = styled.button`
   padding: 11px;
   border-radius: var(--border-radius-rounded);
   box-shadow: var(--shadow-default);
-  background-image: url(${({ icon }) => icon});
+  background-image: url(${({ $icon }) => $icon});
   background-color: var(--color-neutral-brand-primary);
   background-repeat: no-repeat;
   background-position: center center;

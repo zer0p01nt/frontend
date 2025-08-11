@@ -24,7 +24,7 @@ export default function GoToTop() {
     // 실제로 사용할 땐 꼭 ButtonWrapper로 감싸주세요
     // <B.ButtonWrapper>
     <B.ButtonCircle
-      icon={arrow}
+      $icon={arrow}
       type='button'
       onClick={scrollToTop}
       $isVisible={isVisible} // 경고문 안 뜨도록 $ 붙임
