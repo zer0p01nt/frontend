@@ -1,17 +1,25 @@
+import { useState } from "react";
 import useFetch from "../../hooks/useFetch";
+
 import GoToTop from "../../components/GoToTop/GoToTop";
 import Header from "../../components/Header/Header";
+import CardList from "../../components/CardList/CardList";
+import Badge from "../../components/Badge/Badge";
+import Chatbot from "../../components/Chatbot/Chatbot";
 
-import * as B from "../../styles/ButtonCircle";
-import * as S from "./DetailStyle";
 import scrapTrue from "../../assets/Detail/bookmark_true.svg";
 import scrapFalse from "../../assets/Detail/bookmark_false.svg";
 import share from "../../assets/Detail/share.svg";
-import CardList from "../../components/CardList/CardList";
-import Badge from "../../components/Badge/Badge";
+
+import * as B from "../../styles/ButtonCircle";
+import * as S from "./DetailStyle";
 
 export default function Detail() {
   // param 등 route 작업도 추가 필요
+
+  // 챗봇 열림 상태 관리
+  const [isOpen, setIsOpen] = useState(false);
+  const handleClose = () => setIsOpen(false)
 
   const data = useFetch("/data/EachDetail.json", {});
   // fetch url 추후 변경 예정
@@ -19,8 +27,8 @@ export default function Detail() {
   let isScrap = true;
   // scrap 로직 추가 예정
 
+  // 관련 공문 추천
   const RecommendDocs = useFetch("/data/CardList.json", []);
-  console.log(RecommendDocs);
   return (
     <>
       {/* fixed 되는 컴포넌트들 */}
@@ -32,9 +40,14 @@ export default function Detail() {
       />
       <B.ButtonWrapper>
         <GoToTop />
-        <B.ButtonCircle $icon='/logo192.png' $isVisible={true} />
+        <B.ButtonCircle
+          $icon='/logo192.png'
+          $isVisible={true}
+          onClick={() => setIsOpen(true)}
+        />
         {/* 캐릭터 이미지로 교체 예정 */}
       </B.ButtonWrapper>
+      <Chatbot isOpen={isOpen} handleClose={handleClose}/>
 
       {/* 페이지 UI */}
       <S.DetailContainer>
