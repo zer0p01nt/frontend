@@ -33,7 +33,7 @@ export default function Chatbot({ isOpen, handleClose, postId }) {
 
   return (
     <S.Overlay $isOpen={isOpen}>
-      <S.ChatbotContainer>
+      <S.ChatbotContainer $isOpen={isOpen}>
         <S.ChatbotHeader>
           {/* 빈 공간 */}
           <S.Blank></S.Blank>

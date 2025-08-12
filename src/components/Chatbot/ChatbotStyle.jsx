@@ -7,27 +7,33 @@ export const Overlay = styled.div`
   width: 100%;
   max-width: 393px;
   position: fixed;
-  top: 50%;
+  top: 0;
   left: 50%;
-  transform: translate(-50%, -50%);
-  height: 100vh;
+  transform: translateX(-50%);
+  height: 100dvh;
   background-color: rgba(115, 113, 113, 0.4);
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  visibility: ${({ $isOpen }) => ($isOpen ? "visible" : "hidden")};
+  z-index: 99;
+
+  opacity: ${({ $isOpen }) => ($isOpen ? 1 : 0)};
+  pointer-events: ${({ $isOpen }) => ($isOpen ? "auto" : "none")};
+  transition: opacity 180ms ease;
 `;
 
 export const ChatbotContainer = styled.div`
   width: 100%;
   max-width: 393px;
   background-color: var(--color-base-white);
-  z-index: 100;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+
+  transform: translateY(${({ $isOpen }) => ($isOpen ? "0%" : "100%")});
+  transition: transform 300ms ease-in-out;
 `;
 
 // 헤더 (타이틀 부분)
@@ -166,10 +172,15 @@ export const Scrap = styled.div`
 
 // 채팅 기록이 없을 때
 export const NoChatBox = styled.div`
+  width: 100%;
+  max-width: 393px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 16px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 `;
 
 export const AICharacter = styled.div`
