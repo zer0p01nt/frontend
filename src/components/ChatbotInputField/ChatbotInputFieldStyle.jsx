@@ -3,8 +3,8 @@ import arrowTrue from "../../assets/ChatbotInputField/arrow-up-true.svg";
 import arrowFalse from "../../assets/ChatbotInputField/arrow-up-false.svg";
 
 export const ChatbotInputForm = styled.form`
-  width: 100%;
-  max-width: 362px;
+  width: calc(100% - 32px); // margin 만들어줌
+  max-width: 361px;
   height: 45px;
   min-height: 45px;
   display: flex;

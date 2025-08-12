@@ -1,10 +1,18 @@
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import * as S from "./ChatbotStyle";
 import ChatbotInputField from "../ChatbotInputField/ChatbotInputField";
+import { createSession, getSession, sendMessage } from "../../services/chatbot";
 
-export default function Chatbot({ isOpen, handleClose }) {
+export default function Chatbot({ isOpen, handleClose, postId }) {
+  // localStorage에 저장 => useMemo 활용해 스토리지키가 변하지 않도록 함
+  const storageKey = useMemo(() => `chatbot:session:${postId}`, [postId]);
+
+  const [sessionId, setSessionId] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const hasChats = messages.length > 0;
+
   // 챗봇 열려있는 동안 배경 스크롤 막음
-  // 챗봇 열 때 배경 움직이는 거 스크롤 문제. 작업 끝나고 스크롤 UI 없애면 해결 가능.
   useEffect(() => {
     if (isOpen) {
       const prev = document.body.style.overflow;
@@ -15,15 +23,17 @@ export default function Chatbot({ isOpen, handleClose }) {
     }
   }, [isOpen]);
 
-  // 채팅 기록 여부 (추후 교체 예정)
-  let hasChats = true;
-
-  // 로딩중 여부 (추후 교체 예정) => ChatbotInputField에도 보냄
-  let isLoading = false;
+  // 테스트 코드
+  // useEffect(() => {
+  //   if (isOpen) {
+  //     const test = createSession({ postId: 1, firstMessage: "안녕하세요" });
+  //     console.log(test);
+  //   }
+  // }, [isOpen]);
 
   return (
     <S.Overlay $isOpen={isOpen}>
-      <S.ChatbotContainer>
+      <S.ChatbotContainer $isOpen={isOpen}>
         <S.ChatbotHeader>
           {/* 빈 공간 */}
           <S.Blank></S.Blank>
