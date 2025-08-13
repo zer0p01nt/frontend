@@ -19,10 +19,11 @@ const CardImage = styled.div`
 const variants = {
   // 밑줄 스타일 (기본값)
   list: css`
-    padding: 16px 0;
+    padding: 16px 8px;
     border-bottom: 1px solid var(--color-neutral-200);
     flex-direction: row;
     align-items: center;
+    gap: 16px;
 
     ${ContentWrapper} {
       flex: 1;
@@ -36,13 +37,11 @@ const variants = {
   `,
   // 카드 스타일 (가로 스크롤용)
   card: css`
-    padding: 16px;
-    padding-left: 0px;
+    padding: 10px 8px;
     border-radius: var(--border-radius-lg);
     width: 210px; /* 사용자가 지정한 너비 */
     flex-shrink: 0; /* 카드가 찌그러지지 않고 지정한 너비를 유지하도록 함 */
     flex-direction: column;
-    gap: 12px;
 
     ${ContentWrapper} {
       width: 100%;
@@ -80,6 +79,7 @@ export const Title = styled.h3`
   font-weight: 600;
   margin: 0;
   white-space: normal;
+  
 `;
 
 export const Date = styled.p`
