@@ -6,7 +6,6 @@ const ContentWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  gap: 8px;
 `;
 
 const CardImage = styled.div`
@@ -16,11 +15,9 @@ const CardImage = styled.div`
   background-image: url(${({ $img }) => $img});
 `;
 
-// variant에 따라 다른 스타일을 적용하기 위한 css 헬퍼
 const variants = {
-  // 밑줄 스타일 (기본값)
   list: css`
-    padding: 16px 8px;
+    padding: 12px 8px;
     border-bottom: 1px solid var(--color-neutral-200);
     flex-direction: row;
     align-items: center;
@@ -36,12 +33,11 @@ const variants = {
       order: 2;
     }
   `,
-  // 카드 스타일 (가로 스크롤용)
   card: css`
     padding: 10px 8px;
     border-radius: var(--border-radius-lg);
-    width: 210px; /* 사용자가 지정한 너비 */
-    flex-shrink: 0; /* 카드가 찌그러지지 않고 지정한 너비를 유지하도록 함 */
+    width: 210px;
+    flex-shrink: 0;
     flex-direction: column;
 
     ${ContentWrapper} {
@@ -54,24 +50,22 @@ const variants = {
   `,
 };
 
-// 카드 하나를 감싸는 전체 컨테이너
 export const CardContainer = styled.div`
   display: flex;
   background: var(--color-base-white);
   gap: 12px;
-
   /* variant prop에 따라 다른 스타일 블록을 적용 */
   ${({ $variant }) => variants[$variant]}
 `;
 
-// 위에서 정의한 스타일 컴포넌트들을 export
 export { ContentWrapper, CardImage };
 
 export const BadgeWrapper = styled.div`
   display: flex;
   align-items: flex-start;
-  gap: 4px;
+  gap: 8px;
   flex-wrap: wrap;
+  margin-bottom: 12px;
 `;
 
 export const Title = styled.h3`
@@ -80,10 +74,13 @@ export const Title = styled.h3`
   font-weight: 600;
   margin: 0;
   white-space: normal;
+  margin-bottom: 5px;
 `;
 
 export const Date = styled.p`
   font-size: var(--Body-sm-font-size);
   color: var(--color-text-secondary);
+  font-weight: 400;
+  line-height: 18px;
   margin: 0;
 `;

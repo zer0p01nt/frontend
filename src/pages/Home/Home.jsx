@@ -1,14 +1,23 @@
 import React from "react";
 import * as S from "./HomeStyle.js";
-import SearchInputField from "../../components/SearchInputField/SearchInputField";
+// ▼▼▼ useNavigate를 import 해주세요 ▼▼▼
+import { useNavigate } from "react-router-dom";
 import CardList from "../../components/CardList/CardList";
 import Badge from "../../components/Badge/Badge";
 import Header from "../../components/Header/Header.jsx";
 
 export default function Home() {
+  // ▼▼▼ 페이지 이동을 위한 함수를 추가합니다 ▼▼▼
+  const navigate = useNavigate();
+
+  const goToSearch = () => {
+    navigate("/search");
+  };
+  // ▲▲▲ 여기까지 추가 ▲▲▲
+
   return (
-    <>
-      {/* 헤더 추가 => 타이틀은 임의로 넣었어요 */}
+    // HomeWrapper로 한번 감싸줍니다.
+    <S.HomeWrapper>
       <Header
         hasBack={false}
         title='Villit'
@@ -16,9 +25,7 @@ export default function Home() {
         isTransparent={true}
       />
       <S.ContentContainer>
-        {/* 상단 제목 섹션 */}
         <S.TitleContainer>
-          {/* 추후 캐릭터 이미지가 들어올 걸 생각해 더 분리 */}
           <S.TitleWrapper>
             <S.TitleBox>
               <S.Title>
@@ -53,11 +60,16 @@ export default function Home() {
             <S.Character />
           </S.TitleWrapper>
           
-          {/* 검색창 섹션 */}
-          <SearchInputField />
+          {/* ▼▼▼ 검색창 섹션을 이 코드로 교체해주세요 ▼▼▼ */}
+          <S.FakeSearchInputWrapper onClick={goToSearch}>
+            <span>필요한 정보가 있으신가요?</span>
+            <div />
+          </S.FakeSearchInputWrapper>
+          {/* ▲▲▲ 여기까지 교체 ▲▲▲ */}
+
         </S.TitleContainer>
         <S.SectionWrapper>
-          {/* 관심 분야의 최근 알림 섹션 (세로 목록) */}
+          {/* (이하 코드는 모두 동일합니다) */}
           <div>
             <S.SectionHeader>
               <S.SectionTitle>관심 분야의 최근 알림</S.SectionTitle>
@@ -75,7 +87,6 @@ export default function Home() {
             </S.CardListWrapper>
           </div>
 
-          {/* 다가오는 관심 일정 섹션 (가로 스크롤) */}
           <div>
             <S.SectionHeader>
               <S.SectionTitle>다가오는 관심 일정</S.SectionTitle>
@@ -103,7 +114,6 @@ export default function Home() {
             </S.HorizontalScrollWrapper>
           </div>
 
-          {/* 관심 지역 최근 소식 섹션 (세로 목록) */}
           <div>
             <S.SectionHeader>
               <S.SectionTitle>관심 지역 최근 소식</S.SectionTitle>
@@ -122,6 +132,6 @@ export default function Home() {
           </div>
         </S.SectionWrapper>
       </S.ContentContainer>
-    </>
+    </S.HomeWrapper>
   );
 }
