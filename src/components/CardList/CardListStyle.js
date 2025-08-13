@@ -13,6 +13,7 @@ const CardImage = styled.div`
   flex-shrink: 0;
   border-radius: var(--border-radius-md);
   background-color: var(--color-neutral-200);
+  background-image: url(${({ $img }) => $img});
 `;
 
 // variant에 따라 다른 스타일을 적용하기 위한 css 헬퍼
@@ -60,7 +61,7 @@ export const CardContainer = styled.div`
   gap: 12px;
 
   /* variant prop에 따라 다른 스타일 블록을 적용 */
-  ${({ variant }) => variants[variant]}
+  ${({ $variant }) => variants[$variant]}
 `;
 
 // 위에서 정의한 스타일 컴포넌트들을 export
@@ -79,7 +80,6 @@ export const Title = styled.h3`
   font-weight: 600;
   margin: 0;
   white-space: normal;
-  
 `;
 
 export const Date = styled.p`

@@ -10,7 +10,7 @@ import * as S from "./BadgeStyle.js";
  */
 export default function Badge({ children, color = "blue", isFilled = true }) {
   return (
-    <S.BadgeContainer color={color} isFilled={isFilled}>
+    <S.BadgeContainer color={color} $isFilled={isFilled}>
       {children}
     </S.BadgeContainer>
   );
