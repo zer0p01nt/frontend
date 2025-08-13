@@ -33,18 +33,15 @@ export const BadgeContainer = styled.span`
   line-height: var(--Body-sm-line-height);
 
   /* isFilled 값에 따라 배경색과 테두리 스타일을 다르게 적용 */
-  background-color: ${({ color, isFilled }) =>
-    isFilled
-      ? getBadgeColors(color).background
-      : "rgba(254, 254, 254, 0.4)"};
+  background-color: ${({ color, $isFilled }) =>
+    $isFilled ? getBadgeColors(color).background : "rgba(254, 254, 254, 0.4)"};
 
   border: 1px solid
-    ${({ color, isFilled }) =>
-      isFilled ? "transparent" : "var(--color-base-white)"};
+    ${({ color, $isFilled }) =>
+      $isFilled ? "transparent" : "var(--color-base-white)"};
 
-  
-  color: ${({ color, isFilled }) => {
-    if (isFilled) {
+  color: ${({ color, $isFilled }) => {
+    if ($isFilled) {
       // 1. 채워진 뱃지는 기존 색상 규칙을 그대로 따릅니다.
       return getBadgeColors(color).text;
     } else {
