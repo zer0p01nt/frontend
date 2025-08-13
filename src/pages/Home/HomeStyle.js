@@ -13,13 +13,11 @@ export const GradientBg = styled.div`
   width: 100%;
   height: 260px;
   opacity: 0.5;
-  z-index: 1;
 `;
 
 // 모든 콘텐츠를 감싸는 컨테이너
 export const ContentContainer = styled.div`
   position: relative;
-  z-index: 2;
   padding: 24px 16px 80px;
   display: flex;
   flex-direction: column;
@@ -80,12 +78,12 @@ export const SectionTitle = styled.h2`
   font-size: var(--Heading-lg-font-size);
   color: var(--color-text-primary);
   margin: 0;
-  font-weight: 600;
+  font-weight: bold;
 `;
 
 // "더보기" 링크 스타일
 export const MoreLink = styled.a`
-  font-size: var(--Body-md-font-size);
+  font-size: var(--Body-sm-font-size);
   color: var(--color-text-secondary);
   text-decoration: none;
 `;
@@ -99,8 +97,14 @@ export const CardListWrapper = styled.div`
 // 가로 스크롤을 위한 Wrapper (카드 목록용)
 export const HorizontalScrollWrapper = styled.div`
   display: flex;
-  gap: 12px;
+  gap: 32px; /* 카드 사이 간격을 약간 조정 */
   overflow-x: auto;
+  
+  
+  margin: 0 -16px; 
+  padding: 0 16px; 
+  scroll-snap-type: x mandatory;
+
   /* 스크롤바 숨기기 */
   &::-webkit-scrollbar {
     display: none;

@@ -36,14 +36,24 @@ export const BadgeContainer = styled.span`
   background-color: ${({ color, isFilled }) =>
     isFilled
       ? getBadgeColors(color).background
-      : "rgba(254, 254, 254, 0.4)"}; /* 흰색 배경에 40% 투명도 적용 */
+      : "rgba(254, 254, 254, 0.4)"};
 
   border: 1px solid
     ${({ color, isFilled }) =>
-      isFilled ? "transparent" : "var(--color-base-white)"}; /* 흰색 테두리 */
+      isFilled ? "transparent" : "var(--color-base-white)"};
 
-  color: ${({ color, isFilled }) =>
-    isFilled
-      ? getBadgeColors(color).text
-      : "var(--color-neutral-brand-primary)"};
+  
+  color: ${({ color, isFilled }) => {
+    if (isFilled) {
+      // 1. 채워진 뱃지는 기존 색상 규칙을 그대로 따릅니다.
+      return getBadgeColors(color).text;
+    } else {
+      // 2. 채워지지 않은 뱃지(테두리만 있는 경우)
+      if (color === "teal") {
+        return "var(--color-teal-600)";
+      }
+      // 2-2. 그 외(blue, pink 등)에는 원래의 기본 글자색을 적용합니다.
+      return "var(--color-neutral-brand-primary)";
+    }
+  }};
 `;
