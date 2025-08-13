@@ -13,7 +13,7 @@ export default function CardList({
   const badgeComponent = (
     <S.BadgeWrapper>
       {badges.map((badgeInfo, index) => (
-        <Badge key={index} color={badgeInfo.color} variant={badgeVariant}>
+        <Badge key={index} color={badgeInfo.color} $variant={badgeVariant}>
           {badgeInfo.text}
         </Badge>
       ))}
@@ -23,7 +23,7 @@ export default function CardList({
   // "다가오는 관심 일정"의 카드 스타일일 경우
   if (variant === "card") {
     return (
-      <S.CardContainer variant={variant}>
+      <S.CardContainer $variant={variant}>
         {/* 👇 1. 뱃지 -> 2. 이미지 -> 3. 글자 순서로 배치 */}
         {badgeComponent}
         <S.CardImage />
@@ -37,7 +37,7 @@ export default function CardList({
 
   // 기본 밑줄 스타일일 경우
   return (
-    <S.CardContainer variant={variant}>
+    <S.CardContainer $variant={variant}>
       {/* 👇 1. 글자/뱃지 -> 2. 이미지 순서로 배치 */}
       <S.ContentWrapper>
         {badgeComponent}
