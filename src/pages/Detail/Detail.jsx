@@ -19,22 +19,28 @@ export default function Detail() {
 
   // 챗봇 열림 상태 관리
   const [isOpen, setIsOpen] = useState(false);
-  const handleClose = () => setIsOpen(false)
+  const handleClose = () => setIsOpen(false);
 
-  const data = useFetch("/data/EachDetail.json", {});
+  const { data: post, isLoading: isPostLoading } = useFetch(
+    "/data/EachDetail.json",
+    {}
+  );
   // fetch url 추후 변경 예정
 
   let isScrap = true;
   // scrap 로직 추가 예정
 
   // 관련 공문 추천
-  const RecommendDocs = useFetch("/data/CardList.json", []);
+  const { data: recommendDocs = [], isLoading: isRecommedsLoading } = useFetch(
+    "/data/CardList.json",
+    []
+  );
   return (
     <>
       {/* fixed 되는 컴포넌트들 */}
       <Header
         hasBack={true}
-        title={data.title}
+        title={post.title}
         hasScrap={true}
         isScrap={false}
       />
@@ -47,17 +53,17 @@ export default function Detail() {
         />
         {/* 캐릭터 이미지로 교체 예정 */}
       </B.ButtonWrapper>
-      <Chatbot isOpen={isOpen} handleClose={handleClose}/>
+      <Chatbot isOpen={isOpen} handleClose={handleClose} />
 
       {/* 페이지 UI */}
       <S.DetailContainer>
         {/* 공문 정보 박스 */}
         <S.InfoBox>
           <S.BadgeWrapper>
-            <Badge>{data.region}</Badge>
-            <Badge color='teal'>{data.keyword}</Badge>
+            <Badge>{post.region}</Badge>
+            <Badge color='teal'>{post.keyword}</Badge>
           </S.BadgeWrapper>
-          <S.Title>{data.title}</S.Title>
+          <S.Title>{post.title}</S.Title>
           <S.MetaInfo>
             <S.MetaInfoLabel>
               <li>작성일</li>
@@ -65,9 +71,9 @@ export default function Detail() {
               <li>문의</li>
             </S.MetaInfoLabel>
             <S.MetaInfoData>
-              <li>{data.date}</li>
-              <li>{data.department}</li>
-              <li>{data.tel}</li>
+              <li>{post.date}</li>
+              <li>{post.department}</li>
+              <li>{post.tel}</li>
             </S.MetaInfoData>
           </S.MetaInfo>
         </S.InfoBox>
@@ -79,18 +85,18 @@ export default function Detail() {
             <img src='/logo192.png' style={{ width: "100px" }} />
             {/* 캐릭터 이미지로 교체 예정 */}
           </S.AIHeader>
-          <S.Content>{data.aiSummary}</S.Content>
+          <S.Content>{post.aiSummary}</S.Content>
         </S.AIBox>
 
         {/* 본문 */}
         <S.ContentBox>
-          <S.Content>{data.content}</S.Content>
-          <img src={data.imgLink} />
+          <S.Content>{post.content}</S.Content>
+          <img src={post.imgLink} />
         </S.ContentBox>
 
         {/* 본문 하단 버튼 */}
         <S.ButtonBox>
-          <S.LinkBtn href={data.url}>원문 바로가기</S.LinkBtn>
+          <S.LinkBtn href={post.url}>원문 바로가기</S.LinkBtn>
           <S.SecondBtnBox>
             <S.SecondBtn>
               <img src={isScrap ? scrapTrue : scrapFalse} />
@@ -107,17 +113,21 @@ export default function Detail() {
         <S.RecommendBox>
           <S.Title>관련 공문 추천</S.Title>
           {/* 2개만 보여지게 함 */}
-          {RecommendDocs?.slice(0, 2).map((doc) => (
-            <CardList
-              badges={[
-                { text: doc.region, color: "blue" },
-                { text: doc.keyword, color: "teal" },
-              ]}
-              title={doc.title}
-              date={doc.date}
-              key={doc.id}
-            />
-          ))}
+          {!isRecommedsLoading && recommendDocs && (
+            <>
+              {recommendDocs?.slice(0, 2).map((p) => (
+                <CardList
+                  badges={[
+                    { text: p.region, color: "blue" },
+                    { text: p.keyword, color: "teal" },
+                  ]}
+                  title={p.title}
+                  date={p.date}
+                  key={p.id}
+                />
+              ))}
+            </>
+          )}
         </S.RecommendBox>
       </S.DetailContainer>
     </>
