@@ -113,15 +113,15 @@ const GlobalStyle = createGlobalStyle`
 
   html {
     box-sizing: border-box;
-    /* 스크롤 없애는 설정. 작업 끝나고 주석 해제 */
-    /* overflow-y: auto;
+    /* 스크롤 안 보이게 하는 설정 */
+    overflow-y: auto;
     scrollbar-width: none;
-    -ms-overflow-style: none; */
+    -ms-overflow-style: none;
   }
 
-  /* html::-webkit-scrollbar {
+  html::-webkit-scrollbar {
     display: none;
-  } */
+  }
 
   body {
     margin: 0;
@@ -133,6 +133,9 @@ const GlobalStyle = createGlobalStyle`
   *::before,
   *::after {
     box-sizing: inherit;
+    /* 클릭하면 배경 파래지는 거 수정 */
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+    outline: none;
   }
 
   ol, ul {
@@ -143,12 +146,6 @@ const GlobalStyle = createGlobalStyle`
 
   a, button {
     cursor: pointer;
-  }
-
-  a, button, input, textarea {
-    /* 클릭하면 배경 파래지는 거 수정 */
-    -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
-    outline: none;
   }
 
   input, button {

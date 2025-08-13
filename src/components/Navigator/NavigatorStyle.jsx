@@ -39,7 +39,7 @@ export const NavIcon = styled.div`
   width: 24px;
   height: 24px;
   aspect-ratio: 1/1;
-  background-image: url(${({ icon }) => icon});
+  background-image: url(${({ $icon }) => $icon});
   background-size: cover;
   background-repeat: no-repeat;
   cursor: pointer;

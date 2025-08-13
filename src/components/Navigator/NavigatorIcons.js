@@ -12,24 +12,24 @@ export const navItems = [
     key: "home",
     label: "홈",
     icons: { true: homeTrue, false: homeFalse },
-    // path: "/",
+    path: "/",
   },
   {
     key: "notification",
     label: "알림",
     icons: { true: notiTrue, false: notiFalse },
-    // path: "/notification",
+    path: "/",
   },
   {
     key: "news",
     label: "소식",
     icons: { true: newsTrue, false: newsFalse },
-    // path: "/news",
+    path: "/",
   },
   {
     key: "mypage",
     label: "마이",
     icons: { true: myTrue, false: myFalse },
-    // path: "/mypage",
+    path: "/mypage",
   },
 ];
