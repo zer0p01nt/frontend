@@ -21,11 +21,19 @@ export default function Home() {
               <Badge color="blue" isFilled={false}>
                 도봉구
               </Badge>
-              <Badge color="teal" isFilled={false}>
+              <Badge color="blue" isFilled={false}>
                 강북구
               </Badge>
               <Badge color="pink" isFilled={false}>
                 +1
+              </Badge>
+            </S.BadgeWrapper>
+            <S.BadgeWrapper>
+              <Badge color="teal" isFilled={false}>
+                교통
+              </Badge>
+              <Badge color="teal" isFilled={false}>
+                문화
               </Badge>
             </S.BadgeWrapper>
           </S.InterestSection>
