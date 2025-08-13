@@ -12,6 +12,7 @@ const CardImage = styled.div`
   flex-shrink: 0;
   border-radius: var(--border-radius-md);
   background-color: var(--color-neutral-200);
+  background-image: url(${({ $img }) => $img});
 `;
 
 const variants = {
@@ -53,7 +54,8 @@ export const CardContainer = styled.div`
   display: flex;
   background: var(--color-base-white);
   gap: 12px;
-  ${({ variant }) => variants[variant]}
+  /* variant prop에 따라 다른 스타일 블록을 적용 */
+  ${({ $variant }) => variants[$variant]}
 `;
 
 export { ContentWrapper, CardImage };
