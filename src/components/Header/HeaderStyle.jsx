@@ -10,18 +10,20 @@ export const HeaderContainer = styled.div`
   top: 0;
   left: 50%;
   transform: translateX(-50%);
-  background-color: var(--color-base-white);
+  background-color: ${({ $isTransparent }) =>
+    $isTransparent ? "transparent" : "var(--color-base-white)"};
   display: grid;
   padding: 6px 24px;
   align-items: center;
   /* BackBtn, ScrapBtn 여부에 따른 레이아웃 변동 */
   grid-template-columns: ${({ $hasBack, $hasScrap }) => {
     const cols = [];
-    if ($hasBack) cols.push('24px');
-    cols.push('1fr');
-    if ($hasScrap) cols.push('24px');
-    return cols.join(' ');
+    if ($hasBack) cols.push("24px");
+    cols.push("1fr");
+    if ($hasScrap) cols.push("24px");
+    return cols.join(" ");
   }};
+  z-index: 100;
 `;
 
 export const HeaderBack = styled.button`
@@ -38,7 +40,7 @@ export const HeaderTitle = styled.div`
   width: 100%;
   color: var(--color-base-black);
   overflow: hidden;
-  white-space: nowrap;  
+  white-space: nowrap;
   text-overflow: ellipsis;
   font-size: var(--Heading-xl-font-size);
   font-weight: 700;
@@ -51,6 +53,6 @@ export const HeaderScrap = styled.button`
   height: 24px;
   flex-shrink: 0;
   aspect-ratio: 1/1;
-  background-image: url(${({ $isScrap }) => ($isScrap ? scrapTrue : scrapFalse)});
+  background-image: url(${({ $isScrap }) => $isScrap ? scrapTrue : scrapFalse});
   background-repeat: no-repeat;
 `;
