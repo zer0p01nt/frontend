@@ -10,8 +10,12 @@ export const HeaderContainer = styled.div`
   top: 0;
   left: 50%;
   transform: translateX(-50%);
-  background-color: ${({ $isTransparent }) =>
-    $isTransparent ? "transparent" : "var(--color-base-white)"};
+  background-color: ${({ $scrolled, $isTransparent }) =>
+    $isTransparent
+      ? $scrolled
+        ? "var(--color-blue-50)" // 스크롤 시 고정 색 (고정 색은 어떤 색으로?)
+        : "transparent"
+      : "var(--color-base-white)"}; // 투명 모드 아니면 항상 고정 색
   display: grid;
   padding: 6px 24px;
   align-items: center;
