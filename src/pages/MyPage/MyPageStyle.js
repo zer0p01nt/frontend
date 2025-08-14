@@ -97,3 +97,29 @@ export const SectionContainer = styled.div`
   flex-direction: column;
   gap: 24px;
 `;
+
+export const NoScraped = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  height: 15vh;
+
+  > div:first-child {
+    color: var(--color-base-black, #191919);
+    text-align: center;
+    font-size: var(--Heading-sm-font-size);
+    font-weight: 600;
+    line-height: var(--Heading-sm-line-height);
+    letter-spacing: var(--letter-spacing);
+  }
+
+  > div:last-child {
+    color: var(--color-neutral-secondary, #a3a1a1);
+    text-align: center;
+    font-size: var(--Body-sm-font-size);
+    font-weight: 500;
+    line-height: var(--Body-sm-line-height);
+  }
+`;

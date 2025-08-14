@@ -10,6 +10,7 @@ export const Btn = styled.button`
     font-size: var(--Body-sm-font-size);
     font-weight: 400;
     line-height: var(--Body-sm-line-height);
+    white-space: nowrap;
   }
 
   img {

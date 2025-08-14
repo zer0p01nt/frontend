@@ -6,6 +6,7 @@ import MoreBtn from "../../components/MoreBtn/MoreBtn";
 import useFetch from "../../hooks/useFetch";
 import { useEffect } from "react";
 import CardList from "../../components/CardList/CardList";
+import useProfile from "../../services/useProfile";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -13,17 +14,17 @@ export default function MyPage() {
   const navigate = useNavigate();
 
   // 프로필 정보 fetch
-  const { data: profile = {}, isLoading: isProfileLoading } = useFetch(
-    `${API_URL}/user/profile/`,
-    {}
-  );
-  // 스크랩한 공문 들어갈 자리
+  const { profile, isProfileLoading } = useProfile();
+
+  // 공문 스크랩
   const { data: scrapedPosts = [], isLoading: isPostsLoading } = useFetch(
     "/data/CardList.json",
     []
   );
 
-  console.log(profile);
+  //  챗봇 스크랩
+  let scrapedChatbots = [];
+
   return (
     <>
       <Header
@@ -68,40 +69,62 @@ export default function MyPage() {
           <div>
             <H.SectionHeader>
               <H.SectionTitle>스크랩한 공문</H.SectionTitle>
-              <MoreBtn
-                value='더보기'
-                onClick={() => navigate("/scrap/posts")}
-              />
-            </H.SectionHeader>
-            <H.CardListWrapper>
-              {!isPostsLoading && scrapedPosts && (
-                <>
-                  {scrapedPosts?.slice(0, 3).map((p) => (
-                    <CardList
-                      badges={[
-                        { text: p.region, color: "blue" },
-                        { text: p.keyword, color: "teal" },
-                      ]}
-                      title={p.title}
-                      date={p.date}
-                      key={p.id}
-                    />
-                  ))}
-                </>
+              {scrapedPosts?.length !== 0 && (
+                <MoreBtn
+                  value='더보기'
+                  onClick={() => navigate("/scrap/posts")}
+                />
               )}
-            </H.CardListWrapper>
+            </H.SectionHeader>
+            {scrapedPosts?.length !== 0 ? (
+              <H.CardListWrapper>
+                {!isPostsLoading && scrapedPosts && (
+                  <>
+                    {scrapedPosts?.slice(0, 3).map((p) => (
+                      <CardList
+                        badges={[
+                          { text: p.region, color: "blue" },
+                          { text: p.keyword, color: "teal" },
+                        ]}
+                        title={p.title}
+                        date={p.date}
+                        key={p.id}
+                      />
+                    ))}
+                  </>
+                )}
+              </H.CardListWrapper>
+            ) : (
+              <>
+                <S.NoScraped>
+                  <div>스크랩한 공문이 없어요</div>
+                  <div>관심 공문은 스크랩해서 모아보세요</div>
+                </S.NoScraped>
+              </>
+            )}
           </div>
           <div>
             <H.SectionHeader>
               <H.SectionTitle>스크랩한 챗봇</H.SectionTitle>
-              <MoreBtn
-                value='더보기'
-                onClick={() => navigate("/scrap/chatbots")}
-              />
+              {scrapedChatbots.length !== 0 && (
+                <MoreBtn
+                  value='더보기'
+                  onClick={() => navigate("/scrap/chatbots")}
+                />
+              )}
             </H.SectionHeader>
-            <H.CardListWrapper>
-              {/* 챗봇 컴포넌트 따로 만들어야 함 */}
-            </H.CardListWrapper>
+            {scrapedChatbots.length !== 0 ? (
+              <H.CardListWrapper>
+                {/* 챗봇 컴포넌트 따로 만들어야 함 */}
+              </H.CardListWrapper>
+            ) : (
+              <>
+                <S.NoScraped>
+                  <div>스크랩한 대화가 없어요</div>
+                  <div>유용한 대화는 스크랩해 두고 다시 볼 수 있어요</div>
+                </S.NoScraped>
+              </>
+            )}
           </div>
         </S.SectionContainer>
       </H.ContentContainer>

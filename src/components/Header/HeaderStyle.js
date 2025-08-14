@@ -8,8 +8,8 @@ export const HeaderContainer = styled.div`
   max-width: 393px;
   position: fixed;
   top: 0;
-  left: 50%;
-  transform: translateX(-50%);
+  right: max(calc(50vw - 393px / 2), 0px);
+  left: auto;
   background-color: ${({ $scrolled, $isTransparent }) =>
     $isTransparent
       ? $scrolled
@@ -57,6 +57,7 @@ export const HeaderScrap = styled.button`
   height: 24px;
   flex-shrink: 0;
   aspect-ratio: 1/1;
-  background-image: url(${({ $isScrap }) => $isScrap ? scrapTrue : scrapFalse});
+  background-image: url(${({ $isScrap }) =>
+    $isScrap ? scrapTrue : scrapFalse});
   background-repeat: no-repeat;
 `;
