@@ -55,6 +55,7 @@ const variants = {
     padding: 10px 8px;
     border-radius: var(--border-radius-lg);
     width: 210px;
+    gap: 0px;
     flex-shrink: 0;
     flex-direction: column;
 
@@ -64,6 +65,7 @@ const variants = {
     ${CardImage} {
       width: 100%;
       height: 120px;
+      margin-bottom: 12px;
     }
   `,
 };
