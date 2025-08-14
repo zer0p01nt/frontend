@@ -6,6 +6,7 @@ import MoreBtn from "../../components/MoreBtn/MoreBtn";
 import useFetch from "../../hooks/useFetch";
 import { useEffect } from "react";
 import CardList from "../../components/CardList/CardList";
+import useProfile from "../../services/useProfile";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -13,10 +14,7 @@ export default function MyPage() {
   const navigate = useNavigate();
 
   // 프로필 정보 fetch
-  // const { data: profile = {}, isLoading: isProfileLoading } = useFetch(
-  //   `${API_URL}/user/profile/`,
-  //   {}
-  // );
+  const { profile, isProfileLoading } = useProfile();
 
   // 공문 스크랩
   const { data: scrapedPosts = [], isLoading: isPostsLoading } = useFetch(
@@ -50,7 +48,7 @@ export default function MyPage() {
             <MoreBtn value='수정하기' onClick={() => navigate("/profile")} />
           </S.TitleWrapper>
           <S.BadgeWrapper>
-            {/* {!isProfileLoading && profile && (
+            {!isProfileLoading && profile && (
               <>
                 {(profile.data.user_regions ?? []).map((r) => (
                   <S.MyPageBadge $variant='region' key={r.id}>
@@ -64,9 +62,7 @@ export default function MyPage() {
                   </S.MyPageBadge>
                 ))}
               </>
-            )} */}
-            <S.MyPageBadge $variant='region'>도봉구</S.MyPageBadge>
-            <S.MyPageBadge $variant='category'>문화</S.MyPageBadge>
+            )}
           </S.BadgeWrapper>
         </S.TitleContainer>
         <S.SectionContainer>
