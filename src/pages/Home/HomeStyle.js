@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import searchIcon from "../../assets/search.svg"; // searchIcon import 추가
 
-// ▼▼▼ 이 두 개의 스타일 정의를 파일 최상단에 추가해주세요 ▼▼▼
+
 export const HomeWrapper = styled.div`
   position: relative;
 `;
@@ -33,9 +33,7 @@ export const FakeSearchInputWrapper = styled.div`
     background-size: cover;
   }
 `;
-// ▲▲▲ 여기까지 추가 ▲▲▲
 
-// --- 아래는 기존에 있던 코드입니다 (수정 없음) ---
 
 export const ContentContainer = styled.div`
   position: relative;
@@ -44,7 +42,7 @@ export const ContentContainer = styled.div`
   flex-direction: column;
 `;
 
-// (이하 나머지 코드는 그대로입니다)
+
 export const TitleContainer = styled.div`
   background: linear-gradient(180deg, var(--color-blue-50) 85.04%, var(--color-pink-50) 111.61%);
   // 전체 컨테이너의 padding 무시하고 배경 덮기

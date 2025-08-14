@@ -1,11 +1,10 @@
 import styled from "styled-components";
 
-/* 모바일 환경 구현을 위해 max-width를 393px로 고정 */
 const MainWrapper = styled.div`
   width: 100%;
   max-width: 393px;
   margin: 0 auto;
-  min-height: 100vh;
+  padding-bottom: 80px; /* 하단 네비게이터 높이만큼 여백 추가 */
 `;
 
 export default function Main({ children }) {
