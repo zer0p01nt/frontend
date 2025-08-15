@@ -7,6 +7,7 @@ import useFetch from "../../hooks/useFetch";
 import { useEffect } from "react";
 import CardList from "../../components/CardList/CardList";
 import useProfile from "../../services/useProfile";
+import ChatbotBox from "../../components/ChatbotBox/ChatbotBox";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -22,8 +23,44 @@ export default function MyPage() {
     []
   );
 
-  //  챗봇 스크랩
-  let scrapedChatbots = [];
+  // 챗봇 스크랩 (더미데이터)
+  const scrapedChatbots = [
+    {
+      id: 1,
+      category: "시설",
+      title: "AI 응답 요약",
+      userChat: "사용자 텍스트가 들어가는 자리",
+      aiChat: "AI 답변이 들어가는 자리",
+    },
+    {
+      id: 2,
+      category: "시설",
+      title: "AI 응답 요약",
+      userChat: "사용자 텍스트가 들어가는 자리",
+      aiChat: "AI 답변이 들어가는 자리",
+    },
+    {
+      id: 3,
+      category: "시설",
+      title: "AI 응답 요약",
+      userChat: "사용자 텍스트가 들어가는 자리",
+      aiChat: "AI 답변이 들어가는 자리",
+    },
+    {
+      id: 4,
+      category: "시설",
+      title: "AI 응답 요약",
+      userChat: "사용자 텍스트가 들어가는 자리",
+      aiChat: "AI 답변이 들어가는 자리",
+    },
+    {
+      id: 5,
+      category: "시설",
+      title: "AI 응답 요약",
+      userChat: "사용자 텍스트가 들어가는 자리",
+      aiChat: "AI 답변이 들어가는 자리",
+    },
+  ];
 
   return (
     <>
@@ -115,7 +152,9 @@ export default function MyPage() {
             </H.SectionHeader>
             {scrapedChatbots.length !== 0 ? (
               <H.CardListWrapper>
-                {/* 챗봇 컴포넌트 따로 만들어야 함 */}
+                {scrapedChatbots?.slice(0, 3).map((c) => (
+                  <ChatbotBox id={c.id} category={c.category} title={c.title} />
+                ))}
               </H.CardListWrapper>
             ) : (
               <>
