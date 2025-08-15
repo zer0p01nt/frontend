@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import useFetch from "../../hooks/useFetch";
 
 import * as S from "./ScrapedPostsStyle";
-import * as H from "../Home/HomeStyle";
 import * as D from "../Search/SearchStyle";
 
 import GoToTop from "../../components/GoToTop/GoToTop";
@@ -80,7 +79,7 @@ export default function ScrapedPosts() {
           </D.ResultHeader>
         </S.OrderContainer>
 
-        <H.CardListWrapper>
+        <S.PostsWrapper>
           {!isPostsLoading && scrapedPosts && (
             <>
               {scrapedPosts?.map((p) => (
@@ -96,7 +95,7 @@ export default function ScrapedPosts() {
               ))}
             </>
           )}
-        </H.CardListWrapper>
+        </S.PostsWrapper>
       </S.ScrapedContainer>
     </>
   );

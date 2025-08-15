@@ -12,22 +12,8 @@ export const OrderContainer = styled.div`
   padding: 0 24px;
 `;
 
-export const ResultBox = styled.div`
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1;
-  color: var(--color-neutral-600);
-  font-size: var(--Body-sm-font-size);
-  font-weight: 500;
-  line-height: var(--Body-sm-line-height);
-  letter-spacing: -0.1px;
-`;
-
-export const OrderBtn = styled.button`
+export const PostsWrapper = styled.div`
   display: flex;
-  padding: 8px 0;
-  align-items: center;
-  gap: 5px;
-  flex-wrap: nowrap;
-  cursor: pointer;
+  flex-direction: column;
+  padding: 0 16px;
 `;
