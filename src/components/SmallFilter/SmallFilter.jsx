@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useProfileLabels, useSmallFilter } from "../../services/smallFilter";
-import { SmallFilterWrapper } from "./SmallFilterStyle";
 import Button from "../Button/Button";
 
 export default function SmallFilter({ sourceKey, onChange }) {
