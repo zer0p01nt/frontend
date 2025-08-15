@@ -5,11 +5,11 @@ import useProfile from "./useProfile";
 export const CATEGORY_OPTIONS = [
   "모든 주제",
   "교통",
-  "안전",
+  "문화",
   "주택",
   "경제",
   "환경",
-  "문화",
+  "안전",
   "복지",
   "행정",
 ];
