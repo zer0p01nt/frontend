@@ -24,7 +24,7 @@ export const navItems = [
     key: "news",
     label: "소식",
     icons: { true: newsTrue, false: newsFalse },
-    path: "/",
+    path: "/news",
   },
   {
     key: "mypage",
