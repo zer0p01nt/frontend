@@ -10,6 +10,7 @@ import ScrapedChatbots from "./pages/ScrapedChatbots/ScrapedChatbots";
 import ScrapedPosts from "./pages/ScrapedPosts/ScrapedPosts";
 import Profile from "./pages/Profile/Profile";
 import Notification from "./pages/Notification/Notification.jsx";
+import News from "./pages/News/News";
 
 // Navigator를 띄우는 레이아웃
 function WithNav() {
@@ -36,6 +37,7 @@ function App() {
             {/* Navigator가 있는 경우 이쪽에 route를 만들어주세요 */}
             <Route index element={<Home />} />
             <Route path='/notification' element={<Notification />} />
+            <Route path='/news' element={<News />} />
             <Route path='/mypage' element={<MyPage />} />
           </Route>
           <Route element={<WithoutNav />}>

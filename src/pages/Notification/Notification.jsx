@@ -10,7 +10,7 @@ import * as B from "../../styles/ButtonCircle";
 import * as S from "./NotificationStyle";
 import * as F from "../../components/SmallFilter/SmallFilterStyle";
 
-// 스크롤 발생을 위해 데이터 개수를 충분히 유지합니다.
+
 const dummyNotifications = [
   {
     id: 1,
