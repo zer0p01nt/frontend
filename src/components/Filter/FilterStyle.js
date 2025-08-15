@@ -21,6 +21,8 @@ export const FilterContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 12px 24px;
+  z-index: 20;
+  background-color: var(--color-base-white);
 `;
 
 export const NormalFilterWrapper = styled.div`
@@ -37,6 +39,8 @@ export const NormalFilterWrapper = styled.div`
   }
   -ms-overflow-style: none;
   scrollbar-width: none;
+  z-index: 20;
+  background-color: var(--color-base-white);
 `;
 
 export const chevronBtn = styled.button`
@@ -47,18 +51,19 @@ export const chevronBtn = styled.button`
   padding: 12px 0;
 `;
 
+// z-index 10
 export const FilterOverlay = styled.div`
   width: 100%;
   max-width: 393px;
   position: fixed;
-  top: 0;
+  top: 85px;
   left: 50%;
   transform: translateX(-50%);
   height: 100dvh;
   background-color: rgba(115, 113, 113, 0.4);
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
-  z-index: -1;
+  z-index: 10;
 
   opacity: ${({ $expanded }) => ($expanded ? 1 : 0)};
   pointer-events: ${({ $expanded }) => ($expanded ? "auto" : "none")};
@@ -73,6 +78,8 @@ export const DetailFilterWrapper = styled.div`
   gap: 12px;
   width: 100%;
   max-width: 393px;
+  z-index: 20;
+  background-color: var(--color-base-white);
 `;
 
 export const DetailFilter = styled.div`
