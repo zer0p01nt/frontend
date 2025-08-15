@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const SearchContainer = styled.div`
-  padding: 60px 24px 80px; 
+  padding: 60px 24px 80px;
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -27,14 +27,14 @@ export const SearchHistoryItem = styled.li`
   align-items: center;
   padding: 12px 0;
   font-size: var(--Body-md-font-size);
-  
-  span:first-child { 
+
+  span:first-child {
     color: var(--color-base-black);
-    font-weight: 500; 
+    font-weight: 500;
   }
 
-  span:last-child { 
-    color: var(--color-text-secondary); 
+  span:last-child {
+    color: var(--color-text-secondary);
   }
 `;
 
@@ -68,18 +68,9 @@ export const SortButton = styled.button`
   display: flex;
   align-items: center;
   gap: 6px;
-  color: var(--color-neutral-600); 
+  color: var(--color-neutral-600);
   font-size: var(--Body-sm-font-size);
   font-weight: 500;
-
-  &::after {
-    content: "";
-    width: 7px;
-    height: 7px;
-    border: solid var(--color-neutral-500);
-    border-width: 0 2px 2px 0;
-    transform: translateY(-2px) rotate(45deg);
-  }
 `;
 
 export const DropdownMenu = styled.ul`
@@ -89,10 +80,10 @@ export const DropdownMenu = styled.ul`
   margin-top: 8px;
   min-width: 100px;
   background: white;
-  
+
   border: 1px solid var(--color-neutral-300);
   border-radius: var(--border-radius-md);
-  
+
   list-style: none;
   padding: 8px;
   z-index: 10;
@@ -102,9 +93,9 @@ export const DropdownItem = styled.li`
   padding: 8px 12px;
   font-size: var(--Body-sm-font-size);
   border-radius: var(--border-radius-md);
-  font-weight: ${({ $isSelected }) => ($isSelected ? '600' : '500')};
+  font-weight: ${({ $isSelected }) => ($isSelected ? "600" : "500")};
   color: ${({ $isSelected }) =>
-    $isSelected ? 'var(--color-base-black)' : 'var(--color-text-secondary)'};
+    $isSelected ? "var(--color-base-black)" : "var(--color-text-secondary)"};
 
   &:hover {
     background-color: var(--color-neutral-100);
