@@ -8,7 +8,7 @@ export default function GoToTop() {
   useEffect(() => {
     const handleScroll = () => {
       // 200px 이상 스크롤되면 isVisible 상태를 true로 변경
-      if (window.scrollY > 200) {
+      if (window.scrollY > 100) {
         setIsVisible(true);
       } else {
         setIsVisible(false);
