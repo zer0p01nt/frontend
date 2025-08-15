@@ -31,13 +31,15 @@ export default function GoToTop() {
     });
   };
 
-  // ButtonWrapper 없이 순수한 ButtonCircle만 export합니다.
   return (
+    // 실제로 사용할 땐 꼭 ButtonWrapper로 감싸주세요
+    // <B.ButtonWrapper>
     <B.ButtonCircle
       $icon={arrow}
       type='button'
       onClick={scrollToTop}
-      $isVisible={isVisible}
+      $isVisible={isVisible} // 경고문 안 뜨도록 $ 붙임
     />
+    // </B.ButtonWrapper>
   );
 }
