@@ -43,7 +43,6 @@ export default function Filter() {
         {/* 상세 필터 (펼쳤을 때) */}
         {expanded && (
           <>
-            <S.FilterOverlay $expanded={expanded} />
             <S.DetailFilterWrapper>
               {groups.map((group) => (
                 <S.DetailFilter key={group.id}>
@@ -58,6 +57,7 @@ export default function Filter() {
                 </S.DetailFilter>
               ))}
             </S.DetailFilterWrapper>
+            <S.FilterOverlay $expanded={expanded} />
           </>
         )}
       </S.ContentContainer>

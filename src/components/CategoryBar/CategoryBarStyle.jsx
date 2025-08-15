@@ -8,12 +8,14 @@ export const CategoryContainer = styled.div`
   white-space: nowrap;
   gap: 8px; /* 1. 각 아이템 사이에 8px 간격 추가 */
 
-  // 스크롤바 숨기기
+  /* 스크롤바 숨기기 */
   &::-webkit-scrollbar {
     display: none;
   }
   -ms-overflow-style: none;
   scrollbar-width: none;
+  z-index: 30;
+  background-color: var(--color-base-white);
 `;
 
 export const CategoryItem = styled.div`
@@ -27,4 +29,6 @@ export const CategoryItem = styled.div`
       $isSelected ? "var(--color-base-black)" : "transparent"};
   cursor: pointer;
   transition: all 150ms ease-in-out;
+  z-index: 30;
+  background-color: var(--color-base-white);
 `;

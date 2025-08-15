@@ -12,7 +12,7 @@ export const ButtonWrapper = styled.div`
   align-items: flex-start;
   gap: 16px;
   pointer-events: none;
-  z-index: 20; /* 네비게이터(10)보다 위에 보이도록 순서를 20으로 지정 */
+  z-index: 200; /* 네비게이터(10)보다 위에 보이도록 순서를 20으로 지정 */
 
   & > * {
     pointer-events: auto; /* 자식 버튼만 클릭 가능하도록 설정 */
