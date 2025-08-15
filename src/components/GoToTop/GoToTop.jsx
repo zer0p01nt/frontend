@@ -7,17 +7,28 @@ export default function GoToTop() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsVisible(window.pageYOffset > 200 ? true : false);
+      // 200px 이상 스크롤되면 isVisible 상태를 true로 변경
+      if (window.scrollY > 200) {
+        setIsVisible(true);
+      } else {
+        setIsVisible(false);
+      }
     };
 
+    // window 객체의 스크롤 이벤트를 감지합니다.
     window.addEventListener("scroll", handleScroll);
+
+    // 컴포넌트가 사라질 때 이벤트 리스너를 제거합니다.
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, []);
+  }, []); // 이 useEffect는 처음 한 번만 실행됩니다.
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   };
 
   return (

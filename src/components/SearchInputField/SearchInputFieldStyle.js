@@ -11,7 +11,7 @@ export const SearchInputForm = styled.form`
   align-items: center;
   padding: 0 16px;
   border-radius: var(--border-radius-rounded);
-  border: 0.5px solid var(--color-neutral-secondary);
+  border: 0.5px solid var(--color-blue-100);
   background-color: var(--color-base-white);
   box-shadow: var(--shadow-default);
   gap: 5px;
@@ -28,9 +28,6 @@ export const SearchInput = styled.input`
 
   &::placeholder {
     color: var(--color-text-primary-subtitle);
-  }
-  &:focus::placeholder {
-    color: transparent;
   }
 `;
 

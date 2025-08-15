@@ -18,7 +18,7 @@ export const navItems = [
     key: "notification",
     label: "알림",
     icons: { true: notiTrue, false: notiFalse },
-    path: "/",
+    path: "/notification",
   },
   {
     key: "news",

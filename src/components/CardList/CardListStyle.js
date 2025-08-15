@@ -1,6 +1,5 @@
 import styled, { css } from "styled-components";
 
-// 공통으로 사용할 스타일 컴포넌트를 먼저 정의
 const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -12,27 +11,46 @@ const CardImage = styled.div`
   flex-shrink: 0;
   border-radius: var(--border-radius-md);
   background-color: var(--color-neutral-200);
-  background-image: url(${({ $img }) => $img});
+`;
+
+export const UnreadMark = styled.div`
+  width: 6px;
+  height: 6px;
+  background-color: var(--color-blue-400-main);
+  border-radius: 50%;
+  margin-left: 8px;
+`;
+
+// 공통 리스트 스타일 
+const baseListStyles = css`
+  border-bottom: 0.5px solid var(--color-neutral-200);
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+
+  ${ContentWrapper} {
+    flex: 1;
+    min-width: 0;
+  }
+  ${CardImage} {
+    width: 72px;
+    height: 72px;
+    order: 2;
+  }
 `;
 
 const variants = {
+  // 홈 화면을 위한 기본 list variant
   list: css`
-    padding: 12px 8px;
-    border-bottom: 1px solid var(--color-neutral-200);
-    flex-direction: row;
-    align-items: center;
-    gap: 16px;
-
-    ${ContentWrapper} {
-      flex: 1;
-      min-width: 0;
-    }
-    ${CardImage} {
-      width: 72px;
-      height: 72px;
-      order: 2;
-    }
+    ${baseListStyles}
+    padding: 12px;
   `,
+  // 알림 페이지를 위한 notification variant (좌우 여백 24px)
+  notification: css`
+    ${baseListStyles}
+    padding: 12px 24px;
+  `,
+  // 기존 card variant
   card: css`
     padding: 10px 8px;
     border-radius: var(--border-radius-lg);
@@ -56,8 +74,7 @@ export const CardContainer = styled.div`
   display: flex;
   background: var(--color-base-white);
   gap: 12px;
-  /* variant prop에 따라 다른 스타일 블록을 적용 */
-  ${({ $variant }) => variants[$variant]}
+  ${({ variant }) => variants[variant]}
 `;
 
 export { ContentWrapper, CardImage };
@@ -77,6 +94,8 @@ export const Title = styled.h3`
   margin: 0;
   white-space: normal;
   margin-bottom: 5px;
+  display: flex;
+  align-items: center;
 `;
 
 export const Date = styled.p`
