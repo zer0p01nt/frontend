@@ -84,24 +84,24 @@ export default function MyPage() {
             </S.TitleBox>
             <MoreBtn value='수정하기' onClick={() => navigate("/profile")} />
           </S.TitleWrapper>
-          <S.BadgeWrapper>
-            {!isProfileLoading && profile && (
-              <>
-                {(profile.data.user_regions ?? []).map((r) => (
-                  <S.MyPageBadge $variant='region' key={r.id}>
-                    {r.region?.district}
-                  </S.MyPageBadge>
-                ))}
-
-                {(profile.data.user_categories ?? []).map((c) => (
-                  <S.MyPageBadge $variant='category' key={c.id}>
-                    {c.category?.category_name}
-                  </S.MyPageBadge>
-                ))}
-              </>
-            )}
-          </S.BadgeWrapper>
         </S.TitleContainer>
+        <S.BadgeWrapper>
+          {!isProfileLoading && profile && (
+            <>
+              {(profile.data.user_regions ?? []).map((r) => (
+                <S.MyPageBadge $variant='region' key={r.id}>
+                  {r.region?.district}
+                </S.MyPageBadge>
+              ))}
+
+              {(profile.data.user_categories ?? []).map((c) => (
+                <S.MyPageBadge $variant='category' key={c.id}>
+                  {c.category?.category_name}
+                </S.MyPageBadge>
+              ))}
+            </>
+          )}
+        </S.BadgeWrapper>
         <S.SectionContainer>
           <div>
             <H.SectionHeader>
