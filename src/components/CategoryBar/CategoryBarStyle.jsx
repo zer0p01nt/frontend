@@ -16,6 +16,11 @@ export const CategoryContainer = styled.div`
   scrollbar-width: none;
   z-index: 30;
   background-color: var(--color-base-white);
+  /* 고정 코드 추가 */
+  position: fixed;
+  top: 42px;
+  width: 100%;
+  max-width: 393px;
 `;
 
 export const CategoryItem = styled.div`
