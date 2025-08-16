@@ -66,7 +66,7 @@ export default function Chatbot({ isOpen, handleClose, postId }) {
           ) : (
             <S.NoChatBox>
               {/* 채팅 기록 없을 때 */}
-              <S.AICharacter>캐릭터</S.AICharacter>
+              <S.AICharacter />
               <S.NoChatText>
                 <S.NoChatTitle>안녕하세요!</S.NoChatTitle>
                 <S.NoChatContent>
