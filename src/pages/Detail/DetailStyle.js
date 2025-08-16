@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import summaryCharacter from "../../assets/summaryCharacter.png";
 
 // 전체 컨테이너
 export const DetailContainer = styled.div`
@@ -85,12 +86,28 @@ export const AIBox = styled.div`
       rgba(255, 238, 254, 0.4) 100%
     ),
     #fff;
+  position: relative;
+  z-index: 0;
+`;
+
+export const AICharacter = styled.div`
+  width: 171.592px;
+  height: 146.71px;
+  aspect-ratio: 131/112;
+  opacity: 0.4; /* 시안과 비슷하게 가려고 일부러 오퍼시티 더 낮춤 */
+  background-image: url(${summaryCharacter});
+  position: absolute;
+  right: 8.91px;
+  bottom: 0;
+  z-index: 0;
+  mix-blend-mode: overlay;
 `;
 
 export const AIHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+  z-index: 1;
 `;
 
 export const AITitle = styled.div`
@@ -99,6 +116,7 @@ export const AITitle = styled.div`
   font-weight: 700;
   line-height: var(--Heading-lg-line-height);
   letter-spacing: var(--letter-spacing);
+  z-index: 1;
 `;
 
 export const Content = styled.div`
@@ -107,6 +125,7 @@ export const Content = styled.div`
   line-height: var(--Body-md-line-height);
   font-weight: 500;
   white-space: pre-line;
+  z-index: 1;
 `;
 
 export const ContentBox = styled.div`

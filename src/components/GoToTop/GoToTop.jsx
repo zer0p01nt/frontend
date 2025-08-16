@@ -2,7 +2,7 @@ import * as B from "../../styles/ButtonCircle";
 import arrow from "../../assets/arrow_upward.svg";
 import { useEffect, useState } from "react";
 
-export default function GoToTop() {
+export default function GoToTop({ $isOpen }) {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -38,7 +38,7 @@ export default function GoToTop() {
       $icon={arrow}
       type='button'
       onClick={scrollToTop}
-      $isVisible={isVisible} // 경고문 안 뜨도록 $ 붙임
+      $isVisible={$isOpen ? false : isVisible} // 경고문 안 뜨도록 $ 붙임
     />
     // </B.ButtonWrapper>
   );
