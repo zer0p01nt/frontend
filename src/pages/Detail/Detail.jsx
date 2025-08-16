@@ -10,6 +10,7 @@ import Chatbot from "../../components/Chatbot/Chatbot";
 import scrapTrue from "../../assets/Detail/bookmark_true.svg";
 import scrapFalse from "../../assets/Detail/bookmark_false.svg";
 import share from "../../assets/Detail/share.svg";
+import buttonCircle from "../../assets/ButtonCircle.png";
 
 import * as B from "../../styles/ButtonCircle";
 import * as S from "./DetailStyle";
@@ -45,13 +46,13 @@ export default function Detail() {
         isScrap={false}
       />
       <B.ButtonWrapper>
-        <GoToTop />
+        <GoToTop $isOpen={isOpen} />
         <B.ButtonCircle
-          $icon='/logo192.png'
-          $isVisible={true}
+          $icon={buttonCircle}
+          $isVisible={!isOpen}
           onClick={() => setIsOpen(true)}
+          style={{ backgroundColor: "transparent" }}
         />
-        {/* 캐릭터 이미지로 교체 예정 */}
       </B.ButtonWrapper>
       <Chatbot isOpen={isOpen} handleClose={handleClose} />
 
@@ -80,10 +81,9 @@ export default function Detail() {
 
         {/* AI 요약 */}
         <S.AIBox>
+          <S.AICharacter />
           <S.AIHeader>
             <S.AITitle>AI 요약</S.AITitle>
-            <img src='/logo192.png' style={{ width: "100px" }} />
-            {/* 캐릭터 이미지로 교체 예정 */}
           </S.AIHeader>
           <S.Content>{post.aiSummary}</S.Content>
         </S.AIBox>
