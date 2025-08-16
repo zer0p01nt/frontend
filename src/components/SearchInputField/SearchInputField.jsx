@@ -1,7 +1,13 @@
 import * as S from "./SearchInputFieldStyle";
 
 // 현재 값, 값이 바뀔 때 적용하는 함수, submit 함수를 prop으로 받음
-export default function SearchInputField({ value, onChange, onSubmit }) {
+export default function SearchInputField({
+  value,
+  onChange,
+  onSubmit,
+  placeholder,
+  border = "blue",
+}) {
   const handleSubmit = (e) => {
     e.preventDefault();
     // event 막음
@@ -10,9 +16,9 @@ export default function SearchInputField({ value, onChange, onSubmit }) {
   };
   return (
     <>
-      <S.SearchInputForm onSubmit={handleSubmit}>
+      <S.SearchInputForm $border={border} onSubmit={handleSubmit}>
         <S.SearchInput
-          placeholder='필요한 정보가 있으신가요?'
+          placeholder={placeholder}
           value={value}
           onChange={onChange}
         />

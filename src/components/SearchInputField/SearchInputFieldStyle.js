@@ -11,7 +11,10 @@ export const SearchInputForm = styled.form`
   align-items: center;
   padding: 0 16px;
   border-radius: var(--border-radius-rounded);
-  border: 0.5px solid var(--color-blue-100);
+  border: ${({ $border }) =>
+    $border === "blue"
+      ? "0.5px solid var(--color-blue-100);"
+      : "0.5px solid var(--color-neutral-secondary)"};
   background-color: var(--color-base-white);
   box-shadow: var(--shadow-default);
   gap: 5px;
