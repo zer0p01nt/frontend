@@ -14,21 +14,25 @@ import buttonCircle from "../../assets/ButtonCircle.png";
 
 import * as B from "../../styles/ButtonCircle";
 import * as S from "./DetailStyle";
+import { useParams } from "react-router-dom";
+import { REGION_MAP } from "../../services/maps";
+
+const API_URL = process.env.REACT_APP_API_URL;
 
 export default function Detail() {
-  // param 등 route 작업도 추가 필요
+  const { id } = useParams();
 
   // 챗봇 열림 상태 관리
   const [isOpen, setIsOpen] = useState(false);
   const handleClose = () => setIsOpen(false);
 
+  // 공문 본문 fetch
   const { data: post, isLoading: isPostLoading } = useFetch(
-    "/data/EachDetail.json",
+    `${API_URL}/documents/${id}/`,
     {}
   );
-  // fetch url 추후 변경 예정
 
-  let isScrap = true;
+  let isScrap = false;
   // scrap 로직 추가 예정
 
   // 관련 공문 추천
@@ -41,7 +45,7 @@ export default function Detail() {
       {/* fixed 되는 컴포넌트들 */}
       <Header
         hasBack={true}
-        title={post.title}
+        title={!isPostLoading && post.doc_title}
         hasScrap={true}
         isScrap={false}
       />
@@ -58,56 +62,73 @@ export default function Detail() {
 
       {/* 페이지 UI */}
       <S.DetailContainer>
-        {/* 공문 정보 박스 */}
-        <S.InfoBox>
-          <S.BadgeWrapper>
-            <Badge>{post.region}</Badge>
-            <Badge color='teal'>{post.keyword}</Badge>
-          </S.BadgeWrapper>
-          <S.Title>{post.title}</S.Title>
-          <S.MetaInfo>
-            <S.MetaInfoLabel>
-              <li>작성일</li>
-              <li>관련부서</li>
-              <li>문의</li>
-            </S.MetaInfoLabel>
-            <S.MetaInfoData>
-              <li>{post.date}</li>
-              <li>{post.department}</li>
-              <li>{post.tel}</li>
-            </S.MetaInfoData>
-          </S.MetaInfo>
-        </S.InfoBox>
+        {!isPostLoading && post && (
+          <>
+            {/* 공문 정보 박스 */}
+            <S.InfoBox>
+              <S.BadgeWrapper>
+                <Badge key={post.region_id}>{REGION_MAP[post.region_id]}</Badge>
+                {(post.categories ?? []).map((c) => (
+                  <Badge color='teal' key={c.id}>
+                    {c.category_name}
+                  </Badge>
+                ))}
+              </S.BadgeWrapper>
+              <S.Title>{post.doc_title}</S.Title>
+              <S.MetaInfo>
+                <S.MetaInfoLabel>
+                  <li>작성일</li>
+                  <li>관련부서</li>
+                  <li>문의</li>
+                </S.MetaInfoLabel>
+                <S.MetaInfoData>
+                  <li>{post.pub_date.slice(0, 10)}</li>
+                  {/* 관련부서 추가 or 아예 삭제 필요 */}
+                  <li>관련부서</li>
+                  {/* 문의 전화번호 추가 or 아예 삭제 필요 */}
+                  <li>전화번호</li>
+                </S.MetaInfoData>
+              </S.MetaInfo>
+            </S.InfoBox>
 
-        {/* AI 요약 */}
-        <S.AIBox>
-          <S.AICharacter />
-          <S.AIHeader>
-            <S.AITitle>AI 요약</S.AITitle>
-          </S.AIHeader>
-          <S.Content>{post.aiSummary}</S.Content>
-        </S.AIBox>
+            {/* AI 요약 */}
+            <S.AIBox>
+              <S.AICharacter />
+              <S.AIHeader>
+                <S.AITitle>AI 요약</S.AITitle>
+              </S.AIHeader>
+              {/* 추가 예정 */}
+              <S.Content>
+                추가 예정 추가 예정 추가 예정 추가 예정 추가 예정 추가 예정 추가
+                예정 추가 예정 추가 예정 추가 예정 추가 예정 추가 예정 추가 예정
+                추가 예정 추가 예정 추가 예정
+              </S.Content>
+            </S.AIBox>
 
-        {/* 본문 */}
-        <S.ContentBox>
-          <S.Content>{post.content}</S.Content>
-          <img src={post.imgLink} />
-        </S.ContentBox>
+            {/* 본문 */}
+            <S.ContentBox>
+              <S.Content>{post.doc_content.replaceAll(".", ". ")}</S.Content>
+              {/* 추가 예정 */}
+              <img src={post.image_url} />
+            </S.ContentBox>
 
-        {/* 본문 하단 버튼 */}
-        <S.ButtonBox>
-          <S.LinkBtn href={post.url}>원문 바로가기</S.LinkBtn>
-          <S.SecondBtnBox>
-            <S.SecondBtn>
-              <img src={isScrap ? scrapTrue : scrapFalse} />
-              스크랩
-            </S.SecondBtn>
-            <S.SecondBtn>
-              <img src={share} />
-              공유하기
-            </S.SecondBtn>
-          </S.SecondBtnBox>
-        </S.ButtonBox>
+            {/* 본문 하단 버튼 */}
+            <S.ButtonBox>
+              {/* 추가 필요 */}
+              <S.LinkBtn href={post.url}>원문 바로가기</S.LinkBtn>
+              <S.SecondBtnBox>
+                <S.SecondBtn>
+                  <img src={isScrap ? scrapTrue : scrapFalse} />
+                  스크랩
+                </S.SecondBtn>
+                <S.SecondBtn>
+                  <img src={share} />
+                  공유하기
+                </S.SecondBtn>
+              </S.SecondBtnBox>
+            </S.ButtonBox>
+          </>
+        )}
 
         {/* 관련 공문 추천 */}
         <S.RecommendBox>
