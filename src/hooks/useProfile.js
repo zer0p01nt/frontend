@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import useFetch from "../hooks/useFetch";
+import useFetch from "./useFetch";
 
 const API_URL = process.env.REACT_APP_API_URL;
 

@@ -1,4 +1,4 @@
-import { REGION_MAP } from "./maps";
+import { REGION_MAP } from "../constants/maps";
 
 export const makeBadges = (r) => [
   {

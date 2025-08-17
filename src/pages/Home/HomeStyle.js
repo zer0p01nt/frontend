@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import searchIcon from "../../assets/search.svg"; // searchIcon import 추가
-import homeCharacter from "../../assets/homeCharacter.png"
+import homeCharacter from "../../assets/homeCharacter.png";
 
 export const HomeWrapper = styled.div`
   position: relative;
@@ -44,7 +44,11 @@ export const ContentContainer = styled.div`
 `;
 
 export const TitleContainer = styled.div`
-  background-color: var(--color-blue-50);
+  background: linear-gradient(
+    180deg,
+    var(--color-blue-50) 85.04%,
+    var(--color-pink-50) 111.61%
+  );
   // 전체 컨테이너의 padding 무시하고 배경 덮기
   width: calc(100% + 16 * 2);
   margin: 0 -16px;
@@ -68,7 +72,7 @@ export const TitleBox = styled.div`
 
 export const Character = styled.div`
   width: 30%;
-  background: url(${ homeCharacter }) no-repeat;
+  background: url(${homeCharacter}) no-repeat;
   width: 106.855px;
   height: 86.842px;
   aspect-ratio: 106.85/86.84;

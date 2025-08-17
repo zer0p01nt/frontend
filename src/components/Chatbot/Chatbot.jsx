@@ -1,7 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import * as S from "./ChatbotStyle";
 import ChatbotInputField from "../ChatbotInputField/ChatbotInputField";
-import { createSession, getSession, sendMessage } from "../../services/chatbot";
+import {
+  createSession,
+  getSession,
+  sendMessage,
+} from "../../services/chatbotService";
 
 export default function Chatbot({ isOpen, handleClose, postId }) {
   // localStorage에 저장 => useMemo 활용해 스토리지키가 변하지 않도록 함

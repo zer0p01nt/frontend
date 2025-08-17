@@ -15,7 +15,7 @@ import buttonCircle from "../../assets/ButtonCircle.png";
 import * as B from "../../styles/ButtonCircle";
 import * as S from "./DetailStyle";
 import { useParams } from "react-router-dom";
-import { REGION_MAP } from "../../services/maps";
+import { REGION_MAP } from "../../constants/maps";
 
 const API_URL = process.env.REACT_APP_API_URL;
 

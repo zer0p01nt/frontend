@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { useFilterSelections, useGroups } from "../../services/filter";
+import { useFilterSelections, useGroups } from "../../utils/filter";
 import Button from "../../components/Button/Button";
 import * as S from "./FilterStyle";
-import { Overlay } from "../Chatbot/ChatbotStyle";
 
 export default function Filter() {
   const { groups, isLoading } = useGroups();

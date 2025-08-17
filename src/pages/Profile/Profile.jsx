@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import useProfile from "../../services/useProfile";
+import useProfile from "../../hooks/useProfile";
 
-import { CATEGORY_OPTIONS } from "../../services/filter";
+import { CATEGORY_OPTIONS } from "../../constants/maps.js";
 
 import * as S from "./ProfileStyle";
 import * as B from "../../components/Button/ButtonStyle";

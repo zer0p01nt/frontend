@@ -1,18 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import useProfile from "./useProfile";
-
-// 전체 카테고리 배열
-export const CATEGORY_OPTIONS = [
-  "모든 주제",
-  "교통",
-  "문화",
-  "주택",
-  "경제",
-  "환경",
-  "안전",
-  "복지",
-  "행정",
-];
+import useProfile from "../hooks/useProfile";
+import { CATEGORY_OPTIONS } from "../constants/maps";
 
 // 지역 필터링을 위한 옵션 배열
 function buildRegionOptions(profile) {
