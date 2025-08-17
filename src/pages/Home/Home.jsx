@@ -1,6 +1,5 @@
 import React from "react";
 import * as S from "./HomeStyle.js";
-// ▼▼▼ useNavigate를 import 해주세요 ▼▼▼
 import { useNavigate } from "react-router-dom";
 import CardList from "../../components/CardList/CardList";
 import Badge from "../../components/Badge/Badge";
@@ -120,14 +119,12 @@ export default function Home() {
             <S.Character />
           </S.TitleWrapper>
         </S.TitleContainer>
-        {/* ▼▼▼ 검색창 섹션을 이 코드로 교체해주세요 ▼▼▼ */}
+        
         <S.FakeSearchInputWrapper onClick={goToSearch}>
           <span>필요한 정보가 있으신가요?</span>
           <div />
         </S.FakeSearchInputWrapper>
-        {/* ▲▲▲ 여기까지 교체 ▲▲▲ */}
         <S.SectionWrapper>
-          {/* (이하 코드는 모두 동일합니다) */}
           <div>
             <S.SectionHeader>
               <S.SectionTitle>관심 분야의 최근 알림</S.SectionTitle>

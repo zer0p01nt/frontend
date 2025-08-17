@@ -1,7 +1,7 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
-// 뱃지 종류에 따라 다른 색상 값을 반환하는 함수
-const getBadgeColors = (color) => {
+// isFilled={true} 일 때 (원래 기본 스타일 - 테두리 없음)
+const getFilledBadgeColors = (color) => {
   switch (color) {
     case "pink":
       return {
@@ -32,25 +32,23 @@ export const BadgeContainer = styled.span`
   font-weight: 600;
   line-height: var(--Body-sm-line-height);
 
-  /* isFilled 값에 따라 배경색과 테두리 스타일을 다르게 적용 */
-  background-color: ${({ color, $isFilled }) =>
-    $isFilled ? getBadgeColors(color).background : "rgba(254, 254, 254, 0.4)"};
-
-  border: 1px solid
-    ${({ color, $isFilled }) =>
-      $isFilled ? "transparent" : "var(--color-base-white)"};
-
-  color: ${({ color, $isFilled }) => {
+  ${({ color, $isFilled }) => {
+    // isFilled={true} : 테두리가 없는 채워진 스타일 (원래 기본값)
     if ($isFilled) {
-      // 1. 채워진 뱃지는 기존 색상 규칙을 그대로 따릅니다.
-      return getBadgeColors(color).text;
-    } else {
-      // 2. 채워지지 않은 뱃지(테두리만 있는 경우)
-      if (color === "teal") {
-        return "var(--color-teal-600)";
-      }
-      // 2-2. 그 외(blue, pink 등)에는 원래의 기본 글자색을 적용합니다.
-      return "var(--color-neutral-brand-primary)";
+      const { background, text } = getFilledBadgeColors(color);
+      return css`
+        background-color: ${background};
+        color: ${text};
+        border: 1px solid transparent; /* 테두리 없음 */
+      `;
     }
-  }};
+    // isFilled={false} : 반투명 스타일 (소식 페이지 배너용)
+    else {
+      return css`
+        background-color: rgba(254, 254, 254, 0.4);
+        border: 1px solid var(--color-base-white);
+        color: var(--color-base-black); /* 글자색 검은색으로 수정 */
+      `;
+    }
+  }}
 `;
