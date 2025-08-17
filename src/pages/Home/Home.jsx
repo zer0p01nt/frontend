@@ -6,17 +6,56 @@ import CardList from "../../components/CardList/CardList";
 import Badge from "../../components/Badge/Badge";
 import Header from "../../components/Header/Header.jsx";
 import useProfile from "../../services/useProfile.js";
+import useFetch from "../../hooks/useFetch.jsx";
+import { makeBadges } from "../../services/makeBadges.js";
+import MoreBtn from "../../components/MoreBtn/MoreBtn.jsx";
+import { NAME_REGION_MAP, REGION_MAP } from "../../services/maps.js";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
+// 컴포넌트 함수
 export default function Home() {
-  // ▼▼▼ 페이지 이동을 위한 함수를 추가합니다 ▼▼▼
+  // 페이지 이동
   const navigate = useNavigate();
-
+  // 검색창 이동
   const goToSearch = () => {
     navigate("/search");
   };
-  // ▲▲▲ 여기까지 추가 ▲▲▲
 
+  // 유저 프로필 fetch
   const { profile, isProfileLoading } = useProfile();
+
+  // [관심 분야의 최근 알림] 유저의 카테고리 아이디만 추출
+  const categoryIds = (profile.data?.user_categories ?? [])
+    .map((uc) => uc.category?.id)
+    .filter(Boolean);
+  // 카테고리 아이디 요청 가능 여부 확인 (HTTP 400 오류 방지)
+  const canFetch = !isProfileLoading && categoryIds.length > 0;
+  // 요청 가능할 때만 url 반환
+  const alertsUrl = canFetch
+    ? `${API_URL}/documents/categories/recent-alerts/?category_ids=${encodeURIComponent(
+        categoryIds.join(",")
+      )}`
+    : null;
+
+  // 관심 분야의 최근 알림
+  const { data: recentAlerts = {}, isRecentAlertsLoading } = useFetch(
+    alertsUrl,
+    []
+  );
+
+  // 다가오는 관심 일정
+
+  // [관심 지역 최근 소식] 맨 첫번째 지역만 받아오도록 매핑
+  const markedRegion = profile?.data?.user_regions?.[0]?.region?.district;
+  const markedRegionId = markedRegion ? NAME_REGION_MAP[markedRegion] : null;
+  const regionUrl =
+    !isProfileLoading && markedRegionId
+      ? `${API_URL}/documents/region/${markedRegionId}/recent/`
+      : null;
+
+  // 관심 지역 최근 소식
+  const { data: recent = {}, isRecentLoading } = useFetch(regionUrl, {});
 
   return (
     // HomeWrapper로 한번 감싸줍니다.
@@ -58,7 +97,11 @@ export default function Home() {
                   {!isProfileLoading && profile && (
                     <>
                       {(profile.data.user_categories ?? []).map((c) => (
-                        <Badge color='teal' isFilled={false} key={c.id}>
+                        <Badge
+                          color='teal'
+                          isFilled={false}
+                          key={c.category?.id}
+                        >
                           {c.category?.category_name}
                         </Badge>
                       ))}
@@ -86,24 +129,35 @@ export default function Home() {
           <div>
             <S.SectionHeader>
               <S.SectionTitle>관심 분야의 최근 알림</S.SectionTitle>
-              <S.MoreLink href='#'>더보기 &gt;</S.MoreLink>
+              <MoreBtn
+                value='더보기'
+                onClick={() => navigate("/notification")}
+              />
             </S.SectionHeader>
             <S.CardListWrapper>
-              <CardList
-                badges={[
-                  { text: "도봉구", color: "blue" },
-                  { text: "시설", color: "teal" },
-                ]}
-                title='공문 제목 공문 제목 공문 제목'
-                date='2025.07.30'
-              />
+              {!isRecentAlertsLoading && recentAlerts && (
+                <>
+                  {(recentAlerts.recent_alerts ?? []).map((r) => (
+                    <CardList
+                      badges={makeBadges(r)}
+                      title={r.doc_title}
+                      date={r.pub_date.slice(0, 10)}
+                      key={r.id}
+                      onClick={() => navigate(`/post/${r.id}`)}
+                    />
+                  ))}
+                </>
+              )}
             </S.CardListWrapper>
           </div>
 
           <div>
             <S.SectionHeader>
               <S.SectionTitle>다가오는 관심 일정</S.SectionTitle>
-              <S.MoreLink href='#'>더보기 &gt;</S.MoreLink>
+              <MoreBtn
+                value='더보기'
+                onClick={() => navigate("/scrap/posts")}
+              />
             </S.SectionHeader>
             <S.HorizontalScrollWrapper>
               <CardList
@@ -130,17 +184,22 @@ export default function Home() {
           <div>
             <S.SectionHeader>
               <S.SectionTitle>관심 지역 최근 소식</S.SectionTitle>
-              <S.MoreLink href='#'>더보기 &gt;</S.MoreLink>
+              <MoreBtn value='더보기' onClick={() => navigate("/news")} />
             </S.SectionHeader>
             <S.CardListWrapper>
-              <CardList
-                badges={[
-                  { text: "도봉구", color: "blue" },
-                  { text: "시설", color: "teal" },
-                ]}
-                title='관심 지역의 최근 소식입니다.'
-                date='2025.07.30'
-              />
+              {!isRecentLoading && recent && (
+                <>
+                  {(recent.recent_news ?? []).map((r) => (
+                    <CardList
+                      badges={makeBadges(r)}
+                      title={r.doc_title}
+                      date={r.pub_date.slice(0, 10)}
+                      key={r.id}
+                      onClick={() => navigate(`/post/${r.id}`)}
+                    />
+                  ))}
+                </>
+              )}
             </S.CardListWrapper>
           </div>
         </S.SectionWrapper>
