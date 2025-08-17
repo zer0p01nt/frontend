@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import CardList from "../../components/CardList/CardList";
 import Badge from "../../components/Badge/Badge";
 import Header from "../../components/Header/Header.jsx";
+import useProfile from "../../services/useProfile.js";
 
 export default function Home() {
   // ▼▼▼ 페이지 이동을 위한 함수를 추가합니다 ▼▼▼
@@ -15,14 +16,16 @@ export default function Home() {
   };
   // ▲▲▲ 여기까지 추가 ▲▲▲
 
+  const { profile, isProfileLoading } = useProfile();
+
   return (
     // HomeWrapper로 한번 감싸줍니다.
     <S.HomeWrapper>
       <Header
         hasBack={false}
-        title='Villit'
         hasScrap={false}
         isTransparent={true}
+        atHome={true}
       />
       <S.ContentContainer>
         <S.TitleContainer>
@@ -35,39 +38,49 @@ export default function Home() {
                 </div>
               </S.Title>
               <S.InterestSection>
-                <S.Subtitle>관심 분야</S.Subtitle>
                 <S.BadgeWrapper>
-                  <Badge color='blue' isFilled={false}>
-                    도봉구
-                  </Badge>
-                  <Badge color='blue' isFilled={false}>
-                    강북구
-                  </Badge>
-                  <Badge color='pink' isFilled={false}>
-                    +1
-                  </Badge>
+                  {!isProfileLoading && profile && (
+                    <>
+                      {(profile.data.user_regions ?? []).map((r) => (
+                        <Badge color='blue' isFilled={false} key={r.id}>
+                          {r.region?.district}
+                        </Badge>
+                      ))}
+                      {profile.data.user_regions.length >= 3 && (
+                        <Badge color='pink' isFilled={false}>
+                          +{profile.data.user_regions.length - 2}
+                        </Badge>
+                      )}
+                    </>
+                  )}
                 </S.BadgeWrapper>
                 <S.BadgeWrapper>
-                  <Badge color='teal' isFilled={false}>
-                    교통
-                  </Badge>
-                  <Badge color='teal' isFilled={false}>
-                    문화
-                  </Badge>
+                  {!isProfileLoading && profile && (
+                    <>
+                      {(profile.data.user_categories ?? []).map((c) => (
+                        <Badge color='teal' isFilled={false} key={c.id}>
+                          {c.category?.category_name}
+                        </Badge>
+                      ))}
+                      {profile.data.user_categories.length >= 3 && (
+                        <Badge color='teal' isFilled={false}>
+                          +{profile.data.user_categories.length - 2}
+                        </Badge>
+                      )}
+                    </>
+                  )}
                 </S.BadgeWrapper>
               </S.InterestSection>
             </S.TitleBox>
             <S.Character />
           </S.TitleWrapper>
-          
-          {/* ▼▼▼ 검색창 섹션을 이 코드로 교체해주세요 ▼▼▼ */}
-          <S.FakeSearchInputWrapper onClick={goToSearch}>
-            <span>필요한 정보가 있으신가요?</span>
-            <div />
-          </S.FakeSearchInputWrapper>
-          {/* ▲▲▲ 여기까지 교체 ▲▲▲ */}
-
         </S.TitleContainer>
+        {/* ▼▼▼ 검색창 섹션을 이 코드로 교체해주세요 ▼▼▼ */}
+        <S.FakeSearchInputWrapper onClick={goToSearch}>
+          <span>필요한 정보가 있으신가요?</span>
+          <div />
+        </S.FakeSearchInputWrapper>
+        {/* ▲▲▲ 여기까지 교체 ▲▲▲ */}
         <S.SectionWrapper>
           {/* (이하 코드는 모두 동일합니다) */}
           <div>
