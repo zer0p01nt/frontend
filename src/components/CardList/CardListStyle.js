@@ -21,7 +21,7 @@ export const UnreadMark = styled.div`
   margin-left: 8px;
 `;
 
-// 공통 리스트 스타일 
+// 공통 리스트 스타일
 const baseListStyles = css`
   border-bottom: 0.5px solid var(--color-neutral-200);
   flex-direction: row;
@@ -74,7 +74,8 @@ export const CardContainer = styled.div`
   display: flex;
   background: var(--color-base-white);
   gap: 12px;
-  ${({ variant }) => variants[variant]}
+  ${({ $variant }) => variants[$variant]}
+  cursor: pointer;
 `;
 
 export { ContentWrapper, CardImage };

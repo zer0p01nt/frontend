@@ -8,6 +8,7 @@ export default function CardList({
   date = "",
   variant = "list",
   isUnread = false, // 안 읽음 상태 prop 추가
+  onClick,
 }) {
   // 뱃지들을 렌더링하는 부분
   const badgeComponent = (
@@ -23,7 +24,7 @@ export default function CardList({
   // "다가오는 관심 일정"의 카드 스타일일 경우
   if (variant === "card") {
     return (
-      <S.CardContainer variant={variant}>
+      <S.CardContainer $variant={variant}>
         {badgeComponent}
         <S.CardImage />
         <S.ContentWrapper>
@@ -36,7 +37,7 @@ export default function CardList({
 
   // 기본 밑줄 스타일일 경우 (알림 페이지 등)
   return (
-    <S.CardContainer variant={variant} isUnread={isUnread}>
+    <S.CardContainer $variant={variant} $isUnread={isUnread} onClick={onClick}>
       <S.ContentWrapper>
         {badgeComponent}
         <S.Title>
