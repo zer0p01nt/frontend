@@ -3,11 +3,7 @@ import character from "../../assets/Character.png";
 
 // 제목 부분 전체를 감싸는 컨테이너
 export const TitleContainer = styled.div`
-  background: linear-gradient(
-    180deg,
-    var(--color-blue-50) 85.04%,
-    var(--color-pink-50) 111.61%
-  );
+  background-color: var(--color-blue-50);
   // 전체 컨테이너의 padding 무시하고 배경 덮기
   margin: 0 -16px;
   // 헤더까지 배경 덮기
