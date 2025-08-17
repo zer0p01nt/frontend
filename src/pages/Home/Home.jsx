@@ -70,12 +70,14 @@ export default function Home() {
         <S.TitleContainer>
           <S.TitleWrapper>
             <S.TitleBox>
-              <S.Title>
-                사용자님!
-                <div>
-                  오늘도 <strong>맞춤 소식</strong> 전해드릴게요
-                </div>
-              </S.Title>
+              {!isProfileLoading && profile && (
+                <S.Title>
+                  {profile?.data?.name}님!
+                  <div>
+                    오늘도 <strong>맞춤 소식</strong> 전해드릴게요
+                  </div>
+                </S.Title>
+              )}
               <S.InterestSection>
                 <S.BadgeWrapper>
                   {!isProfileLoading && profile && (

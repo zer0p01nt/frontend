@@ -76,7 +76,10 @@ export default function MyPage() {
             <S.TitleBox>
               <S.Character></S.Character>
               <S.TextBox>
-                <S.Username>사용자님,</S.Username>
+                {!isProfileLoading && profile && (
+                  <S.Username>{profile.data.name}님,</S.Username>
+                )}
+
                 <S.Text>
                   <strong>이런 분야의 알림</strong>을 받고 있어요
                 </S.Text>
@@ -153,7 +156,12 @@ export default function MyPage() {
             {scrapedChatbots.length !== 0 ? (
               <H.CardListWrapper>
                 {scrapedChatbots?.slice(0, 3).map((c) => (
-                  <ChatbotBox id={c.id} category={c.category} title={c.title} />
+                  <ChatbotBox
+                    key={c.id}
+                    id={c.id}
+                    category={c.category}
+                    title={c.title}
+                  />
                 ))}
               </H.CardListWrapper>
             ) : (
