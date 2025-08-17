@@ -77,7 +77,7 @@ export default function ScrapedChatbots() {
       <ButtonWrapper>
         <GoToTop />
       </ButtonWrapper>
-      <P.ScrapedContainer>
+      <P.ScrapedContainer style={{ paddingTop: "42px" }}>
         {/* 챗봇 스크랩 전용 Small Filter */}
         <F.SmallFilterWrapper>
           {labels.map((label) => (
