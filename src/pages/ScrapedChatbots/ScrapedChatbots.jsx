@@ -8,8 +8,8 @@ import * as D from "../Search/SearchStyle";
 import GoToTop from "../../components/GoToTop/GoToTop";
 import Header from "../../components/Header/Header";
 import { ButtonWrapper } from "../../styles/ButtonCircle";
-import { useChatbotSmallFilter } from "../../services/smallFilter";
-import { CATEGORY_OPTIONS } from "../../services/filter";
+import { useChatbotSmallFilter } from "../../utils/smallFilter";
+import { CATEGORY_OPTIONS } from "../../constants/maps";
 import Button from "../../components/Button/Button";
 import ChatbotBox from "../../components/ChatbotBox/ChatbotBox";
 

@@ -6,7 +6,7 @@ import MoreBtn from "../../components/MoreBtn/MoreBtn";
 import useFetch from "../../hooks/useFetch";
 import { useEffect } from "react";
 import CardList from "../../components/CardList/CardList";
-import useProfile from "../../services/useProfile";
+import useProfile from "../../hooks/useProfile";
 import ChatbotBox from "../../components/ChatbotBox/ChatbotBox";
 
 const API_URL = process.env.REACT_APP_API_URL;

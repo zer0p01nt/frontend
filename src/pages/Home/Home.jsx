@@ -5,11 +5,11 @@ import { useNavigate } from "react-router-dom";
 import CardList from "../../components/CardList/CardList";
 import Badge from "../../components/Badge/Badge";
 import Header from "../../components/Header/Header.jsx";
-import useProfile from "../../services/useProfile.js";
-import useFetch from "../../hooks/useFetch.jsx";
-import { makeBadges } from "../../services/makeBadges.js";
+import useProfile from "../../hooks/useProfile.js";
+import useFetch from "../../hooks/useFetch.js";
+import { makeBadges } from "../../utils/makeBadges.js";
 import MoreBtn from "../../components/MoreBtn/MoreBtn.jsx";
-import { NAME_REGION_MAP, REGION_MAP } from "../../services/maps.js";
+import { NAME_REGION_MAP } from "../../constants/maps.js";
 
 const API_URL = process.env.REACT_APP_API_URL;
 

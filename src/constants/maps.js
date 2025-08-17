@@ -1,4 +1,16 @@
-// CATEGORY_OPTIONS 인덱스로 갖다 써도 될 것 같지만 일단 필요할 것 같아서 적어둡니다
+// 전체 카테고리 배열
+export const CATEGORY_OPTIONS = [
+  "모든 주제",
+  "교통",
+  "문화",
+  "주택",
+  "경제",
+  "환경",
+  "안전",
+  "복지",
+  "행정",
+];
+
 export const CATEGORY_MAP = {
   0: "모든 주제",
   1: "교통",
