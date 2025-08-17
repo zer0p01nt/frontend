@@ -1,8 +1,9 @@
 import styled from "styled-components";
 
 export const CategoryContainer = styled.div`
-  position: relative;
-  z-index: 20;
+  position: sticky;
+  top: 42px;
+  z-index: 25; /* ▼▼▼ z-index 값을 15에서 25로 수정 ▼▼▼ */
   background-color: var(--color-base-white);
 
   display: flex;
@@ -18,13 +19,6 @@ export const CategoryContainer = styled.div`
   }
   -ms-overflow-style: none;
   scrollbar-width: none;
-  z-index: 30;
-  background-color: var(--color-base-white);
-  /* 고정 코드 추가 */
-  position: fixed;
-  top: 42px;
-  width: 100%;
-  max-width: 393px;
 `;
 
 export const CategoryItem = styled.div`

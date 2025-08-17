@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import Header from "../../components/Header/Header";
 import GoToTop from "../../components/GoToTop/GoToTop";
-import CategoryBar from "../../components/CategoryBar/CategoryBar";
+import CategoryBar from "../../components/CategoryBar/CategoryBar"; 
 import Filter from "../../components/Filter/Filter";
 import PostCard from "../../components/PostCard/PostCard";
 import Badge from "../../components/Badge/Badge";
@@ -66,7 +66,6 @@ export default function News() {
     <>
       <Header hasBack={false} title='소식' hasScrap={false} />
       <S.NewsContainer>
-        {/* ▼▼▼ SectionTitle을 BannerSection 밖으로 이동 ▼▼▼ */}
         <S.SectionTitle>지금 많이 보는 공문</S.SectionTitle>
         <S.BannerSection>
           <S.BannerWrapper ref={bannerRef} onScroll={handleBannerScroll}>
@@ -88,11 +87,13 @@ export default function News() {
             {currentPage} / {hotNews.length}
           </S.Pager>
         </S.BannerSection>
-        {/* ▲▲▲ 여기까지 수정 ▲▲▲ */}
 
         <S.ContentSection>
+          {/* 2. Filter 위에 CategoryBar 추가 */}
           <CategoryBar onCategoryChange={handleCategoryChange} />
-          <Filter />
+          <S.FilterWrapper>
+            <Filter />
+          </S.FilterWrapper>
 
           {dummyNews.map((item) => (
             <PostCard

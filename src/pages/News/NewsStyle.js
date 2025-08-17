@@ -21,7 +21,7 @@ export const SectionTitle = styled.h2`
   font-size: var(--Heading-lg-font-size);
   font-weight: 700;
   margin: 0;
-  padding: 16px 24px 8px; /* 위, 좌우, 아래 여백 추가 */
+  padding: 16px 24px 8px;
   color: var(--color-base-black);
   background: var(--color-base-white);
 `;
@@ -33,7 +33,6 @@ export const BannerWrapper = styled.div`
   scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
 
-  /* 스크롤바 숨기기 */
   &::-webkit-scrollbar {
     display: none;
   }
@@ -51,7 +50,7 @@ export const BannerSlide = styled.div`
 
   display: flex;
   flex-direction: column;
-  justify-content: flex-end; /* 콘텐츠를 슬라이드 하단으로 정렬 */
+  justify-content: flex-end;
   align-items: flex-start;
   gap: 10px;
 `;
@@ -76,7 +75,8 @@ export const Pager = styled.div`
   background: rgba(254, 254, 254, 0.4);
   border: 1px solid var(--color-base-white);
   color: var(--color-neutral-secondary);
-  padding: 4px 10px;
+  padding: 2px 10px;
+  line-height: var(--Body-sm-line-height);
   border-radius: var(--border-radius-rounded);
   font-size: var(--Body-sm-font-size);
   font-weight: 500;
@@ -86,4 +86,10 @@ export const ContentSection = styled.div`
   position: relative;
   z-index: 15;
   background-color: var(--color-base-white);
+`;
+
+export const FilterWrapper = styled.div`
+  position: relative;
+  z-index: 20;
+  transform: translateZ(0);
 `;
