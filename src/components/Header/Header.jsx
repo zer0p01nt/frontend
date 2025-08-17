@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import * as S from "./HeaderStyle";
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 // Scrap 버튼이 있는 헤더에서만 isScrap을 prop으로 보내면 됩니다.
 // hasBack, hasScrap, title은 필수 prop.
@@ -10,6 +10,7 @@ export default function Header({
   title,
   isScrap,
   isTransparent = false,
+  atHome = false,
 }) {
   const navigate = useNavigate();
   const handleBack = () => {
@@ -31,8 +32,10 @@ export default function Header({
       $hasBack={hasBack}
       $hasScrap={hasScrap}
       $scrolled={isTransparent ? scrolled : false}
+      $atHome={atHome}
     >
       {hasBack && <S.HeaderBack onClick={handleBack} />}
+      {atHome && <S.HomeIcon />}
       <S.HeaderTitle>{title}</S.HeaderTitle>
       {hasScrap && <S.HeaderScrap $isScrap={isScrap} />}
     </S.HeaderContainer>
