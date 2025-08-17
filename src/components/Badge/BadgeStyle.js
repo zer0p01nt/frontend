@@ -24,7 +24,7 @@ const getFilledBadgeColors = (color) => {
 
 export const BadgeContainer = styled.span`
   display: inline-flex;
-  padding: 4px 12px;
+  padding: ${({ $isFilled }) => ($isFilled ? "4px 12px" : "2px 12px")};
   justify-content: center;
   align-items: center;
   border-radius: var(--border-radius-rounded);

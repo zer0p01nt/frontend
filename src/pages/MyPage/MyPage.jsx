@@ -6,7 +6,7 @@ import MoreBtn from "../../components/MoreBtn/MoreBtn";
 import useFetch from "../../hooks/useFetch";
 import { useEffect } from "react";
 import CardList from "../../components/CardList/CardList";
-import useProfile from "../../services/useProfile";
+import useProfile from "../../hooks/useProfile";
 import ChatbotBox from "../../components/ChatbotBox/ChatbotBox";
 
 const API_URL = process.env.REACT_APP_API_URL;
@@ -76,7 +76,10 @@ export default function MyPage() {
             <S.TitleBox>
               <S.Character></S.Character>
               <S.TextBox>
-                <S.Username>사용자님,</S.Username>
+                {!isProfileLoading && profile && (
+                  <S.Username>{profile.data.name}님,</S.Username>
+                )}
+
                 <S.Text>
                   <strong>이런 분야의 알림</strong>을 받고 있어요
                 </S.Text>
@@ -84,24 +87,24 @@ export default function MyPage() {
             </S.TitleBox>
             <MoreBtn value='수정하기' onClick={() => navigate("/profile")} />
           </S.TitleWrapper>
-          <S.BadgeWrapper>
-            {!isProfileLoading && profile && (
-              <>
-                {(profile.data.user_regions ?? []).map((r) => (
-                  <S.MyPageBadge $variant='region' key={r.id}>
-                    {r.region?.district}
-                  </S.MyPageBadge>
-                ))}
-
-                {(profile.data.user_categories ?? []).map((c) => (
-                  <S.MyPageBadge $variant='category' key={c.id}>
-                    {c.category?.category_name}
-                  </S.MyPageBadge>
-                ))}
-              </>
-            )}
-          </S.BadgeWrapper>
         </S.TitleContainer>
+        <S.BadgeWrapper>
+          {!isProfileLoading && profile && (
+            <>
+              {(profile.data.user_regions ?? []).map((r) => (
+                <S.MyPageBadge $variant='region' key={r.id}>
+                  {r.region?.district}
+                </S.MyPageBadge>
+              ))}
+
+              {(profile.data.user_categories ?? []).map((c) => (
+                <S.MyPageBadge $variant='category' key={c.id}>
+                  {c.category?.category_name}
+                </S.MyPageBadge>
+              ))}
+            </>
+          )}
+        </S.BadgeWrapper>
         <S.SectionContainer>
           <div>
             <H.SectionHeader>
@@ -153,7 +156,12 @@ export default function MyPage() {
             {scrapedChatbots.length !== 0 ? (
               <H.CardListWrapper>
                 {scrapedChatbots?.slice(0, 3).map((c) => (
-                  <ChatbotBox id={c.id} category={c.category} title={c.title} />
+                  <ChatbotBox
+                    key={c.id}
+                    id={c.id}
+                    category={c.category}
+                    title={c.title}
+                  />
                 ))}
               </H.CardListWrapper>
             ) : (

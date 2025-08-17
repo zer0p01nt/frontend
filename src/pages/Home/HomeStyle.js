@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import searchIcon from "../../assets/search.svg"; // searchIcon import 추가
+import homeCharacter from "../../assets/homeCharacter.png";
 
 export const HomeWrapper = styled.div`
   position: relative;
@@ -19,6 +20,7 @@ export const FakeSearchInputWrapper = styled.div`
   box-shadow: var(--shadow-default);
   gap: 5px;
   cursor: pointer;
+  transform: translateY(-50%);
 
   span {
     color: var(--color-text-primary-subtitle);
@@ -51,7 +53,7 @@ export const TitleContainer = styled.div`
   width: calc(100% + 16 * 2);
   margin: 0 -16px;
   // 헤더까지 배경 덮기
-  padding: 42px 16px 16px;
+  padding: 54px 16px 38px;
   display: flex;
   flex-direction: column;
 `;
@@ -59,28 +61,33 @@ export const TitleContainer = styled.div`
 export const TitleWrapper = styled.div`
   display: flex;
   justify-content: space-between;
-  padding: 0 12px 0 8px;
+  padding: 0 28px 0 8px;
 `;
 
 export const TitleBox = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 12px;
+  gap: 16px;
 `;
 
 export const Character = styled.div`
   width: 30%;
-  background: #d9d9d9;
+  background: url(${homeCharacter}) no-repeat;
+  width: 106.855px;
+  height: 86.842px;
+  aspect-ratio: 106.85/86.84;
+  align-self: flex-end;
+  transform: translateY(16px);
 `;
 
-export const Title = styled.h1`
+export const Title = styled.div`
   font-size: var(--Heading-md-font-size);
   color: var(--color-text-primary);
   margin: 0;
   font-weight: 600;
-  line-height: var(--Heading-xl-line-height);
+  line-height: var(--Heading-md-line-height);
   padding: 0 8px;
+  letter-spacing: var(--letter-spacing);
 
   div {
     font-weight: 500;
@@ -93,20 +100,15 @@ export const Title = styled.h1`
 `;
 
 export const InterestSection = styled.div`
-  padding-left: 12px;
-`;
-
-export const Subtitle = styled.p`
-  font-size: var(--Heading-sm-font-size);
-  color: var(--color-text-primary);
-  margin: 0;
-  font-weight: bold;
+  padding-left: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 `;
 
 export const BadgeWrapper = styled.div`
   display: flex;
-  gap: 8px;
-  margin-top: 8px;
+  gap: 4px;
 `;
 
 export const SectionWrapper = styled.div`

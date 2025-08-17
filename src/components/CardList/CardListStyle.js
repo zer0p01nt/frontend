@@ -21,28 +21,7 @@ export const UnreadMark = styled.div`
   margin-left: 8px;
 `;
 
-// ▼▼▼ Title과 Date 정의를 이 위치로 옮겼습니다 ▼▼▼
-export const Title = styled.h3`
-  font-size: var(--Body-md-font-size);
-  color: var(--color-text-primary);
-  font-weight: 600;
-  margin: 0;
-  white-space: normal;
-  margin-bottom: 5px;
-  display: flex;
-  align-items: center;
-`;
-
-export const Date = styled.p`
-  font-size: var(--Body-sm-font-size);
-  color: var(--color-text-secondary);
-  font-weight: 400;
-  line-height: 18px;
-  margin: 0;
-`;
-// ▲▲▲ 여기까지 ▲▲▲
-
-// 공통 리스트 스타일 
+// 공통 리스트 스타일
 const baseListStyles = css`
   border-bottom: 0.5px solid var(--color-neutral-200);
   flex-direction: row;
@@ -61,28 +40,12 @@ const baseListStyles = css`
 `;
 
 const variants = {
-  // 배너를 위한 새로운 variant
-  banner: css`
-    ${baseListStyles}
-    padding: 16px;
-    border-radius: var(--border-radius-xl);
-    background: rgba(254, 254, 254, 0.40);
-    border: 1px solid var(--color-base-white);
-    
-    border-bottom: none;
-
-    /* 이제 Title이 먼저 정의되었으므로 여기서 사용해도 오류가 나지 않습니다. */
-    ${Title} {
-      color: var(--color-base-white);
-      text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
-    }
-  `,
   // 홈 화면을 위한 기본 list variant
   list: css`
     ${baseListStyles}
     padding: 12px;
   `,
-  // 알림 페이지를 위한 notification variant
+  // 알림 페이지를 위한 notification variant (좌우 여백 24px)
   notification: css`
     ${baseListStyles}
     padding: 12px 24px;
@@ -111,7 +74,8 @@ export const CardContainer = styled.div`
   display: flex;
   background: var(--color-base-white);
   gap: 12px;
-  ${({ variant }) => variants[variant]}
+  ${({ $variant }) => variants[$variant]}
+  cursor: pointer;
 `;
 
 export { ContentWrapper, CardImage };
@@ -122,4 +86,23 @@ export const BadgeWrapper = styled.div`
   gap: 8px;
   flex-wrap: wrap;
   margin-bottom: 12px;
+`;
+
+export const Title = styled.h3`
+  font-size: var(--Body-md-font-size);
+  color: var(--color-text-primary);
+  font-weight: 600;
+  margin: 0;
+  white-space: normal;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+`;
+
+export const Date = styled.p`
+  font-size: var(--Body-sm-font-size);
+  color: var(--color-text-secondary);
+  font-weight: 400;
+  line-height: 18px;
+  margin: 0;
 `;

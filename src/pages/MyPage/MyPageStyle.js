@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import character from "../../assets/Character.png";
 
 // 제목 부분 전체를 감싸는 컨테이너
 export const TitleContainer = styled.div`
@@ -22,9 +23,10 @@ export const TitleWrapper = styled.div`
 `;
 
 export const Character = styled.div`
-  width: 80px;
-  height: 90px;
-  background: #d9d9d9;
+  width: 90px;
+  height: 82.688px;
+  aspect-ratio: 90/82.69;
+  background-image: url(${character});
 `;
 
 export const TitleBox = styled.div`
@@ -71,6 +73,7 @@ export const BadgeWrapper = styled.div`
   border: 1px solid var(--color-blue-50);
   background: var(--color-base-white);
   flex-wrap: wrap;
+  transform: translateY(-50%);
 `;
 
 // 뱃지 색이 기존 컴포넌트와 달라 임의로 추가했습니다

@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import scrapTrue from "../../assets/Header/bookmark_true.svg";
 import scrapFalse from "../../assets/Header/bookmark_false.svg";
+import aiImage from "../../assets/ai-image.png";
+import noChatbot from "../../assets/nochatbot.png";
 
 // 챗봇 떠있는 동안 배경 블러
 export const Overlay = styled.div`
@@ -17,7 +19,7 @@ export const Overlay = styled.div`
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  z-index: 99;
+  z-index: 999; /* 헤더도 덮어야 해서 늘림 */
 
   opacity: ${({ $isOpen }) => ($isOpen ? 1 : 0)};
   pointer-events: ${({ $isOpen }) => ($isOpen ? "auto" : "none")};
@@ -38,6 +40,7 @@ export const ChatbotContainer = styled.div`
 
 // 헤더 (타이틀 부분)
 export const ChatbotHeader = styled.div`
+  position: sticky;
   display: flex;
   padding: 16px 24px;
   justify-content: space-between;
@@ -79,7 +82,7 @@ export const CloseBtn = styled.button`
 export const ChatbotBody = styled.div`
   width: 100%;
   max-width: 393px;
-  height: calc(83vh - 62px);
+  height: calc(80vh - 62px);
   display: flex;
   flex-direction: column;
   justify-content: ${({ $hasChats }) => ($hasChats ? "flex-end" : "center")};
@@ -135,8 +138,8 @@ export const AIProfile = styled.div`
   height: 24px;
   aspect-ratio: 1/1;
   border-radius: var(--border-radius-rounded);
-  background: #d9d9d9;
-  /* background-image 추가 필요 */
+  background-image: url(${aiImage});
+  background-size: cover;
 `;
 
 export const AIChat = styled.div`
@@ -166,7 +169,8 @@ export const Scrap = styled.div`
   height: 24px;
   flex-shrink: 0;
   aspect-ratio: 1/1;
-  background-image: url(${({ $isScrap }) => $isScrap ? scrapTrue : scrapFalse});
+  background-image: url(${({ $isScrap }) =>
+    $isScrap ? scrapTrue : scrapFalse});
   background-repeat: no-repeat;
 `;
 
@@ -189,8 +193,10 @@ export const AICharacter = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #d9d9d9;
-  // background-image 추가 필요
+  width: 123.5px;
+  height: 127.805px;
+  aspect-ratio: 86/89;
+  background-image: url(${noChatbot});
 `;
 
 export const NoChatText = styled.div`
@@ -203,9 +209,9 @@ export const NoChatText = styled.div`
 export const NoChatTitle = styled.div`
   color: #000;
   text-align: center;
-  font-size: var(--Heading-md-font-size);
-  font-weight: 600;
-  line-height: var(--Heading-md-line-height);
+  font-size: var(--Heading-lg-font-size);
+  font-weight: 700;
+  line-height: var(--Heading-lg-line-height);
   letter-spacing: var(--letter-spacing);
 `;
 

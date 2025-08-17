@@ -2,6 +2,7 @@ import styled from "styled-components";
 import backIcon from "../../assets/Header/chev-left.svg";
 import scrapTrue from "../../assets/Header/bookmark_true.svg";
 import scrapFalse from "../../assets/Header/bookmark_false.svg";
+import homeIcon from "../../assets/homeIcon.svg";
 
 export const HeaderContainer = styled.div`
   width: 100%;
@@ -17,7 +18,7 @@ export const HeaderContainer = styled.div`
         : "transparent"
       : "var(--color-base-white)"}; // 투명 모드 아니면 항상 고정 색
   display: grid;
-  padding: 6px 24px;
+  padding: ${({ $atHome }) => ($atHome ? "10px 24px" : "6px 24px")};
   align-items: center;
   /* BackBtn, ScrapBtn 여부에 따른 레이아웃 변동 */
   grid-template-columns: ${({ $hasBack, $hasScrap }) => {
@@ -57,7 +58,13 @@ export const HeaderScrap = styled.button`
   height: 24px;
   flex-shrink: 0;
   aspect-ratio: 1/1;
-  background-image: url(${({ $isScrap }) =>
-    $isScrap ? scrapTrue : scrapFalse});
+  background-image: url(${({ $isScrap }) => $isScrap ? scrapTrue : scrapFalse});
   background-repeat: no-repeat;
+`;
+
+export const HomeIcon = styled.div`
+  background-image: url(${homeIcon});
+  width: 31.145px;
+  flex: 1 0 0;
+  aspect-ratio: 31.15/22;
 `;

@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import useProfile from "./useProfile";
-import { CATEGORY_OPTIONS } from "./filter";
+import useProfile from "../hooks/useProfile";
 
 // 유저 프로필에서 필터 라벨 가져옴
 export function useProfileLabels(key) {

@@ -75,12 +75,8 @@ export const Pager = styled.div`
   right: 24px;
   background: rgba(254, 254, 254, 0.4);
   border: 1px solid var(--color-base-white);
-  
-  /* ▼▼▼ 여기를 수정했습니다 ▼▼▼ */
-  color: var(--color-neutral-secondary); /* 글자색 변경 */
-  padding: 4px 10px; /* 패딩 값 수정 */
-  /* ▲▲▲ 여기까지 수정 ▲▲▲ */
-
+  color: var(--color-neutral-secondary);
+  padding: 4px 10px;
   border-radius: var(--border-radius-rounded);
   font-size: var(--Body-sm-font-size);
   font-weight: 500;
