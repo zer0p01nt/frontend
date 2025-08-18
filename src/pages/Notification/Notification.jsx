@@ -10,7 +10,6 @@ import * as B from "../../styles/ButtonCircle";
 import * as S from "./NotificationStyle";
 import * as F from "../../components/SmallFilter/SmallFilterStyle";
 
-
 const dummyNotifications = [
   {
     id: 1,
