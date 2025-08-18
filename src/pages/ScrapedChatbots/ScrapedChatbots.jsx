@@ -73,7 +73,7 @@ export default function ScrapedChatbots() {
   return (
     <>
       {/* fixed 되는 컴포넌트들 */}
-      <Header hasBack={true} title='챗봇 스크랩' hasScrap={false} />
+      <Header hasBack={true} title='스크랩한 챗봇' hasScrap={false} />
       <ButtonWrapper>
         <GoToTop />
       </ButtonWrapper>

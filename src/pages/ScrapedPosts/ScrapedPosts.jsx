@@ -43,12 +43,14 @@ export default function ScrapedPosts() {
   return (
     <>
       {/* fixed 되는 컴포넌트들 */}
-      <Header hasBack={true} title='공문 스크랩' hasScrap={false} />
+      <Header hasBack={true} title='스크랩한 공문' hasScrap={false} />
       <ButtonWrapper>
         <GoToTop />
       </ButtonWrapper>
       <S.ScrapedContainer>
-        <CategoryBar />
+        <CategoryBar
+          categories={["모든 스크랩", "참여", "공지", "고시/공고", "보고"]}
+        />
         <Filter />
         <S.OrderContainer>
           {/* Search에서 가져온 Dropdown */}
