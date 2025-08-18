@@ -12,13 +12,19 @@ import CategoryBar from "../../components/CategoryBar/CategoryBar";
 import CardList from "../../components/CardList/CardList";
 
 import DropIcon from "../../assets/Back Icon.svg";
+import { makeScrapBadges } from "../../utils/makeBadges";
+import { useNavigate } from "react-router-dom";
+
+const API_URL = process.env.REACT_APP_API_URL;
 
 export default function ScrapedPosts() {
-  // 스크랩된 공문 불러오기 => 추후 fetch 링크 수정
-  const { data: scrapedPosts = [], isLoading: isPostsLoading } = useFetch(
-    "/data/CardList.json",
-    []
+  const navigate = useNavigate();
+  // 공문 스크랩 (쿼리스트링 수정 필요)
+  const { data: postdata, isLoading: isPostsLoading } = useFetch(
+    `${API_URL}/scrap/documents/?order=latest`,
+    {}
   );
+  const scrapedPosts = postdata?.data?.results ?? [];
 
   // 최신순, 오래된순 정렬 => 기본값은 최신순
   const [sortOrder, setSortOrder] = useState("최신순");
@@ -86,13 +92,11 @@ export default function ScrapedPosts() {
             <>
               {scrapedPosts?.map((p) => (
                 <CardList
-                  badges={[
-                    { text: p.region, color: "blue" },
-                    { text: p.keyword, color: "teal" },
-                  ]}
-                  title={p.title}
-                  date={p.date}
+                  badges={makeScrapBadges(p)}
+                  title={p.doc_title}
+                  date={p.pub_date.slice(0, 10)}
                   key={p.id}
+                  onClick={() => navigate(`/post/${p.id}`)}
                 />
               ))}
             </>
