@@ -58,7 +58,9 @@ export default function Detail() {
           style={{ backgroundColor: "transparent" }}
         />
       </B.ButtonWrapper>
-      <Chatbot isOpen={isOpen} handleClose={handleClose} />
+      {!isPostLoading && post && (
+        <Chatbot isOpen={isOpen} handleClose={handleClose} postId={post.id} />
+      )}
 
       {/* 페이지 UI */}
       <S.DetailContainer>
