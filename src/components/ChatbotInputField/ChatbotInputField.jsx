@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useRef, useState } from "react";
 import * as S from "./ChatbotInputFieldStyle";
 
 export default function ChatbotInputField({ $isLoading, onSubmit }) {
-  const defaultPlaceholder = "궁금한 건 뭐든 물어보세요"
+  const defaultPlaceholder = "궁금한 건 뭐든 물어보세요";
   const [placeholder, setPlaceholder] = useState(defaultPlaceholder);
   const [value, setValue] = useState("");
+  const inputRef = useRef(null);
 
   // focus 시 placeholder
   const handleFocus = () => {
@@ -23,13 +24,23 @@ export default function ChatbotInputField({ $isLoading, onSubmit }) {
     const msg = value.trim();
     if (!msg || $isLoading) return;
     onSubmit?.(msg);
-    setValue("")
-  }
+    setValue("");
+    setPlaceholder(defaultPlaceholder);
+    inputRef.current?.blur();
+  };
 
   return (
     <S.ChatbotInputForm onSubmit={handleSubmit}>
-      <S.ChatbotInputField placeholder={$isLoading ? "정보를 정리하고 있어요..." : placeholder} disabled={$isLoading} onChange={(e) => setValue(e.target.value)} onFocus={handleFocus} onBlur={handleBlur} value={value} required />
-      <S.ChatbotBtn type="submit" $isLoading={$isLoading}></S.ChatbotBtn>
+      <S.ChatbotInputField
+        placeholder={$isLoading ? "정보를 정리하고 있어요..." : placeholder}
+        readOnly={$isLoading}
+        onChange={(e) => setValue(e.target.value)}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        value={value}
+        required
+      />
+      <S.ChatbotBtn type='submit' $isLoading={$isLoading}></S.ChatbotBtn>
     </S.ChatbotInputForm>
   );
 }
