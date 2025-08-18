@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import CardList from "../../components/CardList/CardList";
 import useProfile from "../../hooks/useProfile";
 import ChatbotBox from "../../components/ChatbotBox/ChatbotBox";
+import Badge from "../../components/Badge/Badge";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -92,15 +93,15 @@ export default function MyPage() {
           {!isProfileLoading && profile && (
             <>
               {(profile.data.user_regions ?? []).map((r) => (
-                <S.MyPageBadge $variant='region' key={r.id}>
+                <Badge color='blue' key={r.id}>
                   {r.region?.district}
-                </S.MyPageBadge>
+                </Badge>
               ))}
 
               {(profile.data.user_categories ?? []).map((c) => (
-                <S.MyPageBadge $variant='category' key={c.id}>
+                <Badge color='teal' key={c.id}>
                   {c.category?.category_name}
-                </S.MyPageBadge>
+                </Badge>
               ))}
             </>
           )}

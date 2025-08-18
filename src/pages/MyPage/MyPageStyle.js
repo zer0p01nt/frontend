@@ -76,25 +76,6 @@ export const BadgeWrapper = styled.div`
   transform: translateY(-50%);
 `;
 
-// 뱃지 색이 기존 컴포넌트와 달라 임의로 추가했습니다
-export const MyPageBadge = styled.span`
-  display: inline-flex;
-  padding: 4px 12px;
-  justify-content: center;
-  align-items: center;
-  border-radius: var(--border-radius-rounded);
-  font-size: var(--Body-sm-font-size);
-  font-weight: 600;
-  line-height: var(--Body-sm-line-height);
-  background-color: ${({ $variant }) =>
-    $variant === "region" ? "var(--color-blue-50)" : "var(--color-teal-50)"};
-  color: ${({ $variant }) =>
-    $variant === "region"
-      ? "var(--color-blue-400-main)"
-      : "var(--color-teal-600)"};
-  flex-shrink: 0;
-`;
-
 export const SectionContainer = styled.div`
   display: flex;
   flex-direction: column;
