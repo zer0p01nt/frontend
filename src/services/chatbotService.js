@@ -9,7 +9,12 @@ export async function createSession({ postId, firstMessage }) {
       initial_message: firstMessage,
     }),
   });
-  // if (!res.ok) throw new Error("Failed to create session");
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`HTTP ${res.status} - ${text}`);
+  }
+
   return res.json();
 }
 
@@ -35,10 +40,13 @@ export async function sendMessage(sessionId, message) {
   return res.json();
 }
 
-// export async function deleteSession(sessionId) {
-//   const res = await fetch(`${API_URL}/chatbot/sessions/${sessionId}/`, {
-//     method: "DELETE",
-//   });
-//   if (!res.ok) throw new Error("Failed to delete session");
-//   return true;
-// }
+export async function deleteSession(sessionId) {
+  const res = await fetch(`${API_URL}/chatbot/sessions/${sessionId}/`, {
+    method: "DELETE",
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`HTTP ${res.status} - ${text}`);
+  }
+  return true;
+}

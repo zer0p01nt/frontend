@@ -71,11 +71,10 @@ export const CloseBtn = styled.button`
   border-radius: var(--border-radius-rounded);
   background: var(--color-neutral-brand-primary);
   box-shadow: var(--shadow-default);
-  color: var(--color-base-white, #fefefe);
+  color: var(--color-base-white);
   font-size: var(--Body-sm-font-size);
   font-weight: 600;
   line-height: var(--Body-sm-line-height);
-  letter-spacing: var(--Body-sm-letter-spacing, 0);
 `;
 
 // 챗봇 바디
@@ -222,4 +221,19 @@ export const NoChatContent = styled.div`
   font-weight: 500;
   line-height: var(--Body-md-line-height);
   white-space: pre-line;
+`;
+
+// 테스트용 챗봇 삭제 버튼
+export const deleteBtn = styled.button`
+  display: flex;
+  padding: 6px 12px;
+  justify-content: center;
+  align-items: center;
+  border-radius: var(--border-radius-rounded);
+  background-color: var(--color-base-white);
+  color: var(--color-base-black);
+  font-size: var(--Body-sm-font-size);
+  font-weight: 600;
+  line-height: var(--Body-sm-line-height);
+  border: 0.5px solid var(--color-neutral-tertiary);
 `;
