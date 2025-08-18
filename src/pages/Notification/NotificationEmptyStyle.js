@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import noChatbot from "../../assets/noti_img.png";
+import noti_img from "../../assets/noti_img.png";
 
 export const EmptyContainer = styled.div`
   display: flex;
@@ -11,8 +11,8 @@ export const EmptyContainer = styled.div`
 `;
 
 export const EmptyIcon = styled.div`
-  width: 123.5px;
-  height: 127.805px;
+  width: 159px;
+  height: 163px;
   background-image: url(${noti_img});
   background-size: contain;
   background-repeat: no-repeat;

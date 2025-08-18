@@ -1,22 +1,23 @@
 import styled, { css } from "styled-components";
 
 // isFilled={true} 일 때 (원래 기본 스타일 - 테두리 없음)
+// 뱃지 바탕색 변경에 따라 이 부분을 변경함
 const getFilledBadgeColors = (color) => {
   switch (color) {
     case "pink":
       return {
-        background: "var(--color-pink-100)",
+        background: "var(--color-pink-50)",
         text: "var(--color-pink-600)",
       };
     case "teal":
       return {
-        background: "var(--color-teal-100)",
+        background: "var(--color-teal-50)",
         text: "var(--color-teal-700)",
       };
     case "blue":
     default:
       return {
-        background: "var(--color-blue-100)",
+        background: "var(--color-blue-50)",
         text: "var(--color-blue-600)",
       };
   }
