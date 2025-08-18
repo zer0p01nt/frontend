@@ -163,13 +163,12 @@ export const AIChatContent = styled.div`
   word-break: break-word;
   white-space: pre-wrap;
 `;
-export const Scrap = styled.div`
+export const Scrap = styled.button`
   width: 24px;
   height: 24px;
   flex-shrink: 0;
   aspect-ratio: 1/1;
-  background-image: url(${({ $isScrap }) =>
-    $isScrap ? scrapTrue : scrapFalse});
+  background-image: url(${({ $isScrap }) => $isScrap ? scrapTrue : scrapFalse});
   background-repeat: no-repeat;
 `;
 

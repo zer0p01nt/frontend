@@ -6,24 +6,30 @@ import { useState } from "react";
 
 // category : 해당 채팅이 있었던 공문의 카테고리
 // title : AI 응답 요약
-// userChat : 사용자 메세지
-// aiChat : ai 메세지
 // expanded : 컴포넌트 펼침 상태
 // onToggle : 펼치고 접음 컨트롤
+// onDelete : 스크랩 삭제 함수
+// detail : 펼쳤을 때 보여질 상세 내용
+// loading : 펼쳤을 때 상세 내용 로딩
+// isDeleting : 삭제 버튼 누르고 로딩
 export default function ChatbotBox({
-  category,
+  categories,
   title,
-  userChat,
-  aiChat,
   expanded = false,
   onToggle,
+  onDelete,
+  detail = null,
+  loading = false,
+  isDeleting = false,
 }) {
   return (
     <S.ChatbotWrapper>
       <S.ContentContainer>
         <S.ContentBox>
           <S.BadgeBox>
-            <Badge color='teal'>{category}</Badge>
+            {categories.map((c) => (
+              <Badge color='teal'>{c.category_name}</Badge>
+            ))}
           </S.BadgeBox>
           <S.Title>{title}</S.Title>
         </S.ContentBox>
@@ -34,7 +40,7 @@ export default function ChatbotBox({
         ></F.chevronBtn>
       </S.ContentContainer>
       {/* 챗봇 상세 내용 (펼쳤을 때) : Chatbot에서 가져옴 */}
-      {expanded && (
+      {expanded && !loading && detail && (
         <>
           <S.DetailWrapper>
             <C.Chats>
@@ -42,20 +48,22 @@ export default function ChatbotBox({
                 <C.UserChat
                   style={{ backgroundColor: "var(--color-base-white)" }}
                 >
-                  {userChat}
+                  {detail.user_message_content}
                 </C.UserChat>
               </C.UserChatWrapper>
               <C.AIChatWrapper>
                 <C.AIProfile />
                 <C.AIChat>
-                  <C.AIChatContent>{aiChat}</C.AIChatContent>
+                  <C.AIChatContent>{detail.ai_message_content}</C.AIChatContent>
                 </C.AIChat>
               </C.AIChatWrapper>
             </C.Chats>
           </S.DetailWrapper>
           {/* 펼쳤을 때만 보이는 삭제, 접기 버튼 */}
           <S.ButtonWrapper>
-            <S.Button>스크랩 삭제</S.Button>
+            <S.Button onClick={onDelete} disabled={isDeleting}>
+              스크랩 삭제
+            </S.Button>
             <S.Divide></S.Divide>
             <S.Button onClick={onToggle}>접기</S.Button>
           </S.ButtonWrapper>

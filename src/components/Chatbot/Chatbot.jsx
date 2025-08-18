@@ -7,6 +7,16 @@ import {
   sendMessage,
   deleteSession,
 } from "../../services/chatbotService";
+import {
+  createChatbotScrap,
+  deleteChatbotScrap,
+} from "../../services/scrapService";
+import {
+  emitScrapChange,
+  purgeSessionScrapKeys,
+  SCRAP_EVT,
+} from "../../utils/scrapChatbotEvent";
+import { chatbotScrapKey } from "../../utils/scrapChatbotKey";
 
 export default function Chatbot({ isOpen, handleClose, postId }) {
   // localStorage에 저장 => useMemo 활용해 스토리지키가 변하지 않도록 함
@@ -18,6 +28,12 @@ export default function Chatbot({ isOpen, handleClose, postId }) {
   const hasChats = messages.length > 0;
   // 테스트용 세션 삭제 버튼을 위한 상태
   const [isDeleting, setIsDeleting] = useState(false);
+
+  // 스크랩을 위한 상태 및 값
+  const [scrapMap, setScrapMap] = useState({}); // { [aiId]: scrapId }
+  const [aiUser, setAiUser] = useState({}); // { [aiId]: userId }
+  const [isScraping, setIsScraping] = useState(false);
+  const scrapKey = chatbotScrapKey;
 
   // 언마운트 된 뒤 setState 하지 않도록 막음
   const mounted = useRef(true);
@@ -74,6 +90,64 @@ export default function Chatbot({ isOpen, handleClose, postId }) {
     })();
   }, [isOpen, storageKey]);
 
+  // 스크랩을 위한 로직
+  // 메세지 바뀔 때마다 매핑 갱신
+  useEffect(() => {
+    let lastUserId = null;
+    const map = {};
+    for (const m of messages) {
+      if (m.speaker === "USER" && Number.isFinite(m.id)) {
+        lastUserId = m.id;
+      } else if (
+        m.speaker === "AI" &&
+        Number.isFinite(m.id) &&
+        Number.isFinite(lastUserId)
+      ) {
+        map[m.id] = lastUserId;
+      }
+    }
+    setAiUser(map);
+  }, [messages]);
+
+  // 다른 곳에서 스크랩 상태 변경되면 수신
+  useEffect(() => {
+    const onScrapChange = (e) => {
+      const { type, sessionId: sid, aiId, scrapId } = e.detail || {};
+      if (!sid || String(sid) !== String(sessionId) || !Number.isFinite(aiId))
+        return;
+
+      if (type === "create" && Number.isFinite(scrapId)) {
+        setScrapMap((prev) => ({ ...prev, [aiId]: scrapId }));
+        localStorage.setItem(scrapKey(sessionId, aiId), String(scrapId));
+      } else if (type === "delete") {
+        setScrapMap((prev) => {
+          const n = { ...prev };
+          delete n[aiId];
+          return n;
+        });
+        localStorage.removeItem(scrapKey(sessionId, aiId));
+      }
+    };
+    window.addEventListener(SCRAP_EVT, onScrapChange);
+    return () => window.removeEventListener(SCRAP_EVT, onScrapChange);
+  }, [sessionId]);
+
+  // 세션, 메세지 변경 시 스크랩이 있다면 로컬에서 복원함
+  useEffect(() => {
+    if (!sessionId || messages.length === 0) {
+      setScrapMap({});
+      return;
+    }
+    const restored = {};
+    for (const m of messages) {
+      if (m.speaker === "AI" && Number.isFinite(m?.id)) {
+        const saved = localStorage.getItem(scrapKey(sessionId, m.id));
+        if (saved) restored[m.id] = Number(saved);
+      }
+    }
+    setScrapMap(restored);
+  }, [sessionId, messages]);
+
   // 최초 메세지, 즉 세션이 없다면, createSession -> 응답 렌더
   // 세션 있다면, sendMessage -> 응답 렌더
   const handleSend = async (text) => {
@@ -108,22 +182,73 @@ export default function Chatbot({ isOpen, handleClose, postId }) {
       };
       setMessages((prev) => [...prev, optimisticUser]);
 
-      const resp = await sendMessage(sessionId, content);
-      const next = [];
+      const res = await sendMessage(sessionId, content);
+      const user = res?.data?.user_message;
+      const ai = res?.data?.ai_message;
 
-      if (resp?.data.user_message) next.push(resp.data.user_message);
-      if (resp?.data.ai_message) next.push(resp.data.ai_message);
-
-      // 낙관적으로 만든 유저를 실제 유저로 치환, AI 답변까지 렌더
+      // 메세지 교체(<-낙관적) , 추가
       setMessages((prev) => {
-        const prevWithoutOptimistic = prev.filter((m) => m !== optimisticUser);
-        return [...prevWithoutOptimistic, ...next];
+        const base = prev.filter((m) => m !== optimisticUser);
+        return [...base, ...(user ? [user] : []), ...(ai ? [ai] : [])];
       });
+
+      if (Number.isFinite(user?.id) && Number.isFinite(ai?.id)) {
+        setAiUser((m) => ({ ...m, [ai.id]: user.id }));
+      }
     } catch (e) {
       console.error(e);
-      // 실패할 경우 여기서 낙관적 메세지 롤백 가능
     } finally {
       if (mounted.current) setIsLoading(false);
+    }
+  };
+
+  // 스크랩 토글 로직
+  const toggleScrap = async (aiId) => {
+    if (!sessionId || !Number.isFinite(aiId)) return;
+
+    // 중복 클릭 방지
+    setIsScraping(true);
+
+    try {
+      const hasScrap = scrapMap[aiId] != null;
+
+      if (!hasScrap) {
+        // 스크랩 생성 : 매핑에서 userId 추출
+        const userId = aiUser[aiId];
+        if (!Number.isFinite(userId)) {
+          alert("이 AI 메세지에 대응하는 사용자 메세지를 찾을 수 없습니다.");
+          return;
+        }
+        const created = await createChatbotScrap(userId, aiId);
+        const newId = created?.data?.id;
+        if (!Number.isFinite(newId))
+          throw new Error("스크랩 ID가 응답에 없습니다.");
+
+        setScrapMap((prev) => ({ ...prev, [aiId]: newId }));
+        localStorage.setItem(scrapKey(sessionId, aiId), String(newId));
+        emitScrapChange({
+          type: "create",
+          scrapId: newId,
+          sessionId: String(sessionId),
+          aiId,
+        });
+      } else {
+        // 스크랩 취소 : scrapId로 삭제
+        const sId = scrapMap[aiId];
+        await deleteChatbotScrap(sId);
+        setScrapMap((prev) => {
+          const next = { ...prev };
+          delete next[aiId];
+          return next;
+        });
+        localStorage.removeItem(scrapKey(sessionId, aiId));
+        emitScrapChange({ type: "delete", scrapId: sId, sessionId, aiId });
+      }
+    } catch (e) {
+      console.error(e);
+      alert("스크랩 처리 중 오류가 발생했습니다.");
+    } finally {
+      setIsScraping(false);
     }
   };
 
@@ -147,6 +272,10 @@ export default function Chatbot({ isOpen, handleClose, postId }) {
       localStorage.removeItem(storageKey);
       setSessionId(null);
       setMessages([]);
+      // 세션 관련 스크랩 로컬키 정리
+      purgeSessionScrapKeys(sessionId);
+      setScrapMap({});
+      setAiUser({});
     } catch (e) {
       console.error(e);
       alert("대화 삭제 중 오류가 발생했습니다.");
@@ -188,7 +317,12 @@ export default function Chatbot({ isOpen, handleClose, postId }) {
                     <S.AIProfile />
                     <S.AIChat>
                       <S.AIChatContent>{m.content}</S.AIChatContent>
-                      <S.Scrap $isScrap={false} />
+                      <S.Scrap
+                        type='button'
+                        $isScrap={scrapMap[m.id] != null}
+                        onClick={() => toggleScrap(m.id)}
+                        disabled={isScraping}
+                      />
                     </S.AIChat>
                   </S.AIChatWrapper>
                 )
