@@ -9,6 +9,7 @@ import CardList from "../../components/CardList/CardList";
 import useProfile from "../../hooks/useProfile";
 import ChatbotBox from "../../components/ChatbotBox/ChatbotBox";
 import Badge from "../../components/Badge/Badge";
+import { makeScrapBadges } from "../../utils/makeBadges";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -19,49 +20,17 @@ export default function MyPage() {
   const { profile, isProfileLoading } = useProfile();
 
   // 공문 스크랩
-  const { data: scrapedPosts = [], isLoading: isPostsLoading } = useFetch(
-    "/data/CardList.json",
-    []
+  const { data: postdata, isLoading: isPostsLoading } = useFetch(
+    `${API_URL}/scrap/documents/?order=latest&page=1&page_size=3`,
+    {}
   );
+  const scrapedPosts = postdata?.data?.results ?? [];
 
-  // 챗봇 스크랩 (더미데이터)
-  const scrapedChatbots = [
-    {
-      id: 1,
-      category: "시설",
-      title: "AI 응답 요약",
-      userChat: "사용자 텍스트가 들어가는 자리",
-      aiChat: "AI 답변이 들어가는 자리",
-    },
-    {
-      id: 2,
-      category: "시설",
-      title: "AI 응답 요약",
-      userChat: "사용자 텍스트가 들어가는 자리",
-      aiChat: "AI 답변이 들어가는 자리",
-    },
-    {
-      id: 3,
-      category: "시설",
-      title: "AI 응답 요약",
-      userChat: "사용자 텍스트가 들어가는 자리",
-      aiChat: "AI 답변이 들어가는 자리",
-    },
-    {
-      id: 4,
-      category: "시설",
-      title: "AI 응답 요약",
-      userChat: "사용자 텍스트가 들어가는 자리",
-      aiChat: "AI 답변이 들어가는 자리",
-    },
-    {
-      id: 5,
-      category: "시설",
-      title: "AI 응답 요약",
-      userChat: "사용자 텍스트가 들어가는 자리",
-      aiChat: "AI 답변이 들어가는 자리",
-    },
-  ];
+  // 챗봇 스크랩
+  const { data: chatbotdata, isLoading: isChatbotsLoading } = useFetch(
+    `${API_URL}/scrap/chatbot/?order=latest&page=1&page_size=3`
+  );
+  const scrapedChatbots = chatbotdata?.data?.results ?? [];
 
   return (
     <>
@@ -123,13 +92,11 @@ export default function MyPage() {
                   <>
                     {scrapedPosts?.slice(0, 3).map((p) => (
                       <CardList
-                        badges={[
-                          { text: p.region, color: "blue" },
-                          { text: p.keyword, color: "teal" },
-                        ]}
-                        title={p.title}
-                        date={p.date}
+                        badges={makeScrapBadges(p)}
+                        title={p.doc_title}
+                        date={p.pub_date.slice(0, 10)}
                         key={p.id}
+                        onClick={() => navigate(`/post/${p.id}`)}
                       />
                     ))}
                   </>
@@ -156,14 +123,18 @@ export default function MyPage() {
             </H.SectionHeader>
             {scrapedChatbots.length !== 0 ? (
               <H.CardListWrapper>
-                {scrapedChatbots?.slice(0, 3).map((c) => (
-                  <ChatbotBox
-                    key={c.id}
-                    id={c.id}
-                    category={c.category}
-                    title={c.title}
-                  />
-                ))}
+                {!isChatbotsLoading && scrapedChatbots && (
+                  <>
+                    {scrapedChatbots?.slice(0, 3).map((c) => (
+                      <ChatbotBox
+                        key={c.id}
+                        id={c.id}
+                        categories={c.categories}
+                        title={c.summary}
+                      />
+                    ))}
+                  </>
+                )}
               </H.CardListWrapper>
             ) : (
               <>

@@ -11,6 +11,8 @@ export default function Header({
   isScrap,
   isTransparent = false,
   atHome = false,
+  onToggleScrap,
+  scrapDisabled = false,
 }) {
   const navigate = useNavigate();
   const handleBack = () => {
@@ -37,7 +39,13 @@ export default function Header({
       {hasBack && <S.HeaderBack onClick={handleBack} />}
       {atHome && <S.HomeIcon />}
       <S.HeaderTitle>{title}</S.HeaderTitle>
-      {hasScrap && <S.HeaderScrap $isScrap={isScrap} />}
+      {hasScrap && (
+        <S.HeaderScrap
+          $isScrap={isScrap}
+          onClick={onToggleScrap}
+          disabled={scrapDisabled}
+        />
+      )}
     </S.HeaderContainer>
   );
 }

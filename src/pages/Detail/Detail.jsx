@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import useFetch from "../../hooks/useFetch";
 
 import GoToTop from "../../components/GoToTop/GoToTop";
@@ -16,11 +16,13 @@ import * as B from "../../styles/ButtonCircle";
 import * as S from "./DetailStyle";
 import { useParams } from "react-router-dom";
 import { REGION_MAP } from "../../constants/maps";
+import { createPostScrap, deletePostScrap } from "../../services/scrapService";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
 export default function Detail() {
   const { id } = useParams();
+  const postId = Number(id);
 
   // 챗봇 열림 상태 관리
   const [isOpen, setIsOpen] = useState(false);
@@ -32,8 +34,43 @@ export default function Detail() {
     {}
   );
 
-  let isScrap = false;
-  // scrap 로직 추가 예정
+  // 스크랩 관련 로직
+  const storageKey = useMemo(() => `scrap:${postId}`, [postId]);
+  const [scrapId, setScrapId] = useState(null);
+  const [isScraping, setIsScraping] = useState(false);
+  const isScraped = scrapId !== null;
+
+  // 초기화 : 같은 브라우저에서 이전에 생성한 scrapId가 있다면 가져옴
+  useEffect(() => {
+    const saved = localStorage.getItem(storageKey);
+    setScrapId(saved ? Number(saved) : null);
+  }, [storageKey]);
+
+  const toggleScrap = async () => {
+    if (isScraping || isPostLoading) return;
+    setIsScraping(true);
+
+    try {
+      if (!isScraped) {
+        // scrapId가 없었으므로 새로 스크랩
+        const created = await createPostScrap(postId);
+        const newId = created?.data?.id;
+        if (!newId) throw new Error("응답에 스크랩 ID가 없습니다.");
+        setScrapId(newId);
+        localStorage.setItem(storageKey, String(newId));
+      } else {
+        // scrapId가 있었으므로 토글 === 취소
+        await deletePostScrap(scrapId);
+        setScrapId(null);
+        localStorage.removeItem(storageKey);
+      }
+    } catch (e) {
+      console.error(e);
+      alert("스크랩 처리에 실패했습니다.");
+    } finally {
+      setIsScraping(false);
+    }
+  };
 
   // 관련 공문 추천
   const { data: recommendDocs = [], isLoading: isRecommedsLoading } = useFetch(
@@ -45,9 +82,11 @@ export default function Detail() {
       {/* fixed 되는 컴포넌트들 */}
       <Header
         hasBack={true}
-        title={!isPostLoading && post.doc_title}
+        title={!isPostLoading && post?.doc_title}
         hasScrap={true}
-        isScrap={false}
+        isScrap={isScraped}
+        onToggleScrap={toggleScrap}
+        scrapDisabled={isScraping}
       />
       <B.ButtonWrapper>
         <GoToTop $isOpen={isOpen} />
@@ -120,7 +159,7 @@ export default function Detail() {
               <S.LinkBtn href={post.url}>원문 바로가기</S.LinkBtn>
               <S.SecondBtnBox>
                 <S.SecondBtn>
-                  <img src={isScrap ? scrapTrue : scrapFalse} />
+                  <img src={isScraped ? scrapTrue : scrapFalse} />
                   스크랩
                 </S.SecondBtn>
                 <S.SecondBtn>
