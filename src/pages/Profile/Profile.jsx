@@ -250,25 +250,28 @@ export default function Profile() {
       {/* fixed 되는 컴포넌트들 */}
       <Header hasBack={true} title='정보 수정' hasScrap={false} />
       <S.ProfileContainer>
-        <S.InfoContainer>
-          <S.SectionTitle>회원 정보</S.SectionTitle>
-          <S.SectionContainer>
-            <S.SectionBox>
-              <S.MiniTitle>이름</S.MiniTitle>
-              <S.MiniContent>김덕사</S.MiniContent>
-            </S.SectionBox>
-            <S.DetailBox>
+        {!isProfileLoading && profile && (
+          <S.InfoContainer>
+            <S.SectionTitle>회원 정보</S.SectionTitle>
+            <S.SectionContainer>
               <S.SectionBox>
-                <S.MiniTitle>생년월일</S.MiniTitle>
-                <S.MiniContent>20000101</S.MiniContent>
+                <S.MiniTitle>이름</S.MiniTitle>
+                <S.MiniContent>{profile?.data?.name}</S.MiniContent>
               </S.SectionBox>
-              <S.SectionBox>
-                <S.MiniTitle>성별</S.MiniTitle>
-                <S.MiniContent>여</S.MiniContent>
-              </S.SectionBox>
-            </S.DetailBox>
-          </S.SectionContainer>
-        </S.InfoContainer>
+              <S.DetailBox>
+                <S.SectionBox>
+                  <S.MiniTitle>생년월일</S.MiniTitle>
+                  <S.MiniContent>{profile?.data?.birth}</S.MiniContent>
+                </S.SectionBox>
+                <S.SectionBox>
+                  <S.MiniTitle>성별</S.MiniTitle>
+                  <S.MiniContent>{profile?.data?.gender_display}</S.MiniContent>
+                </S.SectionBox>
+              </S.DetailBox>
+            </S.SectionContainer>
+          </S.InfoContainer>
+        )}
+
         <S.InfoContainer>
           <S.SectionTitle>관심 분야 정보</S.SectionTitle>
           <S.InterestContainer>
