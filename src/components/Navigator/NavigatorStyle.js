@@ -13,7 +13,12 @@ export const NavContainer = styled.div`
   left: 50%;
   transform: translateX(-50%);
   background-color: var(--color-base-white);
-  z-index: 10;
+  
+  /* [수정] z-index 값을 10에서 100으로 변경
+    [이유] 다른 페이지 콘텐츠(z-index: 15)가 네비게이션 바를 덮고 지나가는 현상을 막고,
+           항상 최상단에 고정되도록 레이어 순서를 가장 높게 설정했습니다.
+  */
+  z-index: 100;
 `;
 
 export const NavItem = styled.div`

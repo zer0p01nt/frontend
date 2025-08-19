@@ -114,7 +114,7 @@ export const BadgeWrapper = styled.div`
 export const SectionWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 36px;
+  gap: 24px;
 `;
 
 export const SectionHeader = styled.div`

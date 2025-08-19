@@ -1,83 +1,30 @@
 import React from "react";
-
 import Header from "../../components/Header/Header";
 import GoToTop from "../../components/GoToTop/GoToTop";
 import CategoryBar from "../../components/CategoryBar/CategoryBar";
 import CardList from "../../components/CardList/CardList";
 import SmallFilter from "../../components/SmallFilter/SmallFilter";
-
 import * as B from "../../styles/ButtonCircle";
 import * as S from "./NotificationStyle";
 import * as F from "../../components/SmallFilter/SmallFilterStyle";
-
-const dummyNotifications = [
-  {
-    id: 1,
-    region: "도봉구",
-    keyword: "문화",
-    title: "미확인 알림입니다",
-    date: "2025.07.30",
-    isUnread: true,
-  },
-  {
-    id: 2,
-    region: "강북구",
-    keyword: "교통",
-    title: "확인한 알림입니다",
-    date: "2025.07.30",
-    isUnread: false,
-  },
-  {
-    id: 3,
-    region: "서울시",
-    keyword: "시설",
-    title: "이것도 확인한 알림",
-    date: "2025.07.30",
-    isUnread: false,
-  },
-  {
-    id: 4,
-    region: "서울시",
-    keyword: "시설",
-    title: "추가된 알림 데이터",
-    date: "2025.07.29",
-    isUnread: true,
-  },
-  {
-    id: 5,
-    region: "서울시",
-    keyword: "시설",
-    title: "추가된 알림 데이터",
-    date: "2025.07.29",
-    isUnread: false,
-  },
-  {
-    id: 6,
-    region: "서울시",
-    keyword: "시설",
-    title: "추가된 알림 데이터",
-    date: "2025.07.28",
-    isUnread: false,
-  },
-  {
-    id: 7,
-    region: "도봉구",
-    keyword: "문화",
-    title: "추가된 알림 데이터",
-    date: "2025.07.27",
-    isUnread: false,
-  },
-  {
-    id: 8,
-    region: "강북구",
-    keyword: "교통",
-    title: "추가된 알림 데이터",
-    date: "2025.07.26",
-    isUnread: false,
-  },
-];
+import useFetch from "../../hooks/useFetch";
+import NotificationEmpty from "./NotificationEmpty";
+import { makeScrapBadges } from "../../utils/makeBadges"; // 뱃지 생성 유틸리티
+import { useNavigate } from "react-router-dom"; // 페이지 이동 훅
 
 export default function Notification() {
+  const navigate = useNavigate();
+  const API_URL = process.env.REACT_APP_API_URL;
+
+  // useFetch로 알림 목록 데이터 받아오기
+  const { data: notificationData, isLoading } = useFetch(
+    `${API_URL}/documents/notifications/`,
+    {} // 초기값은 빈 객체로 설정
+  );
+
+  // 실제 알림 목록은 API 응답의 'results' 안에 들어있습니다.
+  const notifications = notificationData?.results ?? [];
+
   const handleCategoryChange = (category) => {
     console.log("선택된 카테고리:", category);
   };
@@ -99,22 +46,27 @@ export default function Notification() {
           />
         </F.SmallFilterWrapper>
 
-        {dummyNotifications.map((item) => (
-          <CardList
-            key={item.id}
-            variant='notification'
-            badges={[
-              { text: item.region, color: "blue" },
-              { text: item.keyword, color: "teal" },
-            ]}
-            title={item.title}
-            date={item.date}
-            isUnread={item.isUnread}
-          />
-        ))}
+        {/* 로딩이 끝난 후, 데이터 유무에 따라 다른 화면 표시 */}
+        {!isLoading &&
+          (notifications.length > 0 ? (
+            // 알림이 있을 경우: 실제 데이터로 목록 표시
+            notifications.map((item) => (
+              <CardList
+                key={item.id}
+                variant='notification'
+                badges={makeScrapBadges(item)} // API 데이터에 맞게 뱃지 생성
+                title={item.doc_title} // 실제 제목 데이터
+                date={item.pub_date.slice(0, 10)} // 실제 날짜 데이터
+                isUnread={!item.is_read} // '읽음' 상태의 반대로 '안읽음' 표시
+                onClick={() => navigate(`/post/${item.id}`)} // 클릭 시 상세 페이지로 이동
+              />
+            ))
+          ) : (
+            // 알림이 없을 경우: 빈 화면 표시
+            <NotificationEmpty />
+          ))}
       </S.NotificationContainer>
 
-      {/* GoToTop을 다시 ButtonWrapper로 감싸는 원래의 단순한 방식으로 돌아갑니다. */}
       <B.ButtonWrapper>
         <GoToTop />
       </B.ButtonWrapper>

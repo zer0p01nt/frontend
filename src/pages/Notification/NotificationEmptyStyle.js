@@ -24,7 +24,7 @@ export const EmptyText = styled.p`
   font-size: var(--Heading-lg-font-size);
   font-weight: 700;
   line-height: var(--Heading-lg-line-height);
-  margin-top: 16px;
+  margin-top: 12px;
   margin-bottom: 4px;
 `;
 
