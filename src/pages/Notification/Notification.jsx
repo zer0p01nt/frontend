@@ -9,6 +9,7 @@ import SmallFilter from "../../components/SmallFilter/SmallFilter";
 import * as B from "../../styles/ButtonCircle";
 import * as S from "./NotificationStyle";
 import * as F from "../../components/SmallFilter/SmallFilterStyle";
+import PushBtn from "../../components/PushBtn/PushBtn";
 
 const dummyNotifications = [
   {
@@ -117,6 +118,7 @@ export default function Notification() {
       {/* GoToTop을 다시 ButtonWrapper로 감싸는 원래의 단순한 방식으로 돌아갑니다. */}
       <B.ButtonWrapper>
         <GoToTop />
+        <PushBtn />
       </B.ButtonWrapper>
     </>
   );
