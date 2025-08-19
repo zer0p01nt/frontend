@@ -81,11 +81,13 @@ export default function Home() {
                 <S.BadgeWrapper>
                   {!isProfileLoading && profile && (
                     <>
-                      {(profile.data.user_regions ?? []).map((r) => (
-                        <Badge color='blue' isFilled={false} key={r.id}>
-                          {r.region?.district}
-                        </Badge>
-                      ))}
+                      {(profile.data.user_regions ?? [])
+                        .slice(0, 2)
+                        .map((r) => (
+                          <Badge color='blue' isFilled={false} key={r.id}>
+                            {r.region?.district}
+                          </Badge>
+                        ))}
                       {profile.data.user_regions.length >= 3 && (
                         <Badge color='pink' isFilled={false}>
                           +{profile.data.user_regions.length - 2}
