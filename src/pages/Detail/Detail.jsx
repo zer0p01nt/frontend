@@ -14,13 +14,14 @@ import buttonCircle from "../../assets/ButtonCircle.png";
 
 import * as B from "../../styles/ButtonCircle";
 import * as S from "./DetailStyle";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { REGION_MAP } from "../../constants/maps";
 import { createPostScrap, deletePostScrap } from "../../services/scrapService";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
 export default function Detail() {
+  const navigate = useNavigate();
   const { id } = useParams();
   const postId = Number(id);
 
@@ -72,11 +73,6 @@ export default function Detail() {
     }
   };
 
-  // 관련 공문 추천
-  const { data: recommendDocs = [], isLoading: isRecommedsLoading } = useFetch(
-    "/data/CardList.json",
-    []
-  );
   return (
     <>
       {/* fixed 되는 컴포넌트들 */}
@@ -120,14 +116,14 @@ export default function Detail() {
                 <S.MetaInfoLabel>
                   <li>작성일</li>
                   <li>관련부서</li>
-                  <li>문의</li>
+                  {/* <li>문의</li> */}
                 </S.MetaInfoLabel>
                 <S.MetaInfoData>
                   <li>{post.pub_date.slice(0, 10)}</li>
                   {/* 관련부서 추가 or 아예 삭제 필요 */}
-                  <li>관련부서</li>
+                  <li>{post.related_departments}</li>
                   {/* 문의 전화번호 추가 or 아예 삭제 필요 */}
-                  <li>전화번호</li>
+                  {/* <li>전화번호</li> */}
                 </S.MetaInfoData>
               </S.MetaInfo>
             </S.InfoBox>
@@ -139,24 +135,20 @@ export default function Detail() {
                 <S.AITitle>AI 요약</S.AITitle>
               </S.AIHeader>
               {/* 추가 예정 */}
-              <S.Content>
-                추가 예정 추가 예정 추가 예정 추가 예정 추가 예정 추가 예정 추가
-                예정 추가 예정 추가 예정 추가 예정 추가 예정 추가 예정 추가 예정
-                추가 예정 추가 예정 추가 예정
-              </S.Content>
+              <S.Content>{post.summary}</S.Content>
             </S.AIBox>
 
             {/* 본문 */}
             <S.ContentBox>
               <S.Content>{post.doc_content.replaceAll(".", ". ")}</S.Content>
               {/* 추가 예정 */}
-              <img src={post.image_url} />
+              <img src={post.image_url ?? null} />
             </S.ContentBox>
 
             {/* 본문 하단 버튼 */}
             <S.ButtonBox>
               {/* 추가 필요 */}
-              <S.LinkBtn href={post.url}>원문 바로가기</S.LinkBtn>
+              <S.LinkBtn href={post.link_url}>원문 바로가기</S.LinkBtn>
               <S.SecondBtnBox>
                 <S.SecondBtn>
                   <img src={isScraped ? scrapTrue : scrapFalse} />
@@ -174,18 +166,15 @@ export default function Detail() {
         {/* 관련 공문 추천 */}
         <S.RecommendBox>
           <S.Title>관련 공문 추천</S.Title>
-          {/* 2개만 보여지게 함 */}
-          {!isRecommedsLoading && recommendDocs && (
+          {post.similar_documents && (
             <>
-              {recommendDocs?.slice(0, 2).map((p) => (
+              {/* 뱃지 추가 필요 */}
+              {post.similar_documents?.map((doc) => (
                 <CardList
-                  badges={[
-                    { text: p.region, color: "blue" },
-                    { text: p.keyword, color: "teal" },
-                  ]}
-                  title={p.title}
-                  date={p.date}
-                  key={p.id}
+                  title={doc.doc_title}
+                  date={doc.pub_date.slice(0, 10)}
+                  key={doc.id}
+                  onClick={() => navigate(`/post/${doc.id}`)}
                 />
               ))}
             </>
