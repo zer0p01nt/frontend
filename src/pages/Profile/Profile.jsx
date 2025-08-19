@@ -1,7 +1,12 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useProfile from "../../hooks/useProfile";
+import { fetchRegions, putProfile } from "../../services/profileService.js";
 
-import { CATEGORY_OPTIONS } from "../../constants/maps.js";
+import {
+  CATEGORY_OPTIONS,
+  NAME_CATEGORY_MAP,
+  NAME_REGION_MAP,
+} from "../../constants/maps.js";
 
 import * as S from "./ProfileStyle";
 import * as B from "../../components/Button/ButtonStyle";
@@ -12,18 +17,22 @@ import SearchInputField from "../../components/SearchInputField/SearchInputField
 import close from "../../assets/Profile/close_small.svg";
 import add from "../../assets/Profile/add.svg";
 
+const ALL_CATEGORY_LABEL = "모든 주제";
+const PAGE_SIZE = 10;
+
 export default function Profile() {
   const [regionOpen, setRegionOpen] = useState(false);
   const [categoryOpen, setCategoryOpen] = useState(false);
+
+  // 지역 검색 입력값
   const [value, setValue] = useState("");
-  // 지역 검색 결과 체크 로직 -> 변경 필요
-  const [check, setCheck] = useState(false);
 
   // 프로필 정보 fetch
   const { profile, isProfileLoading } = useProfile();
   const [regions, setRegions] = useState([]);
   const [categories, setCategories] = useState([]);
 
+  // 최초 로딩 시 초기화
   useEffect(() => {
     if (!isProfileLoading && profile) {
       setRegions(profile.data.user_regions ?? []);
@@ -31,16 +40,210 @@ export default function Profile() {
     }
   }, [isProfileLoading, profile]);
 
-  // 선택하지 않은 카테고리 관리
+  // ------------------------ 지역 ------------------------
+  // 기존 지역 저장
+  const selectedRegionIds = useMemo(
+    () => new Set(regions.map((r) => r.id)),
+    [regions]
+  );
+  const canAddMoreRegions = regions.length < 3;
+
+  // 지역 검색용 상태 관리
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
+  const [isFetchingNext, setIsFetchingNext] = useState(false);
+
+  // 무한 스크롤 센티널
+  const loadMoreRef = useRef(null);
+
+  // 지역 수정창 뜰 때마다 초기화
+  useEffect(() => {
+    if (!regionOpen) {
+      setSearchResults([]);
+      setValue("");
+    }
+  }, [regionOpen]);
+
+  const onRegionSearchSubmit = async (q) => {
+    const query = (q ?? value).trim();
+    if (!query) return;
+
+    try {
+      setSearchLoading(true);
+
+      // 1페이지 로드
+      const data = await fetchRegions(query);
+      const results = Array.isArray(data?.results) ? data.results : [];
+      setSearchQuery(query);
+      setPage(1);
+      setSearchResults(results);
+      setHasMore(results.length === PAGE_SIZE);
+    } catch {
+      alert("검색에 실패했습니다.");
+    } finally {
+      setSearchLoading(false);
+    }
+  };
+
+  // 다음 페이지 로드
+  const fetchNextPage = useCallback(async () => {
+    if (!hasMore || isFetchingNext || searchLoading) return;
+
+    try {
+      setIsFetchingNext(true);
+      const nextPage = page + 1;
+
+      const data = await fetchRegions(searchQuery, nextPage);
+      const results = Array.isArray(data?.results) ? data.results : [];
+      setSearchResults((prev) => [...prev, ...results]);
+
+      setPage(nextPage);
+      setHasMore(results.length === PAGE_SIZE);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsFetchingNext(false);
+    }
+  }, [hasMore, isFetchingNext, searchLoading, page, searchQuery]);
+
+  // 인터섹션 옵저버 사용 : 센티널 보이면 다음 페이지 요청하도록
+  useEffect(() => {
+    if (!regionOpen) return;
+    const ref = loadMoreRef.current;
+    if (!ref) return;
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) fetchNextPage();
+      },
+      { root: null, rootMargin: "200px", threshold: 0 }
+    );
+    io.observe(ref);
+    return () => io.disconnect();
+  }, [regionOpen, fetchNextPage]);
+
+  // 지역명으로 아이디 매핑
+  const mapNameId = (name) => NAME_REGION_MAP[name];
+
+  // 검색 결과에서 지역 추가
+  const addRegion = (raw) => {
+    // 3개 초과할 때
+    if (!canAddMoreRegions) {
+      alert("관심 지역은 최대 3개까지 설정할 수 있습니다.");
+      return;
+    }
+    // 매핑에 없을 때
+    const id = mapNameId(raw.district);
+    if (!id) {
+      alert("등록되지 않은 지역입니다. 개발 예정입니다.");
+      return;
+    }
+    // 이미 선택되어 있을 때
+    if (selectedRegionIds.has(id)) return;
+    // 프로필에 추가
+    setRegions((prev) => [...prev, { id, region: { district: raw.district } }]);
+  };
+
+  // ------------------------ 카테고리 ------------------------
+  // 선택한 카테고리
   const selectedNames = useMemo(() => {
     return new Set(
       categories.map((c) => c.category?.category_name).filter(Boolean)
     );
-  }, [profile]);
+  }, [categories]);
 
+  // 선택하지 않은 카테고리
   const remainingCategories = useMemo(() => {
     return CATEGORY_OPTIONS.filter((name) => !selectedNames.has(name));
   }, [selectedNames]);
+
+  // 카테고리명으로 아이디 매핑
+  const mapCategoryId = (name) => NAME_CATEGORY_MAP[name];
+
+  // 카테고리 추가
+  const addCategoryByName = (name) => {
+    if (!name) return;
+    if (selectedNames.has(name)) return;
+
+    // 모든 주제 클릭 : 모든 주제 제외 나머지 제거
+    if (name === ALL_CATEGORY_LABEL) {
+      const id = mapCategoryId(name);
+      setCategories([{ category: { id, category_name: name } }]);
+      return;
+    }
+
+    // 모든 주제 선택된 상태에서 다른 주제 선택하면 모든 주제 제거
+    if (selectedNames.has(ALL_CATEGORY_LABEL)) {
+      setCategories((prev) =>
+        prev.filter(
+          (item) => item.category?.category_name !== ALL_CATEGORY_LABEL
+        )
+      );
+    }
+
+    const id = mapCategoryId(name);
+    setCategories((prev) => [
+      ...prev,
+      { category: { id, category_name: name } },
+    ]);
+  };
+
+  // 카테고리 제거 로직
+  const removeCategory = (c) => {
+    setCategories((prev) =>
+      prev.filter((it) => {
+        const a = it.category?.id ?? it.category?.category_name;
+        const b = c.category?.id ?? c.category?.category_name;
+        return a !== b;
+      })
+    );
+  };
+
+  // 모두 삭제 시 모든 주제 선택
+  useEffect(() => {
+    if (categoryOpen && categories.length === 0) {
+      setCategories((prev) => [
+        ...prev,
+        { category: { id: 0, category_name: ALL_CATEGORY_LABEL } },
+      ]);
+    }
+  }, [categoryOpen, categories.length]);
+
+  // ------------------------ 저장 (PUT) ------------------------
+  const [saving, setSaving] = useState(false);
+
+  const saveProfile = async (closeBtn) => {
+    try {
+      setSaving(true);
+
+      // 모든 주제가 선택되어 있으면 category_ids를 빈 배열로 보냄
+      const hasAll = categories.some(
+        (c) => c?.category?.category_name === ALL_CATEGORY_LABEL
+      );
+      const category_ids = hasAll ? [] : categories.map((c) => c?.category?.id);
+
+      const body = {
+        name: "김덕사",
+        birth: "2000-01-01",
+        gender: "F",
+        category_ids,
+        regions: regions.map((r) => ({ region_id: r.id, type: "관심지역" })),
+      };
+
+      await putProfile(body);
+
+      if (closeBtn === "region") setRegionOpen(false);
+      if (closeBtn === "category") setCategoryOpen(false);
+    } catch (e) {
+      alert("프로필 저장 중 오류가 발생했습니다.");
+      console.error(e);
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <>
@@ -77,7 +280,10 @@ export default function Profile() {
                 </div>
                 <button
                   type='button'
-                  onClick={() => setRegionOpen((prev) => !prev)}
+                  onClick={() =>
+                    regionOpen ? saveProfile("region") : setRegionOpen(true)
+                  }
+                  disabled={saving}
                 >
                   {regionOpen ? "수정완료" : "수정하기"}
                 </button>
@@ -118,7 +324,7 @@ export default function Profile() {
                   <>
                     {!isProfileLoading && profile && (
                       <>
-                        {(profile.data.user_regions ?? []).map((r) => (
+                        {(regions ?? []).map((r) => (
                           <B.SelectedBtnContainer style={{ boxShadow: "none" }}>
                             {r.region?.district}
                           </B.SelectedBtnContainer>
@@ -133,64 +339,43 @@ export default function Profile() {
                   <S.MiniTitle>지역 검색</S.MiniTitle>
                   <SearchInputField
                     border='gray'
-                    placeholder='예) 서울시, 도봉구'
+                    placeholder='예) 서울특별시, 도봉구'
                     value={value}
                     onChange={(e) => setValue(e.target.value)}
+                    onSubmit={onRegionSearchSubmit}
                   />
-                  {/* 조건 수정 필요 */}
-                  {value && (
+                  {!searchLoading && searchResults.length > 0 && (
                     <S.SearchResultBox>
-                      <S.SearchResult>
-                        <S.ResultTitle>서울시 전체</S.ResultTitle>
-                        <B.HiddenLabel>
-                          <S.HiddenInput
-                            type='button'
-                            onClick={() => setCheck((prev) => !prev)}
-                          />
-                          <B.SelectedBtnContainer
-                            $checked={check}
-                            style={{
-                              boxShadow: "none",
-                            }}
-                          >
-                            선택
-                          </B.SelectedBtnContainer>
-                        </B.HiddenLabel>
-                      </S.SearchResult>
-                      <S.SearchResult>
-                        <S.ResultTitle>서울시 전체</S.ResultTitle>
-                        <B.HiddenLabel>
-                          <S.HiddenInput
-                            type='button'
-                            onClick={() => setCheck((prev) => !prev)}
-                          />
-                          <B.SelectedBtnContainer
-                            $checked={check}
-                            style={{
-                              boxShadow: "none",
-                            }}
-                          >
-                            선택
-                          </B.SelectedBtnContainer>
-                        </B.HiddenLabel>
-                      </S.SearchResult>
-                      <S.SearchResult>
-                        <S.ResultTitle>서울시 전체</S.ResultTitle>
-                        <B.HiddenLabel>
-                          <S.HiddenInput
-                            type='button'
-                            onClick={() => setCheck((prev) => !prev)}
-                          />
-                          <B.SelectedBtnContainer
-                            $checked={check}
-                            style={{
-                              boxShadow: "none",
-                            }}
-                          >
-                            선택
-                          </B.SelectedBtnContainer>
-                        </B.HiddenLabel>
-                      </S.SearchResult>
+                      {searchResults.map((raw) => {
+                        const id = mapNameId(raw.district);
+                        const already = id && selectedRegionIds.has(id);
+                        const disabled = !!already;
+
+                        return (
+                          <S.SearchResult key={id ?? raw.region_code}>
+                            <S.ResultTitle>{raw.full_name}</S.ResultTitle>
+                            <B.HiddenLabel>
+                              <S.HiddenInput
+                                type='button'
+                                disabled={disabled}
+                                onClick={() => addRegion(raw)}
+                              />
+                              <B.SelectedBtnContainer
+                                $checked={already}
+                                style={{
+                                  boxShadow: "none",
+                                }}
+                              >
+                                선택
+                              </B.SelectedBtnContainer>
+                            </B.HiddenLabel>
+                          </S.SearchResult>
+                        );
+                      })}
+                      {/* 무한 스크롤 센티널 */}
+                      {(hasMore || isFetchingNext) && (
+                        <div ref={loadMoreRef} style={{ height: 1 }}></div>
+                      )}
                     </S.SearchResultBox>
                   )}
                 </S.SearchBox>
@@ -204,7 +389,12 @@ export default function Profile() {
                 </div>
                 <button
                   type='button'
-                  onClick={() => setCategoryOpen((prev) => !prev)}
+                  onClick={() =>
+                    categoryOpen
+                      ? saveProfile("category")
+                      : setCategoryOpen(true)
+                  }
+                  disabled={saving}
                 >
                   {categoryOpen ? "수정완료" : "수정하기"}
                 </button>
@@ -220,14 +410,7 @@ export default function Profile() {
                               <S.HiddenInput
                                 type='button'
                                 id={c.category?.id}
-                                onClick={() =>
-                                  setCategories((prev) =>
-                                    prev.filter(
-                                      (item) =>
-                                        item.category?.id !== c.category?.id
-                                    )
-                                  )
-                                }
+                                onClick={() => removeCategory(c)}
                               />
                               <B.SelectedBtnContainer
                                 $checked={true}
@@ -244,18 +427,29 @@ export default function Profile() {
                           ))}
                         </S.SelectedList>
                         <S.UnSelectedList>
-                          {remainingCategories.map((name) => (
-                            <B.SelectedBtnContainer
-                              style={{
-                                boxShadow: "none",
-                                display: "flex",
-                                gap: "8px",
-                              }}
-                            >
-                              {name}
-                              <img src={add} />
-                            </B.SelectedBtnContainer>
-                          ))}
+                          {remainingCategories.map((name) => {
+                            const remainId = mapCategoryId(name);
+
+                            return (
+                              <B.HiddenLabel>
+                                <S.HiddenInput
+                                  type='button'
+                                  id={remainId}
+                                  onClick={() => addCategoryByName(name)}
+                                />
+                                <B.SelectedBtnContainer
+                                  style={{
+                                    boxShadow: "none",
+                                    display: "flex",
+                                    gap: "8px",
+                                  }}
+                                >
+                                  {name}
+                                  <img src={add} />
+                                </B.SelectedBtnContainer>
+                              </B.HiddenLabel>
+                            );
+                          })}
                         </S.UnSelectedList>
                       </S.OpenBtnList>
                     )}
@@ -264,7 +458,7 @@ export default function Profile() {
                   <>
                     {!isProfileLoading && profile && (
                       <>
-                        {(profile.data.user_categories ?? []).map((c) => (
+                        {(categories ?? []).map((c) => (
                           <B.SelectedBtnContainer style={{ boxShadow: "none" }}>
                             {c.category?.category_name}
                           </B.SelectedBtnContainer>

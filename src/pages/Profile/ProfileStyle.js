@@ -166,6 +166,7 @@ export const SelectedList = styled.div`
   align-items: center;
   gap: 10px;
   align-self: stretch;
+  flex-wrap: wrap;
 `;
 
 export const UnSelectedList = styled.div`
