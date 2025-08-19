@@ -106,7 +106,7 @@ export default function Chatbot({ isOpen, handleClose, postId }) {
         map[m.id] = lastUserId;
       }
     }
-    setAiUser(map);
+    setAiUser(map); // map[aiMessageId] = lastUserId 형태로 저장됨
   }, [messages]);
 
   // 다른 곳에서 스크랩 상태 변경되면 수신

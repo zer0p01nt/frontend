@@ -29,6 +29,7 @@ export const ContentBox = styled.div`
 export const BadgeBox = styled.div`
   display: flex;
   align-items: flex-start;
+  gap: 8px;
 `;
 
 export const Title = styled.div`

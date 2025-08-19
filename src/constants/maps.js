@@ -23,6 +23,18 @@ export const CATEGORY_MAP = {
   8: "행정",
 };
 
+// 카테고리명으로 id 매핑
+export const NAME_CATEGORY_MAP = {
+  교통: 1,
+  문화: 2,
+  주택: 3,
+  경제: 4,
+  환경: 5,
+  안전: 6,
+  복지: 7,
+  행정: 8,
+};
+
 // id로 지역 매핑
 export const REGION_MAP = {
   6: "도봉구",

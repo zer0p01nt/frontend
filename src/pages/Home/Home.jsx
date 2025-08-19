@@ -97,15 +97,17 @@ export default function Home() {
                 <S.BadgeWrapper>
                   {!isProfileLoading && profile && (
                     <>
-                      {(profile.data.user_categories ?? []).map((c) => (
-                        <Badge
-                          color='teal'
-                          isFilled={false}
-                          key={c.category?.id}
-                        >
-                          {c.category?.category_name}
-                        </Badge>
-                      ))}
+                      {(profile.data.user_categories ?? [])
+                        .slice(0, 2)
+                        .map((c) => (
+                          <Badge
+                            color='teal'
+                            isFilled={false}
+                            key={c.category?.id}
+                          >
+                            {c.category?.category_name}
+                          </Badge>
+                        ))}
                       {profile.data.user_categories.length >= 3 && (
                         <Badge color='teal' isFilled={false}>
                           +{profile.data.user_categories.length - 2}
@@ -119,7 +121,7 @@ export default function Home() {
             <S.Character />
           </S.TitleWrapper>
         </S.TitleContainer>
-        
+
         <S.FakeSearchInputWrapper onClick={goToSearch}>
           <span>필요한 정보가 있으신가요?</span>
           <div />

@@ -22,7 +22,7 @@ export default function SearchInputField({
           value={value}
           onChange={onChange}
         />
-        <S.SearchBtn />
+        <S.SearchBtn type='submit' />
       </S.SearchInputForm>
     </>
   );
