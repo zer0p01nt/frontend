@@ -23,6 +23,7 @@ export const BadgeWrapper = styled.div`
   align-items: flex-start;
   gap: 8px;
   margin-bottom: 12px;
+  flex-wrap: wrap;
 `;
 
 export const Title = styled.h3`
