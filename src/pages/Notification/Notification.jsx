@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Header from "../../components/Header/Header";
 import GoToTop from "../../components/GoToTop/GoToTop";
 import CategoryBar from "../../components/CategoryBar/CategoryBar";
@@ -11,27 +11,63 @@ import useFetch from "../../hooks/useFetch";
 import NotificationEmpty from "./NotificationEmpty";
 import { makeScrapBadges } from "../../utils/makeBadges"; // 뱃지 생성 유틸리티
 import { useNavigate } from "react-router-dom"; // 페이지 이동 훅
+import {
+  CATEGORY_TYPE_MAP,
+  NAME_CATEGORY_MAP,
+  NAME_REGION_MAP,
+} from "../../constants/maps";
+
+const API_URL = process.env.REACT_APP_API_URL;
 
 export default function Notification() {
   const navigate = useNavigate();
-  const API_URL = process.env.REACT_APP_API_URL;
+
+  // 필터 상태
+  // 모든 스크랩이면 undefined
+  const [docType, setDocType] = useState(undefined);
+  // 유저 프로필에 있는 것만 id 형태로 보관
+  const [regionIds, setRegionIds] = useState([]);
+  const [categoryIds, setCategoryIds] = useState([]);
+
+  // 필터, 카테고리바 변경
+  const handleCategoryChange = (category) => {
+    if (category === "모든 알림") setDocType(undefined);
+    else setDocType(CATEGORY_TYPE_MAP[category] ?? undefined);
+  };
+
+  const handleRegionsChange = (labels) => {
+    const ids = Array.from(
+      new Set(labels.map((l) => NAME_REGION_MAP[l]).filter(Boolean))
+    );
+    setRegionIds(ids);
+  };
+
+  const handleCategoriesChange = (labels) => {
+    const ids = Array.from(
+      new Set(labels.map((lab) => NAME_CATEGORY_MAP[lab]).filter(Boolean))
+    );
+    setCategoryIds(ids);
+  };
+
+  // URL 조립
+  const listUrl = useMemo(() => {
+    const params = new URLSearchParams();
+    params.set("user_id", "GUEST1"); // 고정
+    params.set("page", 1); // 일단 고정
+    if (docType) params.set("doc_type", docType);
+    if (regionIds.length) params.set("region_ids", regionIds.join(","));
+    if (categoryIds.length) params.set("category_ids", categoryIds.join(","));
+    return `${API_URL}/notification/notification/?${params.toString()}`;
+  }, [docType, regionIds, categoryIds]);
 
   // useFetch로 알림 목록 데이터 받아오기
   const { data: notificationData, isLoading } = useFetch(
-    `${API_URL}/notification/notification/?user_id=GUEST1`,
+    listUrl,
     {} // 초기값은 빈 객체로 설정
   );
 
   // 실제 알림 목록은 API 응답의 'results' 안에 들어있습니다.
   const notifications = notificationData?.results ?? [];
-
-  const handleCategoryChange = (category) => {
-    console.log("선택된 카테고리:", category);
-  };
-
-  const handleFilterChange = (filter) => {
-    console.log("선택된 필터:", filter);
-  };
 
   return (
     <>
@@ -39,10 +75,13 @@ export default function Notification() {
       <S.NotificationContainer>
         <CategoryBar onCategoryChange={handleCategoryChange} />
         <F.SmallFilterWrapper>
-          <SmallFilter sourceKey='user_regions' onChange={handleFilterChange} />
+          <SmallFilter
+            sourceKey='user_regions'
+            onChange={handleRegionsChange}
+          />
           <SmallFilter
             sourceKey='user_categories'
-            onChange={handleFilterChange}
+            onChange={handleCategoriesChange}
           />
         </F.SmallFilterWrapper>
 
