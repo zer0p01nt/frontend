@@ -1,12 +1,42 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { useFilterSelections, useGroups } from "../../utils/filter";
 import Button from "../../components/Button/Button";
 import * as S from "./FilterStyle";
 
-export default function Filter() {
+export default function Filter({ onChange }) {
   const { groups, isLoading } = useGroups();
   const { selected, toggleSelection } = useFilterSelections(groups);
   const [expanded, setExpanded] = useState(false); // 펼친 상태 관리
+
+  // 바깥 클릭 시 닫히도록 하기 위한 ref 추가
+  const ref = useRef(null)
+
+  // 바깥 클릭 시 닫힘
+  useEffect(() => {
+    if (!expanded) return
+
+    const onClickAway = (e) => {
+      // 필터 안쪽 클릭이면 냅둠
+      if (ref.current && ref.current.contains(e.target)) return
+      setExpanded(false)
+    }
+
+    window.addEventListener("mousedown", onClickAway)
+
+    return () => {
+      window.removeEventListener("mousedown", onClickAway)
+    }
+  }, [expanded])
+
+  // 현재 선택된 라벨 텍스트만으로 만든 배열 (부모 페이지에 전달)
+  const selectedLabels = useMemo(() => {
+    return groups.flatMap((g) => Array.from(selected[g.id] ?? []))
+  }, [groups, selected])
+
+  // 선택 변경 시 부모 페이지에 전달
+  useEffect(() => {
+    onChange?.(selectedLabels)
+  }, [selectedLabels, onChange])
 
   if (isLoading) return null;
 
@@ -20,7 +50,7 @@ export default function Filter() {
 
   return (
     <>
-      <S.ContentContainer>
+      <S.ContentContainer ref={ref}>
         <S.FilterContainer>
           {/* 일반 필터 (접었을 때) */}
           <S.NormalFilterWrapper>
@@ -56,7 +86,8 @@ export default function Filter() {
                 </S.DetailFilter>
               ))}
             </S.DetailFilterWrapper>
-            <S.FilterOverlay $expanded={expanded} />
+            {/* 오버레이 눌러도 닫히게 함 (이게 중요) */}
+            <S.FilterOverlay $expanded={expanded} onClick={() => setExpanded(false)} />
           </>
         )}
       </S.ContentContainer>
