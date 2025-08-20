@@ -1,4 +1,10 @@
-import React, { useRef, useState, useEffect, useCallback } from "react";
+import React, {
+  useRef,
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+} from "react";
 import Header from "../../components/Header/Header";
 import GoToTop from "../../components/GoToTop/GoToTop";
 import CategoryBar from "../../components/CategoryBar/CategoryBar";
@@ -10,6 +16,11 @@ import * as S from "./NewsStyle";
 import useFetch from "../../hooks/useFetch";
 import { makeBadges } from "../../utils/makeBadges";
 import { useNavigate } from "react-router-dom";
+import {
+  CATEGORY_TYPE_MAP,
+  NAME_CATEGORY_MAP,
+  NAME_REGION_MAP,
+} from "../../constants/maps";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -31,10 +42,53 @@ export default function News() {
   const [hasMore, setHasMore] = useState(true);
   const loadMoreRef = useRef(null); // 스크롤 감지를 위한 ref
 
-  const { data: postsData, isLoading: isPostsLoading } = useFetch(
-    hasMore ? `${API_URL}/documents/?page=${page}` : null,
-    {}
-  );
+  // 필터 관련 상태
+  // 모든 스크랩이면 undefined
+  const [docType, setDocType] = useState(undefined);
+  // 관심 지역 전체 || 모든 주제면 빈 배열
+  const [regionIds, setRegionIds] = useState([]);
+  const [categoryIds, setCategoryIds] = useState([]);
+
+  const handleCategoryChange = useCallback((label) => {
+    if (label === "모든 알림") setDocType(undefined);
+    else setDocType(CATEGORY_TYPE_MAP[label] ?? undefined);
+  }, []);
+
+  const handleFilter = useCallback((selected) => {
+    const rids = [];
+    const cids = [];
+    for (const s of selected) {
+      if (NAME_REGION_MAP[s]) rids.push(NAME_REGION_MAP[s]);
+      if (NAME_CATEGORY_MAP[s]) cids.push(NAME_CATEGORY_MAP[s]);
+    }
+
+    // 중복 제거
+    setRegionIds(Array.from(new Set(rids)));
+    setCategoryIds(Array.from(new Set(cids)));
+  }, []);
+
+  // 필터, 카테고리 변경 시 목록 리셋
+  useEffect(() => {
+    setPage(1);
+    setPosts([]);
+    setHasMore(true);
+  }, [docType, regionIds, categoryIds]);
+
+  // 필터, 카테고리로 조합한 쿼리
+  const filterQuery = useMemo(() => {
+    const params = new URLSearchParams();
+
+    if (docType) params.set("doc_type", docType);
+    if (regionIds.length) params.set("region_id", regionIds.join(","));
+    if (categoryIds.length) params.set("category", categoryIds.join(","));
+    params.set("page", String(page));
+
+    return `${API_URL}/documents/?${params.toString()}`;
+  }, [docType, regionIds, categoryIds, page]);
+
+  const listUrl = hasMore ? filterQuery : null;
+
+  const { data: postsData, isLoading: isPostsLoading } = useFetch(listUrl, {});
 
   useEffect(() => {
     if (postsData?.results) {
@@ -59,7 +113,7 @@ export default function News() {
     const option = {
       root: null,
       rootMargin: "20px",
-      threshold: 1.0,
+      threshold: 0.1,
     };
     const observer = new IntersectionObserver(handleObserver, option);
     if (loadMoreRef.current) observer.observe(loadMoreRef.current);
@@ -77,10 +131,6 @@ export default function News() {
     }
   };
 
-  const handleCategoryChange = (category) => {
-    console.log("선택된 카테고리:", category);
-  };
-
   return (
     <>
       <Header hasBack={false} title='소식' hasScrap={false} />
@@ -93,15 +143,13 @@ export default function News() {
                 <S.BannerSlide
                   key={item.id}
                   onClick={() => navigate(`/post/${item.id}`)}
+                  $image={item.image_url}
+                  $type={item.doc_type}
                 >
                   <S.BadgeWrapper>
                     {/* isFilled를 false로 하여 '칩' 스타일 적용 */}
                     {makeBadges(item).map((badge, index) => (
-                      <Badge
-                        key={index}
-                        color={badge.color}
-                        isFilled={false}
-                      >
+                      <Badge key={index} color={badge.color} isFilled={false}>
                         {badge.text}
                       </Badge>
                     ))}
@@ -118,20 +166,21 @@ export default function News() {
         <S.ContentSection>
           <CategoryBar onCategoryChange={handleCategoryChange} />
           <S.FilterWrapper>
-            <Filter />
+            <Filter onChange={handleFilter} />
           </S.FilterWrapper>
 
           {/* 3. 더미데이터를 실제 데이터로 교체 */}
-          {!isPostsLoading &&
-            posts.map((item) => (
-              <PostCard
-                key={item.id}
-                badges={makeBadges(item)}
-                title={item.doc_title}
-                date={item.pub_date.slice(0, 10)}
-                onClick={() => navigate(`/post/${item.id}`)}
-              />
-            ))}
+          {posts.map((item) => (
+            <PostCard
+              key={item.id}
+              badges={makeBadges(item)}
+              title={item.doc_title}
+              date={item.pub_date.slice(0, 10)}
+              onClick={() => navigate(`/post/${item.id}`)}
+              image={item.image_url}
+              type={item.doc_type}
+            />
+          ))}
           {/* 4. 무한 스크롤 감지를 위한 div */}
           <div ref={loadMoreRef} />
         </S.ContentSection>

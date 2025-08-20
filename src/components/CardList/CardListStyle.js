@@ -36,6 +36,12 @@ const baseListStyles = css`
     width: 72px;
     height: 72px;
     order: 2;
+
+    img {
+      width: 72px;
+      height: 72px;
+      border-radius: var(--border-radius-md);
+    }
   }
 `;
 
@@ -66,6 +72,11 @@ const variants = {
       width: 100%;
       height: 120px;
       margin-bottom: 12px;
+
+      img {
+        width: 100%;
+        height: 120px;
+      }
     }
   `,
 };

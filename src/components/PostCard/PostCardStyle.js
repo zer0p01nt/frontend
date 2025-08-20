@@ -23,6 +23,7 @@ export const BadgeWrapper = styled.div`
   align-items: flex-start;
   gap: 8px;
   margin-bottom: 12px;
+  flex-wrap: wrap;
 `;
 
 export const Title = styled.h3`
@@ -47,4 +48,11 @@ export const CardImage = styled.div`
   flex-shrink: 0;
   border-radius: var(--border-radius-md);
   background-color: var(--color-neutral-200);
+
+  img {
+    width: 72px;
+    height: 72px;
+    flex-shrink: 0;
+    border-radius: var(--border-radius-md);
+  }
 `;

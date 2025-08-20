@@ -1,14 +1,26 @@
 import React from "react";
 import * as S from "./PostCardStyle.js";
 import Badge from "../Badge/Badge";
+import { dummyImages } from "../../constants/dummyImages.js";
 
-export default function PostCard({ badges = [], title = "제목 없음", date = "" }) {
+export default function PostCard({
+  badges = [],
+  title = "제목 없음",
+  date = "",
+  onClick,
+  image,
+  type,
+}) {
   return (
-    <S.Container>
+    <S.Container onClick={onClick}>
       <S.ContentWrapper>
         <S.BadgeWrapper>
           {badges.map((badgeInfo, index) => (
-            <Badge key={index} color={badgeInfo.color} isFilled={badgeInfo.isFilled}>
+            <Badge
+              key={index}
+              color={badgeInfo.color}
+              isFilled={badgeInfo.isFilled}
+            >
               {badgeInfo.text}
             </Badge>
           ))}
@@ -17,7 +29,9 @@ export default function PostCard({ badges = [], title = "제목 없음", date = 
         {/* 날짜 데이터가 있을 때만 표시합니다 */}
         {date && <S.Date>{date}</S.Date>}
       </S.ContentWrapper>
-      <S.CardImage />
+      <S.CardImage>
+        <img src={image ?? dummyImages[type] ?? null} />
+      </S.CardImage>
     </S.Container>
   );
 }

@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useMemo, useCallback } from "react";
 import useFetch from "../../hooks/useFetch";
 
 import * as S from "./ScrapedChatbotStyle";
@@ -10,7 +10,7 @@ import GoToTop from "../../components/GoToTop/GoToTop";
 import Header from "../../components/Header/Header";
 import { ButtonWrapper } from "../../styles/ButtonCircle";
 import { useChatbotSmallFilter } from "../../utils/smallFilter";
-import { CATEGORY_OPTIONS } from "../../constants/maps";
+import { CATEGORY_OPTIONS, NAME_CATEGORY_MAP } from "../../constants/maps";
 import Button from "../../components/Button/Button";
 import ChatbotBox from "../../components/ChatbotBox/ChatbotBox";
 
@@ -20,28 +20,107 @@ import { emitScrapChange } from "../../utils/scrapChatbotEvent";
 import { chatbotScrapKey } from "../../utils/scrapChatbotKey";
 
 const API_URL = process.env.REACT_APP_API_URL;
+const PAGE_SIZE = 10;
+const ALL_CATEGORY_LABEL = "모든 주제";
 
 export default function ScrapedChatbots() {
   // 필터 관련
   const labels = CATEGORY_OPTIONS; // 모든 카테고리 배열
   const { selected, toggle } = useChatbotSmallFilter(labels, labels[0]);
+  const selectedLabels = useMemo(() => Array.from(selected), [selected]);
 
-  // 최신순, 오래된순 정렬 => 기본값은 최신순
+  // 정렬 - 드롭다운
   const [sortOrder, setSortOrder] = useState("최신순");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const handleSortChange = (label) => {
+    setSortOrder(label);
+    setIsDropdownOpen(false);
+  };
 
-  // 챗봇 스크랩 목록
-  const { data: chatbotdata, isLoading: isChatbotsLoading } = useFetch(
-    `${API_URL}/scrap/chatbot/?order=latest`
-  );
-  const scrapedChatbots = chatbotdata?.data?.results ?? [];
-
-  // 목록을 상태로 관리 -> 삭제하면 즉시 반영 (목록 데이터 === items)
-  const [items, setItems] = useState([]);
+  // 드롭다운 외부 클릭 닫기
   useEffect(() => {
-    setItems(scrapedChatbots);
-  }, [scrapedChatbots]);
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [dropdownRef]);
+
+  // 무한 스크롤 상태
+  const [page, setPage] = useState(1);
+  const [items, setItems] = useState([]);
+  const [hasMore, setHasMore] = useState(true);
+  const loadMoreRef = useRef(null);
+
+  // 필터, 정렬 변경 시 초기화
+  useEffect(() => {
+    setPage(1);
+    setItems([]);
+    setHasMore(true);
+    setOpenId(null); // 다 닫혀있도록
+  }, [sortOrder, selected]);
+
+  // 챗봇 스크랩 목록 - URL 쿼리스트링 조립
+  const listUrl = useMemo(() => {
+    const params = new URLSearchParams();
+    params.set("order", sortOrder);
+    // 모든 주제가 아닐 경우에만 카테고리 아이디 추가
+    const isAll = selected.has(ALL_CATEGORY_LABEL);
+    if (!isAll) {
+      const cids = selectedLabels
+        .map((label) => NAME_CATEGORY_MAP[label])
+        .filter(Boolean);
+      if (cids.length) params.set("category_id", cids.join(","));
+    }
+    params.set("page", String(page));
+    params.set("page_size", String(PAGE_SIZE));
+    return `${API_URL}/scrap/chatbot/?${params.toString()}`;
+  }, [sortOrder, selected, selectedLabels, page]);
+
+  const { data: chatbotdata, isLoading: isChatbotsLoading } = useFetch(
+    listUrl,
+    {}
+  );
+  const pageResults = chatbotdata?.data?.results ?? [];
+
+  // 응답 데이터 생기면 갱신
+  useEffect(() => {
+    if (!pageResults) return;
+
+    setItems((prev) => {
+      if (page === 1) return pageResults;
+      // 페이지마다 중복을 제거하고 합침
+      const map = new Map(prev.map((it) => [it.id, it]));
+      for (const it of pageResults) map.set(it.id, it);
+      return Array.from(map.values());
+    });
+
+    // 다음 페이지 여부 확인
+    const total = chatbotdata?.data?.count;
+    setHasMore(page * PAGE_SIZE < total);
+  }, [chatbotdata, page, pageResults]);
+
+  // 무한 스크롤
+  useEffect(() => {
+    const ref = loadMoreRef.current;
+    if (!ref) return;
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        const first = entries[0];
+        if (first.isIntersecting && hasMore && !isChatbotsLoading) {
+          setPage((prev) => prev + 1);
+        }
+      },
+      { root: null, rootMargin: "200px", threshold: 0 }
+    );
+
+    io.observe(ref);
+    return () => io.disconnect();
+  }, [hasMore, isChatbotsLoading]);
 
   // ChatbotBox 한 번에 하나만 열리도록
   const [openId, setOpenId] = useState(null);
@@ -74,43 +153,46 @@ export default function ScrapedChatbots() {
 
   // 챗봇 스크랩 삭제 로직
   const [isDeleting, setIsDeleting] = useState(false);
-  const handleDelete = async (id) => {
-    if (!id || isDeleting) return;
+  const handleDelete = useCallback(
+    async (id) => {
+      if (!id || isDeleting) return;
 
-    const ok = window.confirm("해당 챗봇 스크랩을 삭제하시겠습니까?");
-    if (!ok) return;
+      const ok = window.confirm("해당 챗봇 스크랩을 삭제하시겠습니까?");
+      if (!ok) return;
 
-    try {
-      setIsDeleting(true);
-      await deleteChatbotScrap(id);
+      try {
+        setIsDeleting(true);
+        await deleteChatbotScrap(id);
 
-      // items에서도 삭제
-      setItems((prev) => prev.filter((it) => it.id !== id));
+        // items에서도 삭제
+        setItems((prev) => prev.filter((it) => it.id !== id));
 
-      // 캐시에서 삭제
-      setDetailById((prev) => {
-        const { [id]: _removed, ...rest } = prev;
-        return rest;
-      });
+        // 캐시에서 삭제
+        setDetailById((prev) => {
+          const { [id]: _removed, ...rest } = prev;
+          return rest;
+        });
 
-      // 펼쳐져 있었으면 접기
-      setOpenId((prev) => (prev === id ? null : prev));
+        // 펼쳐져 있었으면 접기
+        setOpenId((prev) => (prev === id ? null : prev));
 
-      // detail에서 aiId, sessionId 추출 후 이벤트 보냄
-      const d = detailById[id];
-      const aiId = d?.ai_message; // 숫자
-      const sessionId = String(d?.chatbot_session ?? ""); // 문자열로 강제
-      if (Number.isFinite(aiId) && sessionId) {
-        localStorage.removeItem(chatbotScrapKey(sessionId, aiId));
-        emitScrapChange({ type: "delete", scrapId: id, sessionId, aiId });
+        // detail에서 aiId, sessionId 추출 후 이벤트 보냄
+        const d = detailById[id];
+        const aiId = d?.ai_message; // 숫자
+        const sessionId = String(d?.chatbot_session ?? ""); // 문자열로 강제
+        if (Number.isFinite(aiId) && sessionId) {
+          localStorage.removeItem(chatbotScrapKey(sessionId, aiId));
+          emitScrapChange({ type: "delete", scrapId: id, sessionId, aiId });
+        }
+      } catch (e) {
+        console.error(e);
+        alert("삭제 중 오류가 발생했습니다.");
+      } finally {
+        setIsDeleting(false);
       }
-    } catch (e) {
-      console.error(e);
-      alert("삭제 중 오류가 발생했습니다.");
-    } finally {
-      setIsDeleting(false);
-    }
-  };
+    },
+    [isDeleting, detailById]
+  );
 
   return (
     <>
@@ -160,24 +242,21 @@ export default function ScrapedChatbots() {
           </D.ResultHeader>
         </P.OrderContainer>
         <S.ContentContainer>
-          {!isChatbotsLoading && items && (
-            <>
-              {items.map((c) => (
-                <ChatbotBox
-                  key={c.id}
-                  id={c.id}
-                  categories={c.categories ?? []}
-                  title={c.summary}
-                  expanded={openId === c.id}
-                  onToggle={() => handleToggle(c.id)}
-                  onDelete={() => handleDelete(c.id)}
-                  detail={openId === c.id ? detail : null}
-                  loading={openId === c.id ? isDetailLoading : false}
-                  isDeleting={isDeleting}
-                />
-              ))}
-            </>
-          )}
+          {items.map((c) => (
+            <ChatbotBox
+              key={c.id}
+              id={c.id}
+              categories={c.categories ?? []}
+              title={c.summary}
+              expanded={openId === c.id}
+              onToggle={() => handleToggle(c.id)}
+              onDelete={() => handleDelete(c.id)}
+              detail={openId === c.id ? detail : null}
+              loading={openId === c.id ? isDetailLoading : false}
+              isDeleting={isDeleting}
+            />
+          ))}
+          <div ref={loadMoreRef} style={{ height: 1 }} />
         </S.ContentContainer>
       </P.ScrapedContainer>
     </>

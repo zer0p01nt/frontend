@@ -48,3 +48,11 @@ export const NAME_REGION_MAP = {
   종로구: 24,
   경기도: 85,
 };
+
+// 한글 카테고리명으로 카테고리 매핑
+export const CATEGORY_TYPE_MAP = {
+  "참여": "PARTICIPATION",
+  "공지": "NOTICE",
+  "고시/공고": "ANNOUNCEMENT",
+  "보고":"REPORT",
+}

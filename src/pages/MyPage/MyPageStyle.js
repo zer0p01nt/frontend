@@ -73,7 +73,7 @@ export const BadgeWrapper = styled.div`
   border: 1px solid var(--color-blue-50);
   background: var(--color-base-white);
   flex-wrap: wrap;
-  transform: translateY(-50%);
+  transform: translateY(-27px);
 `;
 
 export const SectionContainer = styled.div`

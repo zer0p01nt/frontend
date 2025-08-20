@@ -4,6 +4,7 @@ import {
   Title as PostCardTitle,
   Date as PostCardDate,
 } from "../../components/PostCard/PostCardStyle";
+import { dummyImages } from "../../constants/dummyImages";
 
 export const NewsContainer = styled.div`
   padding-top: 42px;
@@ -11,7 +12,6 @@ export const NewsContainer = styled.div`
 
 export const BannerSection = styled.section`
   position: relative;
-  background: #d9d9d9;
   height: 160px;
   padding: 0;
   margin: 0;
@@ -45,7 +45,8 @@ export const BannerSlide = styled.div`
   scroll-snap-align: start;
   height: 100%;
   padding: 20px 24px;
-  background: transparent;
+  /* 이미지가 있으면 이미지, 없는데 공문 타입이 있으면 타입 더미이미지, 타입도 없으면 그냥 빈공간 (오버레이로 회색처럼 보임) */
+  background: linear-gradient(0deg, rgba(0 0 0 / 0.2), rgba(0 0 0 / 0.2)), url(${({ $image, $type }) => $image ? $image : $type ? dummyImages[$type] : "transparent"}) center no-repeat;
   border-radius: 0;
 
   display: flex;

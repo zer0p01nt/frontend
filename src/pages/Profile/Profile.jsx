@@ -25,6 +25,9 @@ export default function Profile() {
   const [regionOpen, setRegionOpen] = useState(false);
   const [categoryOpen, setCategoryOpen] = useState(false);
 
+  // 서버 기준 이전의 region_id 저장 (region_id 바뀌는 오류 방지)
+  const initRegionIdRef = useRef("");
+
   // 선택 불가 지역 토스트 상태 관리
   const [toastShow, setToastShow] = useState(false);
 
@@ -41,6 +44,12 @@ export default function Profile() {
     if (!isProfileLoading && profile) {
       setRegions(profile.data.user_regions ?? []);
       setCategories(profile.data.user_categories ?? []);
+      // 초기 region_id 저장
+      const initKey = (profile.data.user_regions ?? [])
+        .map((r) => r.id)
+        .sort((a, b) => a - b)
+        .join(",");
+      initRegionIdRef.current = initKey;
     }
   }, [isProfileLoading, profile]);
 
@@ -68,6 +77,9 @@ export default function Profile() {
     if (!regionOpen) {
       setSearchResults([]);
       setValue("");
+      setPage(1);
+      setHasMore(false);
+      setIsFetchingNext(false);
     }
   }, [regionOpen]);
 
@@ -148,7 +160,13 @@ export default function Profile() {
       return;
     }
     // 이미 선택되어 있을 때
-    if (selectedRegionIds.has(id)) return;
+    if (
+      regions.some((r) => mapNameId(r.region.district) === id) ||
+      selectedRegionIds.has(id)
+    ) {
+      alert("이미 선택한 지역입니다.");
+      return;
+    }
 
     // 프로필에 추가
     setRegions((prev) => [...prev, { id, region: { district: raw.district } }]);
@@ -232,13 +250,33 @@ export default function Profile() {
       );
       const category_ids = hasAll ? [] : categories.map((c) => c?.category?.id);
 
+      // 현재 region_id key
+      const currentRegionKey = regions
+        .map((r) => r.id)
+        .sort((a, b) => a - b)
+        .join(",");
+      const regionsChanged = currentRegionKey !== initRegionIdRef.current;
+
+      // region은 변경된 경우에만 포함
       const body = {
-        name: "김덕사",
-        birth: "2000-01-01",
-        gender: "F",
+        name: profile?.data?.name,
+        birth: profile?.data?.birth,
+        gender: profile?.data?.gender,
         category_ids,
-        regions: regions.map((r) => ({ region_id: r.id, type: "관심지역" })),
+        ...(regionsChanged
+          ? {
+              regions: regions.map((r) => ({
+                region_id: r.id,
+                type: "관심지역",
+              })),
+            }
+          : {}),
       };
+
+      // 이제부터 이게 초기 region_id
+      if (regionsChanged) {
+        initRegionIdRef.current = currentRegionKey;
+      }
 
       await putProfile(body);
 
@@ -337,7 +375,10 @@ export default function Profile() {
                     {!isProfileLoading && profile && (
                       <>
                         {(regions ?? []).map((r) => (
-                          <B.SelectedBtnContainer style={{ boxShadow: "none" }}>
+                          <B.SelectedBtnContainer
+                            key={r.id}
+                            style={{ boxShadow: "none" }}
+                          >
                             {r.region?.district}
                           </B.SelectedBtnContainer>
                         ))}
@@ -366,7 +407,6 @@ export default function Profile() {
                             (r) => mapNameId(r.region.district) === id
                           ) ||
                             selectedRegionIds.has(id));
-                        const disabled = !!already;
 
                         return (
                           <S.SearchResult key={id ?? raw.region_code}>
@@ -374,7 +414,6 @@ export default function Profile() {
                             <B.HiddenLabel>
                               <S.HiddenInput
                                 type='button'
-                                disabled={disabled}
                                 onClick={() => addRegion(raw)}
                               />
                               <B.SelectedBtnContainer
@@ -423,7 +462,7 @@ export default function Profile() {
                       <S.OpenBtnList>
                         <S.SelectedList>
                           {categories.map((c) => (
-                            <B.HiddenLabel>
+                            <B.HiddenLabel key={c.category?.id}>
                               <S.HiddenInput
                                 type='button'
                                 id={c.category?.id}
@@ -476,7 +515,10 @@ export default function Profile() {
                     {!isProfileLoading && profile && (
                       <>
                         {(categories ?? []).map((c) => (
-                          <B.SelectedBtnContainer style={{ boxShadow: "none" }}>
+                          <B.SelectedBtnContainer
+                            key={c.id}
+                            style={{ boxShadow: "none" }}
+                          >
                             {c.category?.category_name}
                           </B.SelectedBtnContainer>
                         ))}

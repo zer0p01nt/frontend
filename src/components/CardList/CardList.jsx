@@ -1,6 +1,7 @@
 import React from "react";
 import * as S from "./CardListStyle.js";
 import Badge from "../Badge/Badge";
+import { dummyImages } from "../../constants/dummyImages.js";
 
 export default function CardList({
   badges = [],
@@ -9,6 +10,8 @@ export default function CardList({
   variant = "list",
   isUnread = false, // 안 읽음 상태 prop 추가
   onClick,
+  image,
+  type,
 }) {
   // 뱃지들을 렌더링하는 부분
   const badgeComponent = (
@@ -47,7 +50,9 @@ export default function CardList({
         </S.Title>
         <S.Date>{date}</S.Date>
       </S.ContentWrapper>
-      <S.CardImage />
+      <S.CardImage>
+        <img src={image ?? dummyImages[type] ?? null} />
+      </S.CardImage>
     </S.CardContainer>
   );
 }
