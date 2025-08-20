@@ -68,6 +68,9 @@ export default function Profile() {
     if (!regionOpen) {
       setSearchResults([]);
       setValue("");
+      setPage(1);
+      setHasMore(false);
+      setIsFetchingNext(false);
     }
   }, [regionOpen]);
 
@@ -430,7 +433,7 @@ export default function Profile() {
                       <S.OpenBtnList>
                         <S.SelectedList>
                           {categories.map((c) => (
-                            <B.HiddenLabel>
+                            <B.HiddenLabel key={c.category?.id}>
                               <S.HiddenInput
                                 type='button'
                                 id={c.category?.id}
