@@ -148,7 +148,13 @@ export default function Profile() {
       return;
     }
     // 이미 선택되어 있을 때
-    if (selectedRegionIds.has(id)) return;
+    if (
+      regions.some((r) => mapNameId(r.region.district) === id) ||
+      selectedRegionIds.has(id)
+    ) {
+      alert("이미 선택한 지역입니다.");
+      return;
+    }
 
     // 프로필에 추가
     setRegions((prev) => [...prev, { id, region: { district: raw.district } }]);
@@ -337,7 +343,10 @@ export default function Profile() {
                     {!isProfileLoading && profile && (
                       <>
                         {(regions ?? []).map((r) => (
-                          <B.SelectedBtnContainer style={{ boxShadow: "none" }}>
+                          <B.SelectedBtnContainer
+                            key={r.id}
+                            style={{ boxShadow: "none" }}
+                          >
                             {r.region?.district}
                           </B.SelectedBtnContainer>
                         ))}
@@ -366,7 +375,6 @@ export default function Profile() {
                             (r) => mapNameId(r.region.district) === id
                           ) ||
                             selectedRegionIds.has(id));
-                        const disabled = !!already;
 
                         return (
                           <S.SearchResult key={id ?? raw.region_code}>
@@ -374,7 +382,6 @@ export default function Profile() {
                             <B.HiddenLabel>
                               <S.HiddenInput
                                 type='button'
-                                disabled={disabled}
                                 onClick={() => addRegion(raw)}
                               />
                               <B.SelectedBtnContainer
@@ -476,7 +483,10 @@ export default function Profile() {
                     {!isProfileLoading && profile && (
                       <>
                         {(categories ?? []).map((c) => (
-                          <B.SelectedBtnContainer style={{ boxShadow: "none" }}>
+                          <B.SelectedBtnContainer
+                            key={c.id}
+                            style={{ boxShadow: "none" }}
+                          >
                             {c.category?.category_name}
                           </B.SelectedBtnContainer>
                         ))}
