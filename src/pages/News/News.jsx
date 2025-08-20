@@ -59,7 +59,7 @@ export default function News() {
     const option = {
       root: null,
       rootMargin: "20px",
-      threshold: 1.0,
+      threshold: 0.1,
     };
     const observer = new IntersectionObserver(handleObserver, option);
     if (loadMoreRef.current) observer.observe(loadMoreRef.current);
@@ -93,6 +93,8 @@ export default function News() {
                 <S.BannerSlide
                   key={item.id}
                   onClick={() => navigate(`/post/${item.id}`)}
+                  $image={item.image_url}
+                  $type={item.doc_type}
                 >
                   <S.BadgeWrapper>
                     {/* isFilled를 false로 하여 '칩' 스타일 적용 */}
@@ -118,18 +120,17 @@ export default function News() {
           </S.FilterWrapper>
 
           {/* 3. 더미데이터를 실제 데이터로 교체 */}
-          {!isPostsLoading &&
-            posts.map((item) => (
-              <PostCard
-                key={item.id}
-                badges={makeBadges(item)}
-                title={item.doc_title}
-                date={item.pub_date.slice(0, 10)}
-                onClick={() => navigate(`/post/${item.id}`)}
-                image={item.image_url}
-                type={item.doc_type}
-              />
-            ))}
+          {posts.map((item) => (
+            <PostCard
+              key={item.id}
+              badges={makeBadges(item)}
+              title={item.doc_title}
+              date={item.pub_date.slice(0, 10)}
+              onClick={() => navigate(`/post/${item.id}`)}
+              image={item.image_url}
+              type={item.doc_type}
+            />
+          ))}
           {/* 4. 무한 스크롤 감지를 위한 div */}
           <div ref={loadMoreRef} />
         </S.ContentSection>
