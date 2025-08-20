@@ -1,8 +1,8 @@
 import * as S from "./ShareToastStyle";
 
-export default function ShareToast() {
+export default function ShareToast({ isVisible }) {
   return (
-    <S.ToastContainer>
+    <S.ToastContainer $isVisible={isVisible}>
       <S.CheckIcon />
       <S.TextBox>
         <S.TextTitle>링크가 복사됐어요!</S.TextTitle>
