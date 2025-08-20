@@ -146,6 +146,8 @@ export default function Home() {
                     title={item.doc_title}
                     date={item.pub_date.slice(0, 10)}
                     onClick={() => navigate(`/post/${item.id}`)}
+                    image={item.image_url}
+                    type={item.doc_type}
                   />
                 ))}
             </S.CardListWrapper>
@@ -193,6 +195,8 @@ export default function Home() {
                     title={item.doc_title}
                     date={item.pub_date.slice(0, 10)}
                     onClick={() => navigate(`/post/${item.id}`)}
+                    image={item.image_url}
+                    type={item.doc_type}
                   />
                 ))}
             </S.CardListWrapper>

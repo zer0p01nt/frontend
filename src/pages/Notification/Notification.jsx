@@ -59,6 +59,8 @@ export default function Notification() {
                 date={item.pub_date.slice(0, 10)} // 실제 날짜 데이터
                 isUnread={!item.is_read} // '읽음' 상태의 반대로 '안읽음' 표시
                 onClick={() => navigate(`/post/${item.id}`)} // 클릭 시 상세 페이지로 이동
+                image={item.image_url}
+                type={item.doc_type}
               />
             ))
           ) : (

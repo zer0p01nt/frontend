@@ -97,6 +97,8 @@ export default function MyPage() {
                         date={p.pub_date.slice(0, 10)}
                         key={p.id}
                         onClick={() => navigate(`/post/${p.document}`)}
+                        image={p.image_url}
+                        type={p.doc_type}
                       />
                     ))}
                   </>

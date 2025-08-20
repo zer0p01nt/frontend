@@ -97,11 +97,7 @@ export default function News() {
                   <S.BadgeWrapper>
                     {/* isFilled를 false로 하여 '칩' 스타일 적용 */}
                     {makeBadges(item).map((badge, index) => (
-                      <Badge
-                        key={index}
-                        color={badge.color}
-                        isFilled={false}
-                      >
+                      <Badge key={index} color={badge.color} isFilled={false}>
                         {badge.text}
                       </Badge>
                     ))}
@@ -130,6 +126,8 @@ export default function News() {
                 title={item.doc_title}
                 date={item.pub_date.slice(0, 10)}
                 onClick={() => navigate(`/post/${item.id}`)}
+                image={item.image_url}
+                type={item.doc_type}
               />
             ))}
           {/* 4. 무한 스크롤 감지를 위한 div */}

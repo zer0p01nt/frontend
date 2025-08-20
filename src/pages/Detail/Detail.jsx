@@ -192,6 +192,7 @@ export default function Detail() {
                   date={doc.pub_date.slice(0, 10)}
                   key={doc.id}
                   onClick={() => navigate(`/post/${doc.id}`)}
+                  type={post.doc_type}
                 />
               ))}
             </>

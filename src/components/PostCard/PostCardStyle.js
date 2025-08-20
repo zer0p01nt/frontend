@@ -47,4 +47,11 @@ export const CardImage = styled.div`
   flex-shrink: 0;
   border-radius: var(--border-radius-md);
   background-color: var(--color-neutral-200);
+
+  img {
+    width: 72px;
+    height: 72px;
+    flex-shrink: 0;
+    border-radius: var(--border-radius-md);
+  }
 `;
