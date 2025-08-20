@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import Header from "../../components/Header/Header";
 import GoToTop from "../../components/GoToTop/GoToTop";
 import CategoryBar from "../../components/CategoryBar/CategoryBar";
@@ -26,8 +26,8 @@ export default function Notification() {
   // 모든 스크랩이면 undefined
   const [docType, setDocType] = useState(undefined);
   // 유저 프로필에 있는 것만 id 형태로 보관
-  const [regionIds, setRegionIds] = useState([]);
-  const [categoryIds, setCategoryIds] = useState([]);
+  const [regionKey, setRegionKey] = useState("");
+  const [categoryKey, setCategoryKey] = useState("");
 
   // 필터, 카테고리바 변경
   const handleCategoryChange = (category) => {
@@ -35,19 +35,25 @@ export default function Notification() {
     else setDocType(CATEGORY_TYPE_MAP[category] ?? undefined);
   };
 
-  const handleRegionsChange = (labels) => {
-    const ids = Array.from(
-      new Set(labels.map((l) => NAME_REGION_MAP[l]).filter(Boolean))
-    );
-    setRegionIds(ids);
-  };
+  const handleRegionsChange = useCallback((labels) => {
+    const key = [
+      ...new Set(labels.map((l) => NAME_REGION_MAP[l]).filter(Number.isFinite)),
+    ]
+      .sort((a, b) => a - b)
+      .join(",");
+    setRegionKey((prev) => (prev === key ? prev : key));
+  }, []);
 
-  const handleCategoriesChange = (labels) => {
-    const ids = Array.from(
-      new Set(labels.map((lab) => NAME_CATEGORY_MAP[lab]).filter(Boolean))
-    );
-    setCategoryIds(ids);
-  };
+  const handleCategoriesChange = useCallback((labels) => {
+    const key = [
+      ...new Set(
+        labels.map((l) => NAME_CATEGORY_MAP[l]).filter(Number.isFinite)
+      ),
+    ]
+      .sort((a, b) => a - b)
+      .join(",");
+    setCategoryKey((prev) => (prev === key ? prev : key));
+  }, []);
 
   // URL 조립
   const listUrl = useMemo(() => {
@@ -55,10 +61,10 @@ export default function Notification() {
     params.set("user_id", "GUEST1"); // 고정
     params.set("page", 1); // 일단 고정
     if (docType) params.set("doc_type", docType);
-    if (regionIds.length) params.set("region_ids", regionIds.join(","));
-    if (categoryIds.length) params.set("category_ids", categoryIds.join(","));
+    if (regionKey) params.set("region_ids", regionKey);
+    if (categoryKey) params.set("category_ids", categoryKey);
     return `${API_URL}/notification/notification/?${params.toString()}`;
-  }, [docType, regionIds, categoryIds]);
+  }, [docType, regionKey, categoryKey]);
 
   // useFetch로 알림 목록 데이터 받아오기
   const { data: notificationData, isLoading } = useFetch(
