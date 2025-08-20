@@ -18,7 +18,7 @@ export default function Notification() {
 
   // useFetch로 알림 목록 데이터 받아오기
   const { data: notificationData, isLoading } = useFetch(
-    `${API_URL}/documents/notifications/`,
+    `${API_URL}/notification/notification/?user_id=GUEST1`,
     {} // 초기값은 빈 객체로 설정
   );
 

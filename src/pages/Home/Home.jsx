@@ -8,6 +8,7 @@ import useProfile from "../../hooks/useProfile.js";
 import useFetch from "../../hooks/useFetch.js";
 import { makeBadges } from "../../utils/makeBadges.js";
 import MoreBtn from "../../components/MoreBtn/MoreBtn.jsx";
+import { NAME_REGION_MAP } from "../../constants/maps.js";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -38,14 +39,15 @@ export default function Home() {
 
   // 3. [다가오는 관심 일정] API 연동
   const { data: upcomingSchedulesData, isLoading: isSchedulesLoading } =
-    useFetch(`${API_URL}/documents/upcoming-schedules/`, {});
+    useFetch(`${API_URL}/documents/upcoming-deadlines/`, {});
   const upcomingSchedules = upcomingSchedulesData?.results ?? [];
 
   // 4. [관심 지역 최근 소식] API 연동
-  const regionId = profile?.data?.user_regions?.[0]?.region?.id;
+  const markedRegion = profile?.data?.user_regions?.[0]?.region?.district;
+  const markedRegionId = markedRegion ? NAME_REGION_MAP[markedRegion] : null;
   const newsUrl =
-    !isProfileLoading && regionId
-      ? `${API_URL}/documents/region/${regionId}/recent/`
+    !isProfileLoading && markedRegionId
+      ? `${API_URL}/documents/region/${markedRegionId}/recent/`
       : null;
   const { data: recentNewsData, isLoading: isNewsLoading } = useFetch(
     newsUrl,
@@ -77,11 +79,13 @@ export default function Home() {
                 <S.BadgeWrapper>
                   {!isProfileLoading && profile && (
                     <>
-                      {(profile.data.user_regions ?? []).slice(0, 2).map((r) => (
-                        <Badge color='blue' isFilled={false} key={r.id}>
-                          {r.region?.district}
-                        </Badge>
-                      ))}
+                      {(profile.data.user_regions ?? [])
+                        .slice(0, 2)
+                        .map((r) => (
+                          <Badge color='blue' isFilled={false} key={r.id}>
+                            {r.region?.district}
+                          </Badge>
+                        ))}
                       {profile.data.user_regions.length >= 3 && (
                         <Badge color='pink' isFilled={false}>
                           +{profile.data.user_regions.length - 2}
@@ -93,15 +97,17 @@ export default function Home() {
                 <S.BadgeWrapper>
                   {!isProfileLoading && profile && (
                     <>
-                      {(profile.data.user_categories ?? []).slice(0, 2).map((c) => (
-                        <Badge
-                          color='teal'
-                          isFilled={false}
-                          key={c.category?.id}
-                        >
-                          {c.category?.category_name}
-                        </Badge>
-                      ))}
+                      {(profile.data.user_categories ?? [])
+                        .slice(0, 2)
+                        .map((c) => (
+                          <Badge
+                            color='teal'
+                            isFilled={false}
+                            key={c.category?.id}
+                          >
+                            {c.category?.category_name}
+                          </Badge>
+                        ))}
                       {profile.data.user_categories.length >= 3 && (
                         <Badge color='teal' isFilled={false}>
                           +{profile.data.user_categories.length - 2}

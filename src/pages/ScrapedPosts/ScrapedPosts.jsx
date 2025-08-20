@@ -96,7 +96,7 @@ export default function ScrapedPosts() {
                   title={p.doc_title}
                   date={p.pub_date.slice(0, 10)}
                   key={p.id}
-                  onClick={() => navigate(`/post/${p.id}`)}
+                  onClick={() => navigate(`/post/${p.document}`)}
                 />
               ))}
             </>
