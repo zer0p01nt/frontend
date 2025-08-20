@@ -16,6 +16,7 @@ import SearchInputField from "../../components/SearchInputField/SearchInputField
 
 import close from "../../assets/Profile/close_small.svg";
 import add from "../../assets/Profile/add.svg";
+import DisableToast from "../../components/DisableToast/DisableToast.jsx";
 
 const ALL_CATEGORY_LABEL = "모든 주제";
 const PAGE_SIZE = 10;
@@ -23,6 +24,9 @@ const PAGE_SIZE = 10;
 export default function Profile() {
   const [regionOpen, setRegionOpen] = useState(false);
   const [categoryOpen, setCategoryOpen] = useState(false);
+
+  // 선택 불가 지역 토스트 상태 관리
+  const [toastShow, setToastShow] = useState(false);
 
   // 지역 검색 입력값
   const [value, setValue] = useState("");
@@ -138,11 +142,14 @@ export default function Profile() {
     // 매핑에 없을 때
     const id = mapNameId(raw.district);
     if (!id) {
-      alert("등록되지 않은 지역입니다. 개발 예정입니다.");
+      setToastShow(true);
+      // 1초 후 사라짐
+      setTimeout(() => setToastShow(false), 1000);
       return;
     }
     // 이미 선택되어 있을 때
     if (selectedRegionIds.has(id)) return;
+
     // 프로필에 추가
     setRegions((prev) => [...prev, { id, region: { district: raw.district } }]);
   };
@@ -249,6 +256,8 @@ export default function Profile() {
     <>
       {/* fixed 되는 컴포넌트들 */}
       <Header hasBack={true} title='정보 수정' hasScrap={false} />
+      <DisableToast isVisible={toastShow} />
+
       <S.ProfileContainer>
         {!isProfileLoading && profile && (
           <S.InfoContainer>
@@ -351,7 +360,12 @@ export default function Profile() {
                     <S.SearchResultBox>
                       {searchResults.map((raw) => {
                         const id = mapNameId(raw.district);
-                        const already = id && selectedRegionIds.has(id);
+                        const already =
+                          id &&
+                          (regions.some(
+                            (r) => mapNameId(r.region.district) === id
+                          ) ||
+                            selectedRegionIds.has(id));
                         const disabled = !!already;
 
                         return (
@@ -369,7 +383,7 @@ export default function Profile() {
                                   boxShadow: "none",
                                 }}
                               >
-                                선택
+                                {already ? "선택됨" : "선택"}
                               </B.SelectedBtnContainer>
                             </B.HiddenLabel>
                           </S.SearchResult>
