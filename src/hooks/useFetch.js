@@ -20,8 +20,12 @@ export default function useFetch(url, initialValue = null) {
         const json = await res.json();
         setData(json);
       } catch (e) {
-        console.error(e);
-      } finally {
+        // AbortController로 이전 요청이 취소된 경우엔 콘솔에 띄우지 않음
+        if (e?.name !== "AbortError") {
+          console.error(e);
+        }
+      } // 이미 abort된 요청이면 로딩 플래그를 건드리지 않음
+      if (!ac.signal.aborted) {
         setIsLoading(false);
       }
     })();
