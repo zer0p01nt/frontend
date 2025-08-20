@@ -9,11 +9,19 @@ export const ToastContainer = styled.div`
   align-items: center;
   gap: 12px;
   position: fixed;
-  bottom: 12px;
+  bottom: 36px;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%)
+    translateY(${({ $isVisible }) => ($isVisible ? "0" : "8px")});
+  opacity: ${({ $isVisible }) => ($isVisible ? 1 : 0)};
+  visibility: ${({ $isVisible }) => ($isVisible ? "visible" : "hidden")};
+
   border-radius: var(--border-radius-2xl);
   background: var(--color-blue-50);
+
+  transition: opacity 0.25s ease-in-out, transform 0.25s ease-in-out,
+    visibility 0.25s ease-in-out;
+  z-index: 10000;
 `;
 
 export const CheckIcon = styled.div`
