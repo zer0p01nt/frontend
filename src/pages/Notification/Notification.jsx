@@ -59,7 +59,7 @@ export default function Notification() {
   const listUrl = useMemo(() => {
     const params = new URLSearchParams();
     params.set("user_id", "GUEST1"); // 고정
-    params.set("page", 1); // 일단 고정
+    params.set("page", "1"); // 일단 고정
     if (docType) params.set("doc_type", docType);
     if (regionKey) params.set("region_ids", regionKey);
     if (categoryKey) params.set("category_ids", categoryKey);
