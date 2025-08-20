@@ -25,6 +25,9 @@ export default function Profile() {
   const [regionOpen, setRegionOpen] = useState(false);
   const [categoryOpen, setCategoryOpen] = useState(false);
 
+  // 서버 기준 이전의 region_id 저장 (region_id 바뀌는 오류 방지)
+  const initRegionIdRef = useRef("");
+
   // 선택 불가 지역 토스트 상태 관리
   const [toastShow, setToastShow] = useState(false);
 
@@ -41,6 +44,12 @@ export default function Profile() {
     if (!isProfileLoading && profile) {
       setRegions(profile.data.user_regions ?? []);
       setCategories(profile.data.user_categories ?? []);
+      // 초기 region_id 저장
+      const initKey = (profile.data.user_regions ?? [])
+        .map((r) => r.id)
+        .sort((a, b) => a - b)
+        .join(",");
+      initRegionIdRef.current = initKey;
     }
   }, [isProfileLoading, profile]);
 
@@ -241,13 +250,33 @@ export default function Profile() {
       );
       const category_ids = hasAll ? [] : categories.map((c) => c?.category?.id);
 
+      // 현재 region_id key
+      const currentRegionKey = regions
+        .map((r) => r.id)
+        .sort((a, b) => a - b)
+        .join(",");
+      const regionsChanged = currentRegionKey !== initRegionIdRef.current;
+
+      // region은 변경된 경우에만 포함
       const body = {
-        name: "김덕사",
-        birth: "2000-01-01",
-        gender: "F",
+        name: profile?.data?.name,
+        birth: profile?.data?.birth,
+        gender: profile?.data?.gender,
         category_ids,
-        regions: regions.map((r) => ({ region_id: r.id, type: "관심지역" })),
+        ...(regionsChanged
+          ? {
+              regions: regions.map((r) => ({
+                region_id: r.id,
+                type: "관심지역",
+              })),
+            }
+          : {}),
       };
+
+      // 이제부터 이게 초기 region_id
+      if (regionsChanged) {
+        initRegionIdRef.current = currentRegionKey;
+      }
 
       await putProfile(body);
 
