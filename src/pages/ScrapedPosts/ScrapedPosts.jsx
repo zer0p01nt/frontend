@@ -105,7 +105,7 @@ export default function ScrapedPosts() {
     params.set("page_size", PAGE_SIZE);
 
     return `${API_URL}/scrap/documents/?${params.toString()}`;
-  }, [order, docType, regionIds, categoryIds]);
+  }, [order, docType, regionIds, categoryIds, page]);
 
   // 공문 스크랩 (URL 바뀔 때마다)
   const { data: postdata, isLoading: isPostsLoading } = useFetch(listUrl, {});
