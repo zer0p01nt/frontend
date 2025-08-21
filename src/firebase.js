@@ -12,4 +12,4 @@ const firebaseConfig = {
 };
 
 export const fbApp = initializeApp(firebaseConfig);
-const analytics = getAnalytics(fbApp);
+// const analytics = getAnalytics(fbApp);

@@ -1,5 +1,3 @@
-import firebase from "firebase/compat/app";
-
 importScripts(
   "https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"
 );
@@ -20,18 +18,35 @@ firebase.initializeApp({
 const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage((payload) => {
-  const { title, body, image } = payload.notification || {};
-  self.ServiceWorkerRegistration.showNotification(title || "알림", {
-    body,
-    icon: "/logo192.png",
-    image,
-    data: payload.data || {},
-  });
+  const n = payload.notification || {};
+  const d = payload.data || {};
+
+  const title = n.title || d.title || "알림";
+  const options = {
+    body: n.body || d.body || "",
+    icon: n.icon || "/logo192.png",
+    image: n.image,
+    data: d,
+  };
+
+  console.log("[SW] onBackgroundMessage payload: ", payload);
+  self.registration.showNotification(title, options);
 });
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
   const url =
     event.notification?.data?.link || event.notification?.data?.route || "/";
-  event.waitUntil(UNSAFE_createClientRoutes.openWindow(url));
+  event.waitUntil(
+    self.clients
+      .matchAll({ type: "window", includeUncontrolled: true })
+      .then((clientsArr) => {
+        // 열려있는 탭이 있으면 포커스, 없으면 새 창
+        for (const client of clientsArr) {
+          // 같은 오리진 탭이 있으면 우선 포커스
+          if ("focus" in client) return client.focus();
+        }
+        if (self.clients.openWindow) return self.clients.openWindow(url);
+      })
+  );
 });

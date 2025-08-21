@@ -9,10 +9,10 @@ const LS_KEY = "fcm_web_token";
 export async function ensureSw() {
   if (!("serviceWorker" in navigator)) throw new Error("SW 미지원");
 
-  const existed = await navigator.serviceWorker.getRegistration(SW_URL);
-  if (existed) return existed;
+  const existed = await navigator.serviceWorker.getRegistration();
+  if (!existed) return navigator.serviceWorker.register(SW_URL);
 
-  return navigator.serviceWorker.register(SW_URL);
+  return navigator.serviceWorker.ready;
 }
 
 export async function getFcmToken() {
@@ -32,7 +32,29 @@ export async function getFcmToken() {
 
 export function onForegroundMessage(handler) {
   const messaging = getMessaging(fbApp);
-  return onMessage(messaging, handler);
+  return onMessage(messaging, async (p) => {
+    try {
+      if (
+        Notification.permission === "granted" &&
+        "serviceWorker" in navigator
+      ) {
+        const reg = await navigator.serviceWorker.ready;
+        const n = p.notification || {};
+        const d = p.data || {};
+        const title = n.title || d.title || "알림";
+        const body = n.body || d.body || "";
+        await reg.showNotification(title, {
+          body,
+          icon: n.icon || "/logo192.png",
+          image: n.image,
+          data: d,
+        });
+      }
+    } catch (e) {
+      console.error("[onMessage showNotification error]", e);
+    }
+    handler?.(p);
+  });
 }
 
 // FCM 토큰 등록 API 연결

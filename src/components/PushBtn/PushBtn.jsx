@@ -3,14 +3,6 @@ import { onForegroundMessage, triggerTestPush } from "../../fcm";
 import { ButtonCircle } from "../../styles/ButtonCircle";
 
 export default function PushBtn() {
-  // 포그라운드 수신 콘솔 확인용
-  useEffect(() => {
-    const unsub = onForegroundMessage((p) => {
-      console.log("Foreground - FCM : ", p);
-    });
-    return () => unsub();
-  }, []);
-
   const handleClick = async () => {
     try {
       if (!("serviceWorker" in navigator)) throw new Error("SW 미지원");
