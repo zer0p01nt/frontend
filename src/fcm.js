@@ -6,6 +6,18 @@ const API_URL = process.env.REACT_APP_API_URL;
 const SW_URL = "/firebase-messaging-sw.js";
 const LS_KEY = "fcm_web_token";
 
+function buildNoticeFromPayload(p) {
+  const n = p?.notification ?? {};
+  const d = p?.data ?? {};
+  const title = String(n.title ?? d.title ?? "알림");
+  const body = String(n.body ?? d.body ?? "");
+  const icon = n.icon ?? "/logo192.png";
+  const image = n.image ?? d.image;
+  const opts = { body, icon, data: d };
+  if (image) opts.image = image;
+  return { title, opts };
+}
+
 export async function ensureSw() {
   if (!("serviceWorker" in navigator)) throw new Error("SW 미지원");
 
@@ -39,16 +51,8 @@ export function onForegroundMessage(handler) {
         "serviceWorker" in navigator
       ) {
         const reg = await navigator.serviceWorker.ready;
-        const n = p.notification || {};
-        const d = p.data || {};
-        const title = n.title || d.title || "알림";
-        const body = n.body || d.body || "";
-        await reg.showNotification(title, {
-          body,
-          icon: n.icon || "/logo192.png",
-          image: n.image,
-          data: d,
-        });
+        const { title, opts } = buildNoticeFromPayload(p);
+        await reg.showNotification(title, opts);
       }
     } catch (e) {
       console.error("[onMessage showNotification error]", e);

@@ -17,20 +17,30 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
+function buildNotice(payload) {
+  const n = payload?.notification ?? {};
+  const d = payload?.data ?? {};
+  const title = String(n.title ?? d.title ?? "알림");
+  const body = String(n.body ?? d.body ?? "");
+  const icon = n.icon ?? "/logo192.png";
+  const image = n.image ?? d.image;
+  const opts = { body, icon, data: d };
+  if (image) opts.image = image;
+  return { title, opts };
+}
+
 messaging.onBackgroundMessage((payload) => {
-  const n = payload.notification || {};
-  const d = payload.data || {};
+  if (payload?.notification) {
+    console.log(
+      "[SW] notification payload (auto shown by browser)",
+      payload.notification
+    );
+    return;
+  }
 
-  const title = n.title || d.title || "알림";
-  const options = {
-    body: n.body || d.body || "",
-    icon: n.icon || "/logo192.png",
-    image: n.image,
-    data: d,
-  };
-
-  console.log("[SW] onBackgroundMessage payload: ", payload);
-  self.registration.showNotification(title, options);
+  const { title, opts } = buildNotice(payload);
+  console.log("[SW] data-only payload", payload);
+  self.registration.showNotification(title, opts);
 });
 
 self.addEventListener("notificationclick", (event) => {
