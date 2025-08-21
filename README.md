@@ -5,30 +5,36 @@
 ```
 git clone https://github.com/2025-LIKELION-HACKATHON-NIEUNDASEOT/frontend.git
 cd frontend
-git checkout develop
 npm install
 npm start
 ```
 
 
 ## 참고 사항
-- 프론트엔드 개발자 2명만 주로 쓰는 레포이므로, 이슈 기능은 쓰지 않아도 무방합니다.
-  - 이슈를 쓰지 않는 경우, 브랜치명은 "feat/기능이름" 정도로만 해도 충분합니다.
-  - 아래 브랜치 전략은 참고사항으로만 봐주세요.
-- 마찬가지로 2명만 주로 쓰는 레포이므로, **PR은 코드 리뷰 없이 스스로 Merge하면 됩니다!**
-- **배포 전까지 모든 PR은 main이 아닌 develop으로 보내주세요.** 혹시나 하는 상황을 대비하기 위함입니다.
-  - 마찬가지로 서로 다른 기능에 대해 새로 브랜치를 팔 때도 develop에서 파 주세요.
+- 배포 이후에는 PR main으로 보내도 괜찮습니다.
+- 간단한(혹은 시급한...) 버그 수정은 main으로 push 해도 됩니다. 기능적으로 수정한 부분이 있다면 신중하게 부탁드립니다.
 - **GoToTop 버튼은 꼭 ButtonWrapper로 감싸서 사용해주세요! 참고 : https://github.com/2025-LIKELION-HACKATHON-NIEUNDASEOT/frontend/pull/6**
 - 오류가 발생하거나 상의해야 할 상황이 생기면 언제든 카톡, 디스코드!! 😉😉
 
 
-## 작업 전까지 해야 할 것!
-- [x] CSS는 어떤 식으로 작업할지 정하기 : **styled-components**
-- [x] develop 브랜치 생성
-- [x] 더미 데이터 생성 : API 명세서 바탕으로 MockData 생성
-- [x] App.js Route 설정
-- [x] 역할 분담 : 홈 + 검색 + 알림 + 소식 / 본문 + 챗봇 + 마이페이지
-- [x] 작업 시작~
+## 기술 스택 (추후 정리 예정)
+|용도|사용한 스택|
+|-----|-----|
+|사용 언어|<img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=JavaScript&logoColor=white">|
+|라이브러리|<img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=React&logoColor=white">|
+|라우팅|<img src="https://img.shields.io/badge/reactrouter-CA4245?style=for-the-badge&logo=reactrouter&logoColor=white">|
+|개발 도구|<img src="https://img.shields.io/badge/createreactapp-09D3AC?style=for-the-badge&logo=createreactapp&logoColor=white">|
+|스타일링|<img src="https://img.shields.io/badge/StyledComponents-DB7093?style=for-the-badge&logo=styledcomponents&logoColor=white"/>|
+|배포|<img src="https://img.shields.io/badge/vercel-000000?style=for-the-badge&logo=vercel&logoColor=white">|
+|CI/CD|<img src="https://img.shields.io/badge/githubactions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white">|
+|푸시 알림|<img src="https://img.shields.io/badge/firebase-DD2C00?style=for-the-badge&logo=firebase&logoColor=white">|
+
+
+## 역할 분담
+|<a href="https://github.com/gogogo386"><img src="https://avatars.githubusercontent.com/u/165040142?v=4" width="200" /></a>|<a href="https://github.com/zer0p01nt"><img src="https://avatars.githubusercontent.com/u/189887138?v=4" width="200" /></a>|
+|:-------:|:--------:|
+|고권혜|백민영|
+|역할을 자유롭게 작성해 주세요|역할을 자유롭게 작성해 주세요|
 
 
 ## 커밋 메세지 컨벤션
@@ -77,7 +83,7 @@ chore/56/update-eslint  // eslint 설정 수정
 ```
 
 
-## 폴더 구조 (develop 기준. 추후 수정 예정)
+## 폴더 구조 (추후 수정 예정)
 ```
 frontend/
 ├─ .github/ (이슈 템플릿, PR 템플릿)
@@ -85,18 +91,23 @@ frontend/
 │  │  ├─ config.yml
 │  │  └─ issue_template.md
 │  │
+│  ├─ workflows
+│  │  └─ deploy.yml (CI/CD)
+│  │
 │  └─ pull_request_template.md
 │                
-├─ public/ (추후 PWA 관련 파일 추가 필요)
-│  ├─ data/ (정적 경로에서 MockData 관리)
+├─ public/
+│  ├─ data/ (Mockdata 폴더 : 추후 삭제 예정)
 │  │  ├─ CardList.json
-│  │  └─ Detail.json
+│  │  ├─ Detail.json
+│  │  └─ EachDetail.json
 │  │
+│  ├─ favicons (favicon, 웹앱 아이콘 등 관리)
+│  │      
 │  ├─ fonts/ (정적 경로에서 폰트 관리)
 │  │  ├─ fonts.css
 │  │  └─ PretendardVariable.woff2
-│  │               
-│  ├─ favicon.ico     
+│  │                 
 │  ├─ index.html  
 │  ├─ logo192.png
 │  ├─ logo512.png
@@ -112,17 +123,21 @@ frontend/
 │  │
 │  ├─ pages/ (홈 화면 등 페이지 파일)             
 │  │
-│  ├─ services/ (푸시 알림 등 서비스 관련 파일)         
+│  ├─ services/ (fetch 후 데이터 정제 로직 등 서비스 관련 파일)         
 │  │
 │  ├─ styles/ (css 관련 파일)
 │  │  └─ GlobalStyle.jsx (전역 스타일 관리)           
 │  │
+│  ├─ utils/ (필터링 등 컴포넌트 기능 관련 파일)
+│  │
 │  ├─ App.js            
-│  └─ index.js          
+│  ├─ index.js
+│  ├─ service-worker.js
+│  └─ serviceWorkerRegistration.js          
 │
 ├─ .gitignore
+├─ build.sh (CI/CD 관련)
 ├─ package-lock.json                  
 ├─ package.json
 └─ README.md
 ```
-- 현재는 빈 폴더를 푸시하기 위해 .gitkeep 파일을 넣어뒀지만, 작업 시 모두 삭제하고 작업합니다.
