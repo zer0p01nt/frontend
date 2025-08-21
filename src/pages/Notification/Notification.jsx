@@ -92,6 +92,7 @@ export default function Notification() {
           />
         </F.SmallFilterWrapper>
 
+        <PushBtn />
         {/* 로딩이 끝난 후, 데이터 유무에 따라 다른 화면 표시 */}
         {!isLoading &&
           (notifications.length > 0 ? (
@@ -117,7 +118,6 @@ export default function Notification() {
 
       <B.ButtonWrapper>
         <GoToTop />
-        <PushBtn />
       </B.ButtonWrapper>
     </>
   );

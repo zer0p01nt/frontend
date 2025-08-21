@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { ButtonCircle } from "../../styles/ButtonCircle";
 import { ensureFcmToken, onForeground } from "../../fcm";
 
+import * as S from "./PushBtnStyle";
+
 const API_URL = process.env.REACT_APP_API_URL;
 
 export default function PushBtn() {
@@ -35,8 +37,9 @@ export default function PushBtn() {
     }
   };
   return (
-    <ButtonCircle $isVisible={true} onClick={handleTestPush}>
-      알림 테스트
-    </ButtonCircle>
+    <S.PushBtnContainer>
+      <S.PushBtnText>푸시 알림을 테스트 해 보세요.</S.PushBtnText>
+      <S.PushButton onClick={handleTestPush}>테스트</S.PushButton>
+    </S.PushBtnContainer>
   );
 }
