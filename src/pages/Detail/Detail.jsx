@@ -17,6 +17,7 @@ import * as S from "./DetailStyle";
 import { useNavigate, useParams } from "react-router-dom";
 import { REGION_MAP } from "../../constants/maps";
 import { createPostScrap, deletePostScrap } from "../../services/scrapService";
+import ShareToast from "../../components/ShareToast/ShareToast";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -24,6 +25,9 @@ export default function Detail() {
   const navigate = useNavigate();
   const { id } = useParams();
   const postId = Number(id);
+
+  // 공유하기 토스트 상태 관리
+  const [toastShow, setToastShow] = useState(false);
 
   // 챗봇 열림 상태 관리
   const [isOpen, setIsOpen] = useState(false);
@@ -73,6 +77,18 @@ export default function Detail() {
     }
   };
 
+  // 공유하기 버튼 로직
+  const onShareClick = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setToastShow(true);
+      // 1초 후 사라짐
+      setTimeout(() => setToastShow(false), 1000);
+    } catch {
+      alert("복사에 실패했습니다.");
+    }
+  };
+
   return (
     <>
       {/* fixed 되는 컴포넌트들 */}
@@ -96,6 +112,7 @@ export default function Detail() {
       {!isPostLoading && post && (
         <Chatbot isOpen={isOpen} handleClose={handleClose} postId={post.id} />
       )}
+      <ShareToast isVisible={toastShow} />
 
       {/* 페이지 UI */}
       <S.DetailContainer>
@@ -150,11 +167,11 @@ export default function Detail() {
               {/* 추가 필요 */}
               <S.LinkBtn href={post.link_url}>원문 바로가기</S.LinkBtn>
               <S.SecondBtnBox>
-                <S.SecondBtn>
+                <S.SecondBtn onClick={toggleScrap}>
                   <img src={isScraped ? scrapTrue : scrapFalse} />
                   스크랩
                 </S.SecondBtn>
-                <S.SecondBtn>
+                <S.SecondBtn onClick={onShareClick}>
                   <img src={share} />
                   공유하기
                 </S.SecondBtn>
@@ -175,6 +192,7 @@ export default function Detail() {
                   date={doc.pub_date.slice(0, 10)}
                   key={doc.id}
                   onClick={() => navigate(`/post/${doc.id}`)}
+                  type={post.doc_type}
                 />
               ))}
             </>

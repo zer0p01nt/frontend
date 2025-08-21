@@ -38,11 +38,21 @@ export const NAME_CATEGORY_MAP = {
 // id로 지역 매핑
 export const REGION_MAP = {
   6: "도봉구",
+  24: "종로구",
   85: "경기도",
 };
 
 // 지역명으로 id 매핑
 export const NAME_REGION_MAP = {
   도봉구: 6,
+  종로구: 24,
   경기도: 85,
 };
+
+// 한글 카테고리명으로 카테고리 매핑
+export const CATEGORY_TYPE_MAP = {
+  "참여": "PARTICIPATION",
+  "공지": "NOTICE",
+  "고시/공고": "ANNOUNCEMENT",
+  "보고":"REPORT",
+}

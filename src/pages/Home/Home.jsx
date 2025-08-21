@@ -12,52 +12,50 @@ import { NAME_REGION_MAP } from "../../constants/maps.js";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-// 컴포넌트 함수
 export default function Home() {
-  // 페이지 이동
   const navigate = useNavigate();
-  // 검색창 이동
   const goToSearch = () => {
     navigate("/search");
   };
 
-  // 유저 프로필 fetch
+  // 1. 유저 프로필 정보 fetch (이 정보가 있어야 다른 API들을 호출할 수 있습니다)
   const { profile, isProfileLoading } = useProfile();
 
-  // [관심 분야의 최근 알림] 유저의 카테고리 아이디만 추출
+  // 2. [관심 분야의 최근 알림] API 연동
   const categoryIds = (profile.data?.user_categories ?? [])
     .map((uc) => uc.category?.id)
     .filter(Boolean);
-  // 카테고리 아이디 요청 가능 여부 확인 (HTTP 400 오류 방지)
-  const canFetch = !isProfileLoading && categoryIds.length > 0;
-  // 요청 가능할 때만 url 반환
-  const alertsUrl = canFetch
-    ? `${API_URL}/documents/categories/recent-alerts/?category_ids=${encodeURIComponent(
-        categoryIds.join(",")
-      )}`
-    : null;
-
-  // 관심 분야의 최근 알림
-  const { data: recentAlerts = {}, isRecentAlertsLoading } = useFetch(
+  const alertsUrl =
+    !isProfileLoading && categoryIds.length > 0
+      ? `${API_URL}/documents/categories/recent-alerts/?category_ids=${encodeURIComponent(
+          categoryIds.join(",")
+        )}`
+      : null;
+  const { data: recentAlertsData, isLoading: isAlertsLoading } = useFetch(
     alertsUrl,
-    []
+    {}
   );
+  const recentAlerts = recentAlertsData?.recent_alerts ?? [];
 
-  // 다가오는 관심 일정
+  // 3. [다가오는 관심 일정] API 연동
+  const { data: upcomingSchedulesData, isLoading: isSchedulesLoading } =
+    useFetch(`${API_URL}/documents/upcoming-deadlines/`, {});
+  const upcomingSchedules = upcomingSchedulesData?.results ?? [];
 
-  // [관심 지역 최근 소식] 맨 첫번째 지역만 받아오도록 매핑
+  // 4. [관심 지역 최근 소식] API 연동
   const markedRegion = profile?.data?.user_regions?.[0]?.region?.district;
   const markedRegionId = markedRegion ? NAME_REGION_MAP[markedRegion] : null;
-  const regionUrl =
+  const newsUrl =
     !isProfileLoading && markedRegionId
       ? `${API_URL}/documents/region/${markedRegionId}/recent/`
       : null;
-
-  // 관심 지역 최근 소식
-  const { data: recent = {}, isRecentLoading } = useFetch(regionUrl, {});
+  const { data: recentNewsData, isLoading: isNewsLoading } = useFetch(
+    newsUrl,
+    {}
+  );
+  const recentNews = recentNewsData?.recent_news ?? [];
 
   return (
-    // HomeWrapper로 한번 감싸줍니다.
     <S.HomeWrapper>
       <Header
         hasBack={false}
@@ -66,17 +64,17 @@ export default function Home() {
         atHome={true}
       />
       <S.ContentContainer>
+        {/* --- 상단 프로필 및 뱃지 부분 --- */}
         <S.TitleContainer>
           <S.TitleWrapper>
             <S.TitleBox>
-              {!isProfileLoading && profile && (
-                <S.Title>
-                  {profile?.data?.name}님!
-                  <div>
-                    오늘도 <strong>맞춤 소식</strong> 전해드릴게요
-                  </div>
-                </S.Title>
-              )}
+              <S.Title>
+                {isProfileLoading ? "사용자" : profile?.data?.name || "사용자"}
+                님!
+                <div>
+                  오늘도 <strong>맞춤 소식</strong> 전해드릴게요
+                </div>
+              </S.Title>
               <S.InterestSection>
                 <S.BadgeWrapper>
                   {!isProfileLoading && profile && (
@@ -123,12 +121,14 @@ export default function Home() {
             <S.Character />
           </S.TitleWrapper>
         </S.TitleContainer>
-
         <S.FakeSearchInputWrapper onClick={goToSearch}>
           <span>필요한 정보가 있으신가요?</span>
           <div />
         </S.FakeSearchInputWrapper>
+
+        {/* --- API 연동이 적용된 섹션들 --- */}
         <S.SectionWrapper>
+          {/* --- 관심 분야의 최근 알림 --- */}
           <div>
             <S.SectionHeader>
               <S.SectionTitle>관심 분야의 최근 알림</S.SectionTitle>
@@ -138,22 +138,22 @@ export default function Home() {
               />
             </S.SectionHeader>
             <S.CardListWrapper>
-              {!isRecentAlertsLoading && recentAlerts && (
-                <>
-                  {(recentAlerts.recent_alerts ?? []).map((r) => (
-                    <CardList
-                      badges={makeBadges(r)}
-                      title={r.doc_title}
-                      date={r.pub_date.slice(0, 10)}
-                      key={r.id}
-                      onClick={() => navigate(`/post/${r.id}`)}
-                    />
-                  ))}
-                </>
-              )}
+              {!isAlertsLoading &&
+                recentAlerts.map((item) => (
+                  <CardList
+                    key={item.id}
+                    badges={makeBadges(item)}
+                    title={item.doc_title}
+                    date={item.pub_date.slice(0, 10)}
+                    onClick={() => navigate(`/post/${item.id}`)}
+                    image={item.image_url}
+                    type={item.doc_type}
+                  />
+                ))}
             </S.CardListWrapper>
           </div>
 
+          {/* --- 다가오는 관심 일정 --- */}
           <div>
             <S.SectionHeader>
               <S.SectionTitle>다가오는 관심 일정</S.SectionTitle>
@@ -163,46 +163,42 @@ export default function Home() {
               />
             </S.SectionHeader>
             <S.HorizontalScrollWrapper>
-              <CardList
-                variant='card'
-                badges={[
-                  { text: "진행중", color: "pink" },
-                  { text: "시설", color: "blue" },
-                ]}
-                title='다가오는 일정에 대한 제목입니다.'
-                date='2025.07.30 ~ 2025.07.31'
-              />
-              <CardList
-                variant='card'
-                badges={[
-                  { text: "D-1", color: "pink" },
-                  { text: "시설", color: "blue" },
-                ]}
-                title='두 번째 다가오는 일정입니다.'
-                date='2025.08.01 ~ 2025.08.10'
-              />
+              {!isSchedulesLoading &&
+                upcomingSchedules.map((item) => (
+                  <CardList
+                    key={item.id}
+                    variant='card'
+                    badges={makeBadges(item)}
+                    title={item.doc_title}
+                    date={`${item.start_date.slice(
+                      5,
+                      10
+                    )} ~ ${item.end_date.slice(5, 10)}`}
+                    onClick={() => navigate(`/post/${item.id}`)}
+                  />
+                ))}
             </S.HorizontalScrollWrapper>
           </div>
 
+          {/* --- 관심 지역 최근 소식 --- */}
           <div>
             <S.SectionHeader>
               <S.SectionTitle>관심 지역 최근 소식</S.SectionTitle>
               <MoreBtn value='더보기' onClick={() => navigate("/news")} />
             </S.SectionHeader>
             <S.CardListWrapper>
-              {!isRecentLoading && recent && (
-                <>
-                  {(recent.recent_news ?? []).map((r) => (
-                    <CardList
-                      badges={makeBadges(r)}
-                      title={r.doc_title}
-                      date={r.pub_date.slice(0, 10)}
-                      key={r.id}
-                      onClick={() => navigate(`/post/${r.id}`)}
-                    />
-                  ))}
-                </>
-              )}
+              {!isNewsLoading &&
+                recentNews.map((item) => (
+                  <CardList
+                    key={item.id}
+                    badges={makeBadges(item)}
+                    title={item.doc_title}
+                    date={item.pub_date.slice(0, 10)}
+                    onClick={() => navigate(`/post/${item.id}`)}
+                    image={item.image_url}
+                    type={item.doc_type}
+                  />
+                ))}
             </S.CardListWrapper>
           </div>
         </S.SectionWrapper>
