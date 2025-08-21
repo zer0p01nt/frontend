@@ -1,27 +1,5 @@
-import { useEffect } from "react";
-import { onForegroundMessage, triggerTestPush } from "../../fcm";
 import { ButtonCircle } from "../../styles/ButtonCircle";
 
 export default function PushBtn() {
-  const handleClick = async () => {
-    try {
-      if (!("serviceWorker" in navigator)) throw new Error("SW 미지원");
-      if (!("Notification" in window))
-        throw new Error("브라우저가 알림을 지원하지 않습니다.");
-      if (location.protocol !== "https:" && location.hostname !== "localhost") {
-        throw new Error("HTTPS 환경이 필요합니다.");
-      }
-
-      const result = await triggerTestPush();
-      console.log("[push-test] resp:", result);
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  return (
-    <ButtonCircle $isVisible={true} onClick={handleClick}>
-      알림 테스트
-    </ButtonCircle>
-  );
+  return <ButtonCircle $isVisible={true}>알림 테스트</ButtonCircle>;
 }
