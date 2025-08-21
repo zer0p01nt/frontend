@@ -7,6 +7,7 @@ export const Container = styled.div`
   gap: 16px;
   align-items: center;
   border-bottom: 0.5px solid var(--color-neutral-200);
+  cursor: pointer;
 `;
 
 export const ContentWrapper = styled.div`
