@@ -92,10 +92,10 @@ export const AIBox = styled.div`
 
 export const AICharacter = styled.div`
   width: 171.592px;
-  height: 100%;
   aspect-ratio: 131/112;
   opacity: 0.4; /* 시안과 비슷하게 가려고 일부러 오퍼시티 더 낮춤 */
   background-image: url(${summaryCharacter});
+  background-repeat: no-repeat;
   position: absolute;
   right: 8.91px;
   bottom: 0;

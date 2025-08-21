@@ -18,6 +18,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { REGION_MAP } from "../../constants/maps";
 import { createPostScrap, deletePostScrap } from "../../services/scrapService";
 import ShareToast from "../../components/ShareToast/ShareToast";
+import { formatText } from "../../utils/format";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -157,7 +158,7 @@ export default function Detail() {
 
             {/* 본문 */}
             <S.ContentBox>
-              <S.Content>{post.doc_content.replaceAll(".", ". ")}</S.Content>
+              <S.Content>{formatText(post.doc_content)}</S.Content>
               {/* 추가 예정 */}
               <img src={post.image_url ?? null} />
             </S.ContentBox>
