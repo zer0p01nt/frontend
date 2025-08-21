@@ -75,8 +75,6 @@ export default function Notification() {
   // 실제 알림 목록은 API 응답의 'results' 안에 들어있습니다.
   const notifications = notificationData?.data?.results ?? [];
 
-  console.log(notifications);
-
   return (
     <>
       <Header hasBack={false} title='알림' hasScrap={false} />
