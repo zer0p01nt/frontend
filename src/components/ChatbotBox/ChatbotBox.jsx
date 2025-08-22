@@ -2,7 +2,7 @@ import Badge from "../Badge/Badge";
 import * as S from "./ChatbotBoxStyle";
 import * as F from "../Filter/FilterStyle";
 import * as C from "../Chatbot/ChatbotStyle";
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 
 // category : 해당 채팅이 있었던 공문의 카테고리
 // title : AI 응답 요약
@@ -22,13 +22,27 @@ export default function ChatbotBox({
   loading = false,
   isDeleting = false,
 }) {
+  // 드롭다운 부드럽게 내려가기
+  const ref = useRef();
+
+  useLayoutEffect(() => {
+    if (!expanded) return;
+    const id = requestAnimationFrame(() => {
+      ref.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    });
+
+    return () => cancelAnimationFrame(id);
+  }, [expanded]);
+
   return (
     <S.ChatbotWrapper>
       <S.ContentContainer>
         <S.ContentBox>
           <S.BadgeBox>
             {categories.map((c) => (
-              <Badge color='teal'>{c.category_name}</Badge>
+              <Badge key={c.id} color='teal'>
+                {c.category_name}
+              </Badge>
             ))}
           </S.BadgeBox>
           <S.Title>{title}</S.Title>
@@ -66,6 +80,7 @@ export default function ChatbotBox({
             </S.Button>
             <S.Divide></S.Divide>
             <S.Button onClick={onToggle}>접기</S.Button>
+            <div ref={ref} style={{ height: "1px" }}></div>
           </S.ButtonWrapper>
         </>
       )}

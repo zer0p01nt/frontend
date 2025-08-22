@@ -16,8 +16,7 @@ import ChatbotBox from "../../components/ChatbotBox/ChatbotBox";
 
 import DropIcon from "../../assets/Back Icon.svg";
 import { deleteChatbotScrap } from "../../services/scrapService";
-import { emitScrapChange } from "../../utils/scrapChatbotEvent";
-import { chatbotScrapKey } from "../../utils/scrapChatbotKey";
+import Empty from "../../components/Empty/Empty";
 
 const API_URL = process.env.REACT_APP_API_URL;
 const PAGE_SIZE = 10;
@@ -31,6 +30,7 @@ export default function ScrapedChatbots() {
 
   // 정렬 - 드롭다운
   const [sortOrder, setSortOrder] = useState("최신순");
+  const order = sortOrder === "최신순" ? "latest" : "oldest";
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const handleSortChange = (label) => {
@@ -47,7 +47,7 @@ export default function ScrapedChatbots() {
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [dropdownRef]);
+  }, []);
 
   // 무한 스크롤 상태
   const [page, setPage] = useState(1);
@@ -58,7 +58,6 @@ export default function ScrapedChatbots() {
   // 필터, 정렬 변경 시 초기화
   useEffect(() => {
     setPage(1);
-    setItems([]);
     setHasMore(true);
     setOpenId(null); // 다 닫혀있도록
   }, [sortOrder, selected]);
@@ -66,7 +65,7 @@ export default function ScrapedChatbots() {
   // 챗봇 스크랩 목록 - URL 쿼리스트링 조립
   const listUrl = useMemo(() => {
     const params = new URLSearchParams();
-    params.set("order", sortOrder);
+    params.set("order", order);
     // 모든 주제가 아닐 경우에만 카테고리 아이디 추가
     const isAll = selected.has(ALL_CATEGORY_LABEL);
     if (!isAll) {
@@ -84,24 +83,46 @@ export default function ScrapedChatbots() {
     listUrl,
     {}
   );
-  const pageResults = chatbotdata?.data?.results ?? [];
 
   // 응답 데이터 생기면 갱신
   useEffect(() => {
-    if (!pageResults) return;
+    if (!chatbotdata) return;
 
-    setItems((prev) => {
-      if (page === 1) return pageResults;
-      // 페이지마다 중복을 제거하고 합침
-      const map = new Map(prev.map((it) => [it.id, it]));
-      for (const it of pageResults) map.set(it.id, it);
-      return Array.from(map.values());
-    });
-
+    const results = chatbotdata.data?.results ?? [];
+    const total = chatbotdata.data?.count ?? 0;
     // 다음 페이지 여부 확인
-    const total = chatbotdata?.data?.count;
     setHasMore(page * PAGE_SIZE < total);
-  }, [chatbotdata, page, pageResults]);
+
+    if (page === 1) {
+      setItems((prev) => {
+        if (
+          prev.length === results.length &&
+          prev.every((p, i) => p.id === results[i]?.id)
+        )
+          return prev;
+        return results;
+      });
+    } else {
+      if (results.length === 0) {
+        setHasMore(false);
+        return;
+      }
+
+      setItems((prev) => {
+        const map = new Map(prev.map((it) => [it.id, it]));
+        for (const it of results) map.set(it.id, it);
+        const merged = Array.from(map.values());
+
+        if (
+          merged.length === prev.length &&
+          merged.every((p, i) => p.id === prev[i].id)
+        )
+          return prev;
+
+        return merged;
+      });
+    }
+  }, [chatbotdata, page]);
 
   // 무한 스크롤
   useEffect(() => {
@@ -181,8 +202,6 @@ export default function ScrapedChatbots() {
         const aiId = d?.ai_message; // 숫자
         const sessionId = String(d?.chatbot_session ?? ""); // 문자열로 강제
         if (Number.isFinite(aiId) && sessionId) {
-          localStorage.removeItem(chatbotScrapKey(sessionId, aiId));
-          emitScrapChange({ type: "delete", scrapId: id, sessionId, aiId });
         }
       } catch (e) {
         console.error(e);
@@ -242,20 +261,27 @@ export default function ScrapedChatbots() {
           </D.ResultHeader>
         </P.OrderContainer>
         <S.ContentContainer>
-          {items.map((c) => (
-            <ChatbotBox
-              key={c.id}
-              id={c.id}
-              categories={c.categories ?? []}
-              title={c.summary}
-              expanded={openId === c.id}
-              onToggle={() => handleToggle(c.id)}
-              onDelete={() => handleDelete(c.id)}
-              detail={openId === c.id ? detail : null}
-              loading={openId === c.id ? isDetailLoading : false}
-              isDeleting={isDeleting}
+          {items.length > 0 ? (
+            items.map((c) => (
+              <ChatbotBox
+                key={c.id}
+                id={c.id}
+                categories={c.categories ?? []}
+                title={c.summary}
+                expanded={openId === c.id}
+                onToggle={() => handleToggle(c.id)}
+                onDelete={() => handleDelete(c.id)}
+                detail={openId === c.id ? detail : null}
+                loading={openId === c.id ? isDetailLoading : false}
+                isDeleting={isDeleting}
+              />
+            ))
+          ) : (
+            <Empty
+              text='스크랩한 대화가 없어요'
+              subText='유용한 대화는 스크랩해 두고 다시 볼 수 있어요'
             />
-          ))}
+          )}
           <div ref={loadMoreRef} style={{ height: 1 }} />
         </S.ContentContainer>
       </P.ScrapedContainer>

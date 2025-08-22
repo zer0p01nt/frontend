@@ -1,7 +1,22 @@
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M0 2C0 0.895431 0.895431 0 2 0H14C15.1046 0 16 0.895431 16 2V14C16 15.1046 15.1046 16 14 16H2C0.895431 16 0 15.1046 0 14V2Z" fill="#E2EBFF"></path>
-<path d="M14 4H7.36862L5.78072 9.27386L4.19282 4H2L4.73724 12H6.81664L8.91871 5.86976H13.3648L14 4Z" fill="#4981F8"></path>
-<path d="M13.017 7.21856L12.3743 9.08831H8.67675L9.31191 7.21856H13.017Z" fill="#8AE2DA"></path>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="30.68" height="30.68"><svg id="SvgjsSvg1001" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30.68 30.68">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #4981f8;
+      }
+
+      .cls-2 {
+        fill: #8ae2da;
+      }
+
+      .cls-3 {
+        fill: #fff;
+      }
+    </style>
+  </defs>
+  <rect class="cls-1" width="30.68" height="30.68"></rect>
+  <polygon class="cls-3" points="26.02 8.34 18.26 8.34 14.59 8.34 14.43 8.34 11.66 18.09 8.89 8.34 5.06 8.34 9.85 23.14 13.48 23.14 17.14 11.8 24.91 11.8 26.02 8.34"></polygon>
+  <polygon class="cls-2" points="24.3 14.3 23.18 17.76 16.72 17.76 17.84 14.3 24.3 14.3"></polygon>
 </svg><style>@media (prefers-color-scheme: light) { :root { filter: none; } }
 @media (prefers-color-scheme: dark) { :root { filter: none; } }
 </style></svg>

@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
+// src/pages/Search/Search.jsx
+
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import Header from "../../components/Header/Header";
 import SearchInputField from "../../components/SearchInputField/SearchInputField";
 import CardList from "../../components/CardList/CardList";
@@ -6,90 +8,70 @@ import GoToTop from "../../components/GoToTop/GoToTop";
 import * as B from "../../styles/ButtonCircle";
 import * as S from "./SearchStyle";
 import DropIcon from "../../assets/Back Icon.svg";
+import useFetch from "../../hooks/useFetch"; 
+import { useNavigate } from "react-router-dom"; 
+import { makeBadges } from "../../utils/makeBadges"; 
+
+// --- 최근 검색어 관리를 위한 함수 ---
+const getSearchHistory = () => {
+  const history = localStorage.getItem("searchHistory");
+  return history ? JSON.parse(history) : [];
+};
+
+const addSearchHistory = (term) => {
+  if (!term) return;
+  let history = getSearchHistory();
+
+  history = history.filter((item) => item.term !== term);
+  const newEntry = {
+    term,
+    date: new Date().toLocaleDateString("ko-KR").slice(2, -1),
+  };
+  const newHistory = [newEntry, ...history].slice(0, 10); 
+  localStorage.setItem("searchHistory", JSON.stringify(newHistory));
+};
+
+
+const API_URL = process.env.REACT_APP_API_URL;
 
 export default function Search() {
+  const navigate = useNavigate(); 
   const [searchValue, setSearchValue] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchQuery, setSearchQuery] = useState(null);
   const [isSearched, setIsSearched] = useState(false);
+
+
+  const [recentSearches, setRecentSearches] = useState(getSearchHistory());
+
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [sortOrder, setSortOrder] = useState("관련도순");
   const dropdownRef = useRef(null);
 
-  const recentSearches = [
-    { id: 1, term: "검색어 히스토리 내용", date: "7.30" },
-    { id: 2, term: "검색어 히스토리 내용", date: "7.30" },
-  ];
 
-  const dummyResults = [
-    {
-      id: 1,
-      region: "도봉구",
-      keyword: "시설",
-      title: "공문 제목 공문 제목 공문 제목",
-      date: "2025.07.30",
-    },
-    {
-      id: 2,
-      region: "강북구",
-      keyword: "문화",
-      title: "새로운 문화 행사 안내",
-      date: "2025.07.29",
-    },
-    {
-      id: 4,
-      region: "도봉구",
-      keyword: "교통",
-      title: "버스 노선 변경 공지",
-      date: "2025.07.28",
-    },
-    {
-      id: 5,
-      region: "도봉구",
-      keyword: "교통",
-      title: "버스 노선 변경 공지",
-      date: "2025.07.28",
-    },
-    {
-      id: 6,
-      region: "도봉구",
-      keyword: "교통",
-      title: "버스 노선 변경 공지",
-      date: "2025.07.28",
-    },
-    {
-      id: 7,
-      region: "도봉구",
-      keyword: "교통",
-      title: "버스 노선 변경 공지",
-      date: "2025.07.28",
-    },
-    {
-      id: 8,
-      region: "도봉구",
-      keyword: "교통",
-      title: "버스 노선 변경 공지",
-      date: "2025.07.28",
-    },
-    {
-      id: 9,
-      region: "도봉구",
-      keyword: "교통",
-      title: "버스 노선 변경 공지",
-      date: "2025.07.28",
-    },
-  ];
+  const order = sortOrder === "최신순" ? "latest" : "relevance";
+  const searchUrl = searchQuery
+    ? `${API_URL}/documents/?search=${encodeURIComponent(
+        searchQuery
+      )}&order=${order}`
+    : null;
+
+  const { data: searchData, isLoading } = useFetch(searchUrl, {});
+  const searchResults = searchData?.results ?? [];
+
 
   const handleSearchSubmit = (query) => {
-    if (!query) return;
-    setSearchResults(dummyResults);
+    const trimmedQuery = query.trim();
+    if (!trimmedQuery) return;
+    setSearchQuery(trimmedQuery);
+    addSearchHistory(trimmedQuery);
+    setRecentSearches(getSearchHistory()); 
     setIsSearched(true);
   };
 
   const handleSortChange = (order) => {
     setSortOrder(order);
     setIsDropdownOpen(false);
-    console.log(`${order}으로 정렬합니다.`);
   };
 
   useEffect(() => {
@@ -102,26 +84,32 @@ export default function Search() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [dropdownRef]);
 
+  // 최근 검색어 클릭 시 해당 검색어로 검색 실행
+  const handleHistoryClick = (term) => {
+    setSearchValue(term);
+    handleSearchSubmit(term);
+  };
+
   return (
     <>
-      <Header hasBack={true} title='검색' hasScrap={false} />
+      <Header hasBack={true} title="검색" hasScrap={false} />
       <S.SearchContainer>
         <SearchInputField
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
-          onSubmit={handleSearchSubmit}
+          onSubmit={() => handleSearchSubmit(searchValue)}
+          placeholder="궁금한 공문 내용을 검색해 보세요"
         />
 
         {isSearched ? (
           <S.SearchResultsSection>
             <S.ResultHeader>
-              <S.ResultCount>{dummyResults.length}건</S.ResultCount>
+              <S.ResultCount>{searchResults.length}건</S.ResultCount>
               <S.SortWrapper ref={dropdownRef}>
                 <S.SortButton
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 >
                   {sortOrder}
-                  <img src={DropIcon} />
                 </S.SortButton>
                 {isDropdownOpen && (
                   <S.DropdownMenu>
@@ -141,28 +129,39 @@ export default function Search() {
                 )}
               </S.SortWrapper>
             </S.ResultHeader>
-            {searchResults.map((doc) => (
-              <CardList
-                key={doc.id}
-                badges={[
-                  { text: doc.region, color: "blue" },
-                  { text: doc.keyword, color: "teal" },
-                ]}
-                title={doc.title}
-                date={doc.date}
-              />
-            ))}
+            {/* --- 실제 검색 결과 렌더링 --- */}
+            {isLoading ? (
+              <div>검색 중...</div>
+            ) : (
+              searchResults.map((doc) => (
+                <CardList
+                  key={doc.id}
+                  badges={makeBadges(doc)}
+                  title={doc.doc_title}
+                  date={doc.pub_date.slice(0, 10)}
+                  onClick={() => navigate(`/post/${doc.id}`)}
+                  image={doc.image_url}
+                  type={doc.doc_type}
+                />
+              ))
+            )}
+            {/* ------------------------- */}
           </S.SearchResultsSection>
         ) : (
           <S.RecentSearchesSection>
             <S.RecentSearchesTitle>최근 검색어</S.RecentSearchesTitle>
             <S.SearchHistoryList>
+              {/* --- 실제 최근 검색어 렌더링 --- */}
               {recentSearches.map((item) => (
-                <S.SearchHistoryItem key={item.id}>
+                <S.SearchHistoryItem
+                  key={item.term}
+                  onClick={() => handleHistoryClick(item.term)}
+                >
                   <span>{item.term}</span>
                   <span>{item.date}</span>
                 </S.SearchHistoryItem>
               ))}
+              {/* --------------------------- */}
             </S.SearchHistoryList>
           </S.RecentSearchesSection>
         )}

@@ -1,13 +1,25 @@
-import styled from "styled-components";
-import {
-  Container as PostCardContainer,
-  Title as PostCardTitle,
-  Date as PostCardDate,
-} from "../../components/PostCard/PostCardStyle";
+// src/pages/News/NewsStyle.js
+
+import styled, { css } from "styled-components";
 import { dummyImages } from "../../constants/dummyImages";
+import { BadgeContainer } from "../../components/Badge/BadgeStyle";
 
 export const NewsContainer = styled.div`
   padding-top: 42px;
+`;
+
+
+export const TopSection = styled.div`
+  position: relative;
+  z-index: 20;
+  background-color: var(--color-base-white);
+`;
+
+
+export const ListSection = styled.div`
+  position: relative;
+  z-index: 15;
+  background-color: var(--color-base-white);
 `;
 
 export const BannerSection = styled.section`
@@ -27,11 +39,17 @@ export const SectionTitle = styled.h2`
 `;
 
 export const BannerWrapper = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   display: flex;
-  height: 100%;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
+  width: auto;
+  min-width: 100%;
 
   &::-webkit-scrollbar {
     display: none;
@@ -42,18 +60,43 @@ export const BannerWrapper = styled.div`
 
 export const BannerSlide = styled.div`
   flex: 0 0 100%;
+  min-width: 100%;
   scroll-snap-align: start;
   height: 100%;
-  padding: 20px 24px;
-  /* 이미지가 있으면 이미지, 없는데 공문 타입이 있으면 타입 더미이미지, 타입도 없으면 그냥 빈공간 (오버레이로 회색처럼 보임) */
-  background: linear-gradient(0deg, rgba(0 0 0 / 0.2), rgba(0 0 0 / 0.2)), url(${({ $image, $type }) => $image ? $image : $type ? dummyImages[$type] : "transparent"}) center no-repeat;
-  border-radius: 0;
-
+  padding: 16px 24px;
+  cursor: pointer;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   align-items: flex-start;
-  gap: 10px;
+  gap: 8px;
+
+  ${BadgeContainer} {
+    color: var(--color-base-black);
+  }
+
+  ${({ $image, $type }) =>
+    $image
+      ? css`
+          background: linear-gradient(
+              0deg,
+              rgba(0, 0, 0, 0.2),
+              rgba(0, 0, 0, 0.2)
+            ),
+            url(${$image}) center no-repeat;
+          background-size: cover;
+        `
+      : css`
+          background-image: url(${$type ? dummyImages[$type] : "transparent"}),
+            linear-gradient(
+              180deg,
+              #e2ebff 85.04%,
+              var(--color-pink-50, #ffeefe) 111.61%
+            );
+          background-repeat: no-repeat;
+          background-position: center 66%, center;
+          background-size: 80px, cover;
+        `}
 `;
 
 export const BadgeWrapper = styled.div`
@@ -62,16 +105,20 @@ export const BadgeWrapper = styled.div`
 `;
 
 export const SlideTitle = styled.h3`
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 50px;
+  color: var(--color-base-black);
   font-size: var(--Heading-md-font-size);
-  color: var(--color-text-primary);
   font-weight: 600;
   margin: 0;
-  white-space: normal;
 `;
 
 export const Pager = styled.div`
   position: absolute;
-  bottom: 20px;
+  bottom: 16px;
   right: 24px;
   background: rgba(254, 254, 254, 0.4);
   border: 1px solid var(--color-base-white);
@@ -83,14 +130,7 @@ export const Pager = styled.div`
   font-weight: 500;
 `;
 
-export const ContentSection = styled.div`
-  position: relative;
-  z-index: 15;
-  background-color: var(--color-base-white);
-`;
-
 export const FilterWrapper = styled.div`
   position: relative;
   z-index: 20;
-  transform: translateZ(0);
 `;

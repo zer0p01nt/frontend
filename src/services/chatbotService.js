@@ -12,6 +12,9 @@ export async function createSession({ postId, firstMessage }) {
 
   if (!res.ok) {
     const text = await res.text();
+    if (text.includes("해당 공문에 대한 세션이 이미 존재")) {
+      alert("한 게시글엔 하나의 챗봇만 생성할 수 있습니다.");
+    }
     throw new Error(`HTTP ${res.status} - ${text}`);
   }
 

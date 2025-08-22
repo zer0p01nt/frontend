@@ -1,3 +1,5 @@
+// src/pages/Search/SearchStyle.jsx
+
 import styled from "styled-components";
 
 export const SearchContainer = styled.div`
@@ -27,6 +29,11 @@ export const SearchHistoryItem = styled.li`
   align-items: center;
   padding: 12px 0;
   font-size: var(--Body-md-font-size);
+  cursor: pointer; /* ✅ 클릭 가능하도록 커서 변경 */
+
+  &:hover {
+    background-color: var(--color-neutral-100); /* ✅ 마우스 올렸을 때 배경색 변경 */
+  }
 
   span:first-child {
     color: var(--color-base-black);
@@ -71,6 +78,15 @@ export const SortButton = styled.button`
   color: var(--color-neutral-600);
   font-size: var(--Body-sm-font-size);
   font-weight: 500;
+
+  &::after {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border: solid var(--color-neutral-500);
+    border-width: 0 2px 2px 0;
+    transform: translateY(-2px) rotate(45deg);
+  }
 `;
 
 export const DropdownMenu = styled.ul`

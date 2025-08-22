@@ -6,8 +6,9 @@ export const EmptyContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding-top: 80px;
   width: 100%;
+  /* ▼▼▼ 화면의 높이를 기준으로 중앙 정렬되도록 수정 ▼▼▼ */
+  height: calc(100vh - 150px); /* 헤더, 카테고리바 등의 높이를 제외 */
 `;
 
 export const EmptyIcon = styled.div`

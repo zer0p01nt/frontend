@@ -114,9 +114,9 @@ const GlobalStyle = createGlobalStyle`
   html {
     box-sizing: border-box;
     /* 스크롤 안 보이게 하는 설정  : 이 부분만 주석처리 해주시면 됩니다! */
-    /* overflow-y: auto;
+    overflow-y: auto;
     scrollbar-width: none;
-    -ms-overflow-style: none; */
+    -ms-overflow-style: none;
   }
 
   html::-webkit-scrollbar {

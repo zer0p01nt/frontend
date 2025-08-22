@@ -4,12 +4,13 @@ import Header from "../../components/Header/Header";
 import { useNavigate } from "react-router-dom";
 import MoreBtn from "../../components/MoreBtn/MoreBtn";
 import useFetch from "../../hooks/useFetch";
-import { useEffect } from "react";
+import { useEffect, useState, useCallback } from "react";
 import CardList from "../../components/CardList/CardList";
 import useProfile from "../../hooks/useProfile";
 import ChatbotBox from "../../components/ChatbotBox/ChatbotBox";
 import Badge from "../../components/Badge/Badge";
 import { makeScrapBadges } from "../../utils/makeBadges";
+import character from "../../assets/Character.png";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -32,6 +33,79 @@ export default function MyPage() {
   );
   const scrapedChatbots = chatbotdata?.data?.results ?? [];
 
+  /**
+   * ScrapedChatbots에서 가져온 챗봇박스 펼침 로직
+   */
+  // ChatbotBox 한 번에 하나만 열리도록
+  const [openId, setOpenId] = useState(null);
+  const handleToggle = (id) => {
+    setOpenId((prev) => (prev === id ? null : id)); // 이미 열려있으면 닫기, 아니면 새로 열기
+  };
+
+  // 챗봇 펼친 상태 캐싱
+  const [detailById, setDetailById] = useState({});
+  const openUrl =
+    openId && !detailById[openId]
+      ? `${API_URL}/scrap/chatbot/${openId}/`
+      : null;
+
+  // 챗봇 스크랩 상세 조회
+  const { data: detailData, isLoading: isDetailDataLoading } = useFetch(
+    openUrl,
+    null
+  );
+  const OpenedChatbot = detailData?.data;
+  useEffect(() => {
+    if (openId && OpenedChatbot) {
+      setDetailById((prev) => ({ ...prev, [openId]: OpenedChatbot }));
+    }
+  }, [openId, OpenedChatbot]);
+
+  // 상세 데이터 === detail && 상세 로딩 === isDetailLoading
+  const detail = openId ? detailById[openId] : null;
+  const isDetailLoading = openId && !detail ? isDetailDataLoading : false;
+
+  // 챗봇 스크랩 삭제 로직
+  const [isDeleting, setIsDeleting] = useState(false);
+  const handleDelete = useCallback(
+    async (id) => {
+      if (!id || isDeleting) return;
+
+      const ok = window.confirm("해당 챗봇 스크랩을 삭제하시겠습니까?");
+      if (!ok) return;
+
+      try {
+        setIsDeleting(true);
+        await deleteChatbotScrap(id);
+
+        // items에서도 삭제
+        setItems((prev) => prev.filter((it) => it.id !== id));
+
+        // 캐시에서 삭제
+        setDetailById((prev) => {
+          const { [id]: _removed, ...rest } = prev;
+          return rest;
+        });
+
+        // 펼쳐져 있었으면 접기
+        setOpenId((prev) => (prev === id ? null : prev));
+
+        // detail에서 aiId, sessionId 추출 후 이벤트 보냄
+        const d = detailById[id];
+        const aiId = d?.ai_message; // 숫자
+        const sessionId = String(d?.chatbot_session ?? ""); // 문자열로 강제
+        if (Number.isFinite(aiId) && sessionId) {
+        }
+      } catch (e) {
+        console.error(e);
+        alert("삭제 중 오류가 발생했습니다.");
+      } finally {
+        setIsDeleting(false);
+      }
+    },
+    [isDeleting, detailById]
+  );
+
   return (
     <>
       <Header
@@ -44,7 +118,9 @@ export default function MyPage() {
         <S.TitleContainer>
           <S.TitleWrapper>
             <S.TitleBox>
-              <S.Character></S.Character>
+              <S.Character>
+                <img src={character} />
+              </S.Character>
               <S.TextBox>
                 {!isProfileLoading && profile && (
                   <S.Username>{profile.data.name}님,</S.Username>
@@ -131,8 +207,14 @@ export default function MyPage() {
                       <ChatbotBox
                         key={c.id}
                         id={c.id}
-                        categories={c.categories}
+                        categories={c.categories ?? []}
                         title={c.summary}
+                        expanded={openId === c.id}
+                        onToggle={() => handleToggle(c.id)}
+                        onDelete={() => handleDelete(c.id)}
+                        detail={openId === c.id ? detail : null}
+                        loading={openId === c.id ? isDetailLoading : false}
+                        isDeleting={isDeleting}
                       />
                     ))}
                   </>

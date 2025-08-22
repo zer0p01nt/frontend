@@ -6,7 +6,7 @@ import Badge from "../../components/Badge/Badge";
 import Header from "../../components/Header/Header.jsx";
 import useProfile from "../../hooks/useProfile.js";
 import useFetch from "../../hooks/useFetch.js";
-import { makeBadges } from "../../utils/makeBadges.js";
+import { makeBadges, makeScrapBadges } from "../../utils/makeBadges.js";
 import MoreBtn from "../../components/MoreBtn/MoreBtn.jsx";
 import { NAME_REGION_MAP } from "../../constants/maps.js";
 
@@ -18,11 +18,11 @@ export default function Home() {
     navigate("/search");
   };
 
-  // 1. 유저 프로필 정보 fetch (이 정보가 있어야 다른 API들을 호출할 수 있습니다)
+  // 1. 유저 프로필 정보 fetch
   const { profile, isProfileLoading } = useProfile();
 
   // 2. [관심 분야의 최근 알림] API 연동
-  const categoryIds = (profile.data?.user_categories ?? [])
+  const categoryIds = (profile?.data?.user_categories ?? [])
     .map((uc) => uc.category?.id)
     .filter(Boolean);
   const alertsUrl =
@@ -37,13 +37,13 @@ export default function Home() {
   );
   const recentAlerts = recentAlertsData?.recent_alerts ?? [];
 
-  // 3. [다가오는 관심 일정] API 연동
-  const { data: upcomingSchedulesData, isLoading: isSchedulesLoading } =
-    useFetch(`${API_URL}/documents/upcoming-deadlines/`, {});
-  const upcomingSchedules = upcomingSchedulesData?.results ?? [];
+  // 3. [스크랩한 공문]을 '다가오는 관심 일정' 섹션에 표시
+  const { data: scrapedPostsData, isLoading: isScrapedPostsLoading } =
+    useFetch(`${API_URL}/scrap/documents/?order=latest&page=1&page_size=5`, {});
+  const scrapedPosts = scrapedPostsData?.data?.results ?? [];
 
   // 4. [관심 지역 최근 소식] API 연동
-  const markedRegion = profile?.data?.user_regions?.[0]?.region?.district;
+  const markedRegion = profile?.data?.user_regions?.[0]?.region?.district; 
   const markedRegionId = markedRegion ? NAME_REGION_MAP[markedRegion] : null;
   const newsUrl =
     !isProfileLoading && markedRegionId
@@ -69,7 +69,7 @@ export default function Home() {
           <S.TitleWrapper>
             <S.TitleBox>
               <S.Title>
-                {isProfileLoading ? "사용자" : profile?.data?.name || "사용자"}
+                {isProfileLoading ? "사용자" : profile?.data?.name || "사용자"} 
                 님!
                 <div>
                   오늘도 <strong>맞춤 소식</strong> 전해드릴게요
@@ -79,16 +79,16 @@ export default function Home() {
                 <S.BadgeWrapper>
                   {!isProfileLoading && profile && (
                     <>
-                      {(profile.data.user_regions ?? [])
+                      {(profile?.data?.user_regions ?? [])
                         .slice(0, 2)
                         .map((r) => (
                           <Badge color='blue' isFilled={false} key={r.id}>
                             {r.region?.district}
                           </Badge>
                         ))}
-                      {profile.data.user_regions.length >= 3 && (
+                      {profile?.data?.user_regions.length >= 3 && ( 
                         <Badge color='pink' isFilled={false}>
-                          +{profile.data.user_regions.length - 2}
+                          +{profile?.data?.user_regions.length - 2}
                         </Badge>
                       )}
                     </>
@@ -97,7 +97,7 @@ export default function Home() {
                 <S.BadgeWrapper>
                   {!isProfileLoading && profile && (
                     <>
-                      {(profile.data.user_categories ?? [])
+                      {(profile?.data?.user_categories ?? []) 
                         .slice(0, 2)
                         .map((c) => (
                           <Badge
@@ -108,9 +108,9 @@ export default function Home() {
                             {c.category?.category_name}
                           </Badge>
                         ))}
-                      {profile.data.user_categories.length >= 3 && (
+                      {profile?.data?.user_categories.length >= 3 && ( 
                         <Badge color='teal' isFilled={false}>
-                          +{profile.data.user_categories.length - 2}
+                          +{profile?.data?.user_categories.length - 2}
                         </Badge>
                       )}
                     </>
@@ -153,28 +153,28 @@ export default function Home() {
             </S.CardListWrapper>
           </div>
 
-          {/* --- 다가오는 관심 일정 --- */}
+          {/* --- 스크랩한 공문 --- */}
           <div>
             <S.SectionHeader>
-              <S.SectionTitle>다가오는 관심 일정</S.SectionTitle>
+              <S.SectionTitle>다가오는 관심 일정
+              </S.SectionTitle>
               <MoreBtn
                 value='더보기'
                 onClick={() => navigate("/scrap/posts")}
               />
             </S.SectionHeader>
             <S.HorizontalScrollWrapper>
-              {!isSchedulesLoading &&
-                upcomingSchedules.map((item) => (
+              {!isScrapedPostsLoading &&
+                scrapedPosts.map((item) => (
                   <CardList
                     key={item.id}
                     variant='card'
-                    badges={makeBadges(item)}
+                    badges={makeScrapBadges(item)}
                     title={item.doc_title}
-                    date={`${item.start_date.slice(
-                      5,
-                      10
-                    )} ~ ${item.end_date.slice(5, 10)}`}
-                    onClick={() => navigate(`/post/${item.id}`)}
+                    date={item.pub_date.slice(0, 10)}
+                    onClick={() => navigate(`/post/${item.document}`)}
+                    image={item.image_url}
+                    type={item.doc_type}
                   />
                 ))}
             </S.HorizontalScrollWrapper>

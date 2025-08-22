@@ -73,6 +73,7 @@ export const TitleBox = styled.div`
 export const Character = styled.div`
   width: 30%;
   background: url(${homeCharacter}) no-repeat;
+  background-size: contain; /* 이미지가 보이도록 이 부분을 추가했습니다. */
   width: 106.855px;
   height: 86.842px;
   aspect-ratio: 106.85/86.84;
@@ -146,6 +147,7 @@ export const HorizontalScrollWrapper = styled.div`
   display: flex;
   gap: 16px; /* 카드 사이 간격을 약간 조정 */
   overflow-x: auto;
+  align-items: flex-start; /* 카드의 높이가 달라도 위쪽 기준으로 정렬 */
 
   margin: 0 -16px;
   padding: 0 16px;

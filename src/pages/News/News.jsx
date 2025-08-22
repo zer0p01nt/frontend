@@ -1,3 +1,5 @@
+// src/pages/News/News.jsx
+
 import React, {
   useRef,
   useState,
@@ -7,7 +9,7 @@ import React, {
 } from "react";
 import Header from "../../components/Header/Header";
 import GoToTop from "../../components/GoToTop/GoToTop";
-import CategoryBar from "../../components/CategoryBar/CategoryBar";
+import CategoryBar from "../../components/CategoryBar/CategoryBar.jsx";
 import Filter from "../../components/Filter/Filter";
 import PostCard from "../../components/PostCard/PostCard";
 import Badge from "../../components/Badge/Badge";
@@ -31,7 +33,7 @@ export default function News() {
 
   // 1. [지금 많이 보는 공문] 배너 API 연동
   const { data: hotNewsData, isLoading: isHotNewsLoading } = useFetch(
-    `${API_URL}/documents/?order=views&page_size=3`, // 조회수(views) 순으로 3개 가져오기
+    `${API_URL}/documents/?order=views&page_size=3`,
     {}
   );
   const hotNews = hotNewsData?.results ?? [];
@@ -40,12 +42,10 @@ export default function News() {
   const [posts, setPosts] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const loadMoreRef = useRef(null); // 스크롤 감지를 위한 ref
+  const loadMoreRef = useRef(null);
 
   // 필터 관련 상태
-  // 모든 스크랩이면 undefined
   const [docType, setDocType] = useState(undefined);
-  // 관심 지역 전체 || 모든 주제면 빈 배열
   const [regionIds, setRegionIds] = useState([]);
   const [categoryIds, setCategoryIds] = useState([]);
 
@@ -61,8 +61,6 @@ export default function News() {
       if (NAME_REGION_MAP[s]) rids.push(NAME_REGION_MAP[s]);
       if (NAME_CATEGORY_MAP[s]) cids.push(NAME_CATEGORY_MAP[s]);
     }
-
-    // 중복 제거
     setRegionIds(Array.from(new Set(rids)));
     setCategoryIds(Array.from(new Set(cids)));
   }, []);
@@ -77,23 +75,19 @@ export default function News() {
   // 필터, 카테고리로 조합한 쿼리
   const filterQuery = useMemo(() => {
     const params = new URLSearchParams();
-
     if (docType) params.set("doc_type", docType);
     if (regionIds.length) params.set("region_id", regionIds.join(","));
     if (categoryIds.length) params.set("category", categoryIds.join(","));
     params.set("page", String(page));
-
     return `${API_URL}/documents/?${params.toString()}`;
   }, [docType, regionIds, categoryIds, page]);
 
   const listUrl = hasMore ? filterQuery : null;
-
   const { data: postsData, isLoading: isPostsLoading } = useFetch(listUrl, {});
 
   useEffect(() => {
     if (postsData?.results) {
       setPosts((prevPosts) => [...prevPosts, ...postsData.results]);
-      // 'next' 필드가 null이면 더 이상 불러올 페이지가 없음
       setHasMore(postsData.next !== null);
     }
   }, [postsData]);
@@ -110,11 +104,7 @@ export default function News() {
   );
 
   useEffect(() => {
-    const option = {
-      root: null,
-      rootMargin: "20px",
-      threshold: 0.1,
-    };
+    const option = { root: null, rootMargin: "20px", threshold: 0.1 };
     const observer = new IntersectionObserver(handleObserver, option);
     if (loadMoreRef.current) observer.observe(loadMoreRef.current);
     return () => {
@@ -122,7 +112,7 @@ export default function News() {
     };
   }, [handleObserver]);
 
-  // 배너 스크롤 핸들러 (기존과 동일)
+  // 배너 스크롤 핸들러
   const handleBannerScroll = () => {
     if (bannerRef.current) {
       const slideWidth = bannerRef.current.firstChild.clientWidth;
@@ -133,43 +123,45 @@ export default function News() {
 
   return (
     <>
-      <Header hasBack={false} title='소식' hasScrap={false} />
+      <Header hasBack={false} title="소식" hasScrap={false} />
       <S.NewsContainer>
-        <S.SectionTitle>지금 많이 보는 공문</S.SectionTitle>
-        <S.BannerSection>
-          <S.BannerWrapper ref={bannerRef} onScroll={handleBannerScroll}>
-            {!isHotNewsLoading &&
-              hotNews.map((item) => (
-                <S.BannerSlide
-                  key={item.id}
-                  onClick={() => navigate(`/post/${item.id}`)}
-                  $image={item.image_url}
-                  $type={item.doc_type}
-                >
-                  <S.BadgeWrapper>
-                    {/* isFilled를 false로 하여 '칩' 스타일 적용 */}
-                    {makeBadges(item).map((badge, index) => (
-                      <Badge key={index} color={badge.color} isFilled={false}>
-                        {badge.text}
-                      </Badge>
-                    ))}
-                  </S.BadgeWrapper>
-                  <S.SlideTitle>{item.doc_title}</S.SlideTitle>
-                </S.BannerSlide>
-              ))}
-          </S.BannerWrapper>
-          <S.Pager>
-            {currentPage} / {hotNews.length || 1}
-          </S.Pager>
-        </S.BannerSection>
-
-        <S.ContentSection>
+        {/* 1. 오버레이가 덮으면 안 되는 상단 영역 */}
+        <S.TopSection>
+          <S.SectionTitle>지금 많이 보는 공문</S.SectionTitle>
+          <S.BannerSection>
+            <S.BannerWrapper ref={bannerRef} onScroll={handleBannerScroll}>
+              {!isHotNewsLoading &&
+                hotNews.map((item) => (
+                  <S.BannerSlide
+                    key={item.id}
+                    onClick={() => navigate(`/post/${item.id}`)}
+                    $image={item.image_url}
+                    $type={item.doc_type}
+                  >
+                    <S.BadgeWrapper>
+                      {makeBadges(item).map((badge, index) => (
+                        <Badge key={index} color={badge.color} isFilled={false}>
+                          {badge.text}
+                        </Badge>
+                      ))}
+                    </S.BadgeWrapper>
+                    <S.SlideTitle>{item.doc_title}</S.SlideTitle>
+                  </S.BannerSlide>
+                ))}
+            </S.BannerWrapper>
+            <S.Pager>
+              {currentPage} / {hotNews.length || 1}
+            </S.Pager>
+          </S.BannerSection>
           <CategoryBar onCategoryChange={handleCategoryChange} />
+        </S.TopSection>
+
+        {/* 2. 오버레이가 덮어야 하는 하단 리스트 영역 */}
+        <S.ListSection>
           <S.FilterWrapper>
             <Filter onChange={handleFilter} />
           </S.FilterWrapper>
 
-          {/* 3. 더미데이터를 실제 데이터로 교체 */}
           {posts.map((item) => (
             <PostCard
               key={item.id}
@@ -181,9 +173,8 @@ export default function News() {
               type={item.doc_type}
             />
           ))}
-          {/* 4. 무한 스크롤 감지를 위한 div */}
           <div ref={loadMoreRef} />
-        </S.ContentSection>
+        </S.ListSection>
       </S.NewsContainer>
       <B.ButtonWrapper>
         <GoToTop />

@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 export const Container = styled.div`
   display: flex;
@@ -48,12 +48,29 @@ export const CardImage = styled.div`
   height: 72px;
   flex-shrink: 0;
   border-radius: var(--border-radius-md);
-  background-color: var(--color-neutral-200);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+
+
+  background: ${({ $hasRealImage }) =>
+    $hasRealImage
+      ? "transparent"
+      : "linear-gradient(180deg, #e2ebff 85.04%, var(--color-pink-50, #ffeefe) 111.61%)"};
 
   img {
-    width: 72px;
-    height: 72px;
-    flex-shrink: 0;
-    border-radius: var(--border-radius-md);
+    ${({ $hasRealImage }) =>
+      $hasRealImage
+        ? css`
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          `
+        : css`
+            max-width: 65%;
+            max-height: 65%;
+            object-fit: contain;
+          `}
   }
 `;

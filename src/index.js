@@ -51,12 +51,28 @@ const messaging = getMessaging(app);
   });
 
   if (token) {
-    await fetch(`${process.env.REACT_APP_API_URL}/notification/fcm/register/`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(token),
-    });
-    console.log("FCM TOKEN: ", token);
+    const payload = {
+      user_id: "GUEST1",
+      registration_token: token,
+      device_type: "web",
+    };
+
+    try {
+      const res = await fetch(
+        `${process.env.REACT_APP_API_URL}/notification/fcm/register/`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }
+      );
+      if (!res.ok) {
+        // 필요 시 서버 에러 로깅
+        console.error("FCM 토큰 등록 실패", res.status, await res.text());
+      }
+    } catch (e) {
+      console.error("FCM 토큰 등록 요청 에러", e);
+    }
   }
 
   onMessage(messaging, (payload) => {

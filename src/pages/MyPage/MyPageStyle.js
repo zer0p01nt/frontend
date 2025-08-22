@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import character from "../../assets/Character.png";
 
 // 제목 부분 전체를 감싸는 컨테이너
 export const TitleContainer = styled.div`
@@ -25,8 +24,12 @@ export const TitleWrapper = styled.div`
 export const Character = styled.div`
   width: 90px;
   height: 82.688px;
-  aspect-ratio: 90/82.69;
-  background-image: url(${character});
+
+  img {
+    width: 90px;
+    height: 82.688px;
+    aspect-ratio: 90/82.69;
+  }
 `;
 
 export const TitleBox = styled.div`

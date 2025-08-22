@@ -1,7 +1,6 @@
 import styled, { css } from "styled-components";
 
-// isFilled={true} 일 때 (원래 기본 스타일 - 테두리 없음)
-// 뱃지 바탕색 변경에 따라 이 부분을 변경함
+// isFilled={true} 일 때 (채워진 스타일)
 const getFilledBadgeColors = (color) => {
   switch (color) {
     case "pink":
@@ -23,6 +22,25 @@ const getFilledBadgeColors = (color) => {
   }
 };
 
+// isFilled={false} 일 때 (테두리만 있는 스타일)
+const getUnfilledBadgeColors = (color) => {
+  switch (color) {
+    case "pink":
+      return {
+        text: "var(--color-pink-600)",
+      };
+    case "teal":
+      return {
+        text: "var(--color-teal-600)", // Figma: #00C4B7
+      };
+    case "blue":
+    default:
+      return {
+        text: "var(--color-blue-400-main)", // Figma: #2769FF
+      };
+  }
+};
+
 export const BadgeContainer = styled.span`
   display: inline-flex;
   padding: ${({ $isFilled }) => ($isFilled ? "4px 12px" : "2px 12px")};
@@ -34,21 +52,22 @@ export const BadgeContainer = styled.span`
   line-height: var(--Body-sm-line-height);
 
   ${({ color, $isFilled }) => {
-    // isFilled={true} : 테두리가 없는 채워진 스타일 (원래 기본값)
+    // isFilled={true} : 테두리가 없는 채워진 스타일
     if ($isFilled) {
       const { background, text } = getFilledBadgeColors(color);
       return css`
         background-color: ${background};
         color: ${text};
-        border: 1px solid transparent; /* 테두리 없음 */
+        border: 1px solid transparent;
       `;
     }
-    // isFilled={false} : 반투명 스타일 (소식 페이지 배너용)
+    // isFilled={false} : 반투명 스타일 (홈 화면용)
     else {
+      const { text } = getUnfilledBadgeColors(color);
       return css`
         background-color: rgba(254, 254, 254, 0.4);
         border: 1px solid var(--color-base-white);
-        color: var(--color-base-black); /* 글자색 검은색으로 수정 */
+        color: ${text}; /* ▼▼▼ 글자색을 color prop에 맞게 수정 ▼▼▼ */
       `;
     }
   }}

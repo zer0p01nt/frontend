@@ -19,6 +19,7 @@ import {
   NAME_CATEGORY_MAP,
   NAME_REGION_MAP,
 } from "../../constants/maps";
+import Empty from "../../components/Empty/Empty";
 
 const API_URL = process.env.REACT_APP_API_URL;
 const PAGE_SIZE = 10;
@@ -84,13 +85,12 @@ export default function ScrapedPosts() {
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [dropdownRef]);
+  }, []);
 
   // 필터 || 정렬 변경 시 페이지 및 리스트 초기화
   useEffect(() => {
     setPage(1);
     setHasMore(true);
-    setItems([]);
   }, [order, docType, regionIds, categoryIds]);
 
   // 필터링 바탕으로 쿼리스트링 조립
@@ -109,25 +109,46 @@ export default function ScrapedPosts() {
 
   // 공문 스크랩 (URL 바뀔 때마다)
   const { data: postdata, isLoading: isPostsLoading } = useFetch(listUrl, {});
-  const pageResults = postdata?.data?.results ?? [];
 
   // 응답 데이터 생기면 갱신
   useEffect(() => {
-    if (!pageResults) return;
+    if (!postdata) return;
 
-    setItems((prev) => {
-      if (page === 1) return pageResults;
-
-      // 중복 방지하며 페이지들 합침
-      const map = new Map(prev.map((it) => [it.id, it]));
-      for (const it of pageResults) map.set(it.id, it);
-      return Array.from(map.values());
-    });
-
-    // 다음 페이지 여부 확인
+    const results = postdata.data?.results ?? [];
     const total = postdata?.data?.count;
+    // 다음 페이지 여부 확인
     setHasMore(page * PAGE_SIZE < total);
-  }, [postdata, page, pageResults]);
+
+    if (page === 1) {
+      setItems((prev) => {
+        if (
+          prev.length === results.length &&
+          prev.every((p, i) => p.id === results[i]?.id)
+        )
+          return prev;
+        return results;
+      });
+    } else {
+      if (results.length === 0) {
+        setHasMore(false);
+        return;
+      }
+
+      setItems((prev) => {
+        const map = new Map(prev.map((it) => [it.id, it]));
+        for (const it of results) map.set(it.id, it);
+        const merged = Array.from(map.values());
+
+        if (
+          merged.length === prev.length &&
+          merged.every((p, i) => p.id === prev[i].id)
+        )
+          return prev;
+
+        return merged;
+      });
+    }
+  }, [postdata, page]);
 
   // 무한 스크롤
   useEffect(() => {
@@ -191,17 +212,24 @@ export default function ScrapedPosts() {
         </S.OrderContainer>
 
         <S.PostsWrapper>
-          {items.map((p) => (
-            <CardList
-              badges={makeScrapBadges(p)}
-              title={p.doc_title}
-              date={p.pub_date.slice(0, 10)}
-              key={p.id}
-              onClick={() => navigate(`/post/${p.document}`)}
-              image={p.image_url}
-              type={p.doc_type}
+          {items.length > 0 ? (
+            items.map((p) => (
+              <CardList
+                badges={makeScrapBadges(p)}
+                title={p.doc_title}
+                date={p.pub_date.slice(0, 10)}
+                key={p.id}
+                onClick={() => navigate(`/post/${p.document}`)}
+                image={p.image_url}
+                type={p.doc_type}
+              />
+            ))
+          ) : (
+            <Empty
+              text='스크랩한 공문이 없어요'
+              subText='관심 공문은 스크랩해서 모아보세요'
             />
-          ))}
+          )}
           <div ref={loadMoreRef} style={{ height: 1 }} />
         </S.PostsWrapper>
       </S.ScrapedContainer>

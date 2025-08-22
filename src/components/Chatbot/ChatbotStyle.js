@@ -2,7 +2,6 @@ import styled from "styled-components";
 import scrapTrue from "../../assets/Header/bookmark_true.svg";
 import scrapFalse from "../../assets/Header/bookmark_false.svg";
 import aiImage from "../../assets/ai-image.png";
-import noChatbot from "../../assets/nochatbot.png";
 
 // 챗봇 떠있는 동안 배경 블러
 export const Overlay = styled.div`
@@ -168,7 +167,8 @@ export const Scrap = styled.button`
   height: 24px;
   flex-shrink: 0;
   aspect-ratio: 1/1;
-  background-image: url(${({ $isScrap }) => $isScrap ? scrapTrue : scrapFalse});
+  background-image: url(${({ $isScrap }) =>
+    $isScrap ? scrapTrue : scrapFalse});
   background-repeat: no-repeat;
 `;
 
@@ -187,14 +187,14 @@ export const NoChatBox = styled.div`
 
 export const AICharacter = styled.div`
   display: flex;
-  padding: 48px 30px;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 123.5px;
-  height: 127.805px;
-  aspect-ratio: 86/89;
-  background-image: url(${noChatbot});
+
+  img {
+    width: 123.5px;
+    height: 127.805px;
+  }
 `;
 
 export const NoChatText = styled.div`

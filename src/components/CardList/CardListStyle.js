@@ -9,8 +9,32 @@ const ContentWrapper = styled.div`
 
 const CardImage = styled.div`
   flex-shrink: 0;
-  border-radius: var(--border-radius-md);
-  background-color: var(--color-neutral-200);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+
+  background: ${({ $hasRealImage }) =>
+    $hasRealImage
+      ? "transparent"
+      : "linear-gradient(180deg, #e2ebff 85.04%, var(--color-pink-50, #ffeefe) 111.61%)"};
+
+  img {
+    ${({ $hasRealImage }) =>
+      $hasRealImage
+        ? css`
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          `
+        : css`
+            max-width: 65%;
+            max-height: 65%;
+            object-fit: contain;
+          `}
+  }
 `;
 
 export const UnreadMark = styled.div`
@@ -21,7 +45,6 @@ export const UnreadMark = styled.div`
   margin-left: 8px;
 `;
 
-// 공통 리스트 스타일
 const baseListStyles = css`
   border-bottom: 0.5px solid var(--color-neutral-200);
   flex-direction: row;
@@ -36,60 +59,8 @@ const baseListStyles = css`
     width: 72px;
     height: 72px;
     order: 2;
-
-    img {
-      width: 72px;
-      height: 72px;
-      border-radius: var(--border-radius-md);
-    }
   }
 `;
-
-const variants = {
-  // 홈 화면을 위한 기본 list variant
-  list: css`
-    ${baseListStyles}
-    padding: 12px;
-  `,
-  // 알림 페이지를 위한 notification variant (좌우 여백 24px)
-  notification: css`
-    ${baseListStyles}
-    padding: 12px 24px;
-  `,
-  // 기존 card variant
-  card: css`
-    padding: 10px 8px;
-    border-radius: var(--border-radius-lg);
-    width: 210px;
-    gap: 0px;
-    flex-shrink: 0;
-    flex-direction: column;
-
-    ${ContentWrapper} {
-      width: 100%;
-    }
-    ${CardImage} {
-      width: 100%;
-      height: 120px;
-      margin-bottom: 12px;
-
-      img {
-        width: 100%;
-        height: 120px;
-      }
-    }
-  `,
-};
-
-export const CardContainer = styled.div`
-  display: flex;
-  background: var(--color-base-white);
-  gap: 12px;
-  ${({ $variant }) => variants[$variant]}
-  cursor: pointer;
-`;
-
-export { ContentWrapper, CardImage };
 
 export const BadgeWrapper = styled.div`
   display: flex;
@@ -98,6 +69,59 @@ export const BadgeWrapper = styled.div`
   flex-wrap: wrap;
   margin-bottom: 12px;
 `;
+
+const variants = {
+  list: css`
+    ${baseListStyles}
+    padding: 12px;
+  `,
+  notification: css`
+    ${baseListStyles}
+    padding: 12px 24px;
+  `,
+  card: css`
+    display: flex;
+    flex-direction: column;
+    width: 180px;
+    padding: 10px 8px;
+    gap: 8px;
+    flex-shrink: 0;
+    border-radius: var(--border-radius-2xl);
+
+    ${BadgeWrapper} {
+      flex-wrap: wrap;
+      margin-bottom: 0;
+    }
+
+    ${CardImage} {
+      width: 100%;
+      height: 100px;
+
+      img {
+        ${({ $hasRealImage }) =>
+          !$hasRealImage &&
+          css`
+            max-width: 80%;
+            max-height: 50%;
+          `}
+      }
+    }
+
+    ${ContentWrapper} {
+      width: 100%;
+      gap: 4px;
+    }
+  `,
+};
+
+export const CardContainer = styled.div`
+  display: flex;
+  background: var(--color-base-white);
+  ${({ $variant }) => variants[$variant]}
+  cursor: pointer;
+`;
+
+export { ContentWrapper, CardImage };
 
 export const Title = styled.h3`
   font-size: var(--Body-md-font-size);
@@ -108,6 +132,19 @@ export const Title = styled.h3`
   margin-bottom: 5px;
   display: flex;
   align-items: center;
+
+  ${({ $variant }) =>
+    $variant === "card" &&
+    css`
+      line-height: 1.4;
+      height: 40px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      margin-bottom: 0;
+    `}
 `;
 
 export const Date = styled.p`
