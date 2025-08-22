@@ -13,4 +13,7 @@ root.render(
 serviceWorkerRegistration.register();
 
 import { bootstrapFcm } from "./fcm";
-bootstrapFcm({ userId: "GUEST1" });
+bootstrapFcm({
+  userId: "GUEST1",
+  onForeground: (p) => console.log("[FCM foreground payload]", p),
+});
