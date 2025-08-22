@@ -6,24 +6,21 @@ import {
 } from "firebase/messaging";
 import { fbApp } from "./firebase";
 
+const API_URL = process.env.REACT_APP_API_URL;
 const VAPID_KEY = process.env.REACT_APP_FB_VAPID_KEY;
 
-export async function ensureFcmToken() {
-  const supported = await isSupported().catch(() => false);
-  if (!supported) {
-    console.warn("FCM 미지원 브라우저입니다.");
-    return null;
-  }
+export async function bootstrapFcm({ userId = "GUEST1", onForeground } = {}) {
+  const ok = await isSupported().catch(() => false);
+  if (!ok) return { token: null, unsubscribe: () => {} };
 
-  const permission = await Notification.requestPermission();
-  if (permission !== "granted") {
-    console.warn("알림 권한 거부됨");
-    return null;
+  if (Notification.permission !== "granted") {
+    const p = await Notification.requestPermission();
+    if (p !== "granted") return { token: null, unsubscribe: () => {} };
   }
 
   const registration = await navigator.serviceWorker.ready;
-
   const messaging = getMessaging(fbApp);
+
   const token = await getToken(messaging, {
     vapidKey: VAPID_KEY,
     serviceWorkerRegistration: registration,
@@ -32,30 +29,35 @@ export async function ensureFcmToken() {
     return null;
   });
 
-  return token;
-}
-
-export function onForeground({ onPayload = () => {} } = {}) {
-  const messaging = getMessaging(fbApp);
-  const unsub = onMessage(messaging, async (payload) => {
+  if (token) {
+    const payload = {
+      user_id: userId,
+      registration_token: token,
+      device_type: "web",
+    };
     try {
-      if (Notification.permission === "granted") {
-        const n = payload?.notification ?? {};
-        const d = payload?.data ?? {};
-        const title = String(n.title ?? d.title ?? "알림");
-        const opts = {
-          body: String(n.body ?? d.body ?? "알림"),
-          icon: n.icon ?? "/logo192.png",
-          data: d,
-        };
-        new Notification(title, opts);
+      const res = await fetch(`${API_URL}/notification/fcm/register/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        console.error("FCM 토큰 등록 실패", res.status, await res.text());
       }
     } catch (e) {
-      console.error("실패", e);
+      console.error("FCM 토큰 등록 요청 에러", e);
     }
+  }
 
-    onPayload?.(payload);
+  const unsubscribe = onMessage(messaging, (payload) => {
+    const n = payload?.notification || {};
+    const title = n.title || "알림";
+    const opts = { body: n.body || "", icon: n.icon || "/logo192.png" };
+    try {
+      new Notification(title, opts);
+    } catch {}
+    onForeground?.(payload);
   });
 
-  return unsub;
+  return { token, unsubscribe };
 }

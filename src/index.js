@@ -11,3 +11,6 @@ root.render(
 );
 
 serviceWorkerRegistration.register();
+
+import { bootstrapFcm } from "./fcm";
+bootstrapFcm({ userId: "GUEST1" });
