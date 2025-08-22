@@ -50,6 +50,7 @@ export async function bootstrapFcm({ userId = "GUEST1", onForeground } = {}) {
   }
 
   const unsubscribe = onMessage(messaging, (payload) => {
+    console.log("[FCM foreground]", payload);
     const n = payload?.notification || {};
     const title = n.title || "알림";
     const opts = { body: n.body || "", icon: n.icon || "/logo192.png" };

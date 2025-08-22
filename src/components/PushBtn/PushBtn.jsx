@@ -5,12 +5,13 @@ const API_URL = process.env.REACT_APP_API_URL;
 export default function PushBtn() {
   const handleTestPush = async () => {
     try {
-      await fetch(`${API_URL}/notification/fcm/test/`, {
+      const res = await fetch(`${API_URL}/notification/fcm/test/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ user_id: "GUEST1" }),
       });
-      console.log("서버에 푸시 테스트 요청 보냄");
+      const text = await res.text();
+      console.log("서버에 푸시 테스트 요청 보냄", res.status, text);
     } catch (e) {
       console.error(e);
     }
