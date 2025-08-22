@@ -8,14 +8,15 @@ const API_URL = process.env.REACT_APP_API_URL;
 export default function PushBtn() {
   const [token, setToken] = useState(null);
   useEffect(() => {
+    let unsub = () => {};
     (async () => {
       const t = await ensureFcmToken();
       setToken(t);
-      const unsub = onForeground({
+      unsub = onForeground({
         onPayload: (p) => console.log("foreground payload", p),
       });
-      return () => unsub();
     })();
+    return () => unsub();
   }, []);
 
   const handleTestPush = async () => {

@@ -98,7 +98,7 @@ onBackgroundMessage(messaging, (payload) => {
     image: n.image || "",
     data: { url: n.click_action || "/" },
   };
-  self.ServiceWorkerRegistration.showNotification(title, options);
+  self.registration.showNotification(title, options);
 });
 
 self.addEventListener("notificationclick", (event) => {
