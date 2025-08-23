@@ -77,10 +77,10 @@ export async function bootstrapFcm({ userId = "GUEST1", onForeground } = {}) {
     const n = payload.notification || {};
     const d = payload.data || {};
 
-    const title = n.title || "알림";
-    const body = n.body || "";
+    const title = n.title || d.title || "알림";
+    const body = n.body || d.body || "";
 
-    const docId = d.document_id;
+    const docId = d.document_id || d.data.document_id;
     const path = docId ? `/post/${encodeURIComponent(docId)}` : "/notification";
 
     try {
