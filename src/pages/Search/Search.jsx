@@ -45,11 +45,11 @@ export default function Search() {
 
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [sortOrder, setSortOrder] = useState("관련도순");
+  const [sortOrder, setSortOrder] = useState("최신순");
   const dropdownRef = useRef(null);
 
 
-  const order = sortOrder === "최신순" ? "latest" : "relevance";
+  const order = sortOrder === "최신순" ? "latest" : "oldest";
   const searchUrl = searchQuery
     ? `${API_URL}/documents/?search=${encodeURIComponent(
         searchQuery
@@ -114,16 +114,16 @@ export default function Search() {
                 {isDropdownOpen && (
                   <S.DropdownMenu>
                     <S.DropdownItem
-                      onClick={() => handleSortChange("관련도순")}
-                      $isSelected={sortOrder === "관련도순"}
-                    >
-                      관련도순
-                    </S.DropdownItem>
-                    <S.DropdownItem
                       onClick={() => handleSortChange("최신순")}
                       $isSelected={sortOrder === "최신순"}
                     >
                       최신순
+                    </S.DropdownItem>
+                    <S.DropdownItem
+                      onClick={() => handleSortChange("오래된순")}
+                      $isSelected={sortOrder === "오래된순"}
+                    >
+                      오래된순
                     </S.DropdownItem>
                   </S.DropdownMenu>
                 )}
