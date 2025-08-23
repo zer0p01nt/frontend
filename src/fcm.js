@@ -81,15 +81,16 @@ export async function bootstrapFcm({ userId = "GUEST1", onForeground } = {}) {
     const body = n.body || "";
     const docId = d.document_id;
     const path = docId ? `/post/${encodeURIComponent(docId)}` : "/notification";
-    const tag = docId ? `doc-${docId}` : "push-foreground";
 
     try {
       const reg = await navigator.serviceWorker.ready;
       await reg.showNotification(title, {
         body,
         data: { ...d, docId, path },
-        tag,
-        renotify: false,
+        icon: "/logo512.png",
+        badge: "/logo192.png",
+        tag: Date.now(),
+        renotify: true,
       });
     } catch (e) {
       console.error("[FCM] show Notification error:", e);
