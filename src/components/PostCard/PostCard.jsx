@@ -11,6 +11,8 @@ export default function PostCard({
   image,
   type,
 }) {
+  const hasRealImage = !!image; 
+
   return (
     <S.Container onClick={onClick}>
       <S.ContentWrapper>
@@ -29,7 +31,7 @@ export default function PostCard({
         {/* 날짜 데이터가 있을 때만 표시합니다 */}
         {date && <S.Date>{date}</S.Date>}
       </S.ContentWrapper>
-      <S.CardImage>
+      <S.CardImage $hasRealImage={hasRealImage}>
         <img src={image ?? dummyImages[type] ?? null} />
       </S.CardImage>
     </S.Container>

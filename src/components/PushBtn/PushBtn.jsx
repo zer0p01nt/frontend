@@ -36,6 +36,7 @@ export default function PushBtn() {
       });
       const text = await res.text();
       console.log("서버에 푸시 테스트 요청 보냄", res.status, text);
+      alert("테스트 알림을 보냈습니다.");
     } catch (e) {
       console.error(e);
     }

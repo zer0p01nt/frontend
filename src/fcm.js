@@ -3,7 +3,7 @@ import {
   getToken,
   isSupported,
   onMessage,
-  deleteToken,
+  // deleteToken,
 } from "firebase/messaging";
 import { fbApp } from "./firebase";
 
@@ -97,7 +97,7 @@ export async function bootstrapFcm({ userId = "GUEST1", onForeground } = {}) {
     onForeground?.(payload);
   });
 
-  // 백그라운드 수신 못하도록 방지
+  // 백그라운드 수신 못하도록 방지 (주석처리)
   // const onHide = async () => {
   //   if (document.visibilityState === "hidden") {
   //     try {

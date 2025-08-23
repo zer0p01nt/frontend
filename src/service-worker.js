@@ -72,107 +72,12 @@ self.addEventListener("message", (event) => {
 
 // Any other custom service worker logic can go here.
 
-// FCM 백그라운드 메세지 로직
-
-// 공통 유틸
-function extractPayload(event) {
-  let payload = {};
-  try {
-    if (event?.data) {
-      try {
-        payload = event.data.json();
-      } catch {
-        payload = { raw: event.data.text() };
-      }
-    }
-  } catch {}
-  return payload || {};
-}
-
-function buildData(notification, d1) {
-  const n = notification || {};
-  const d2 = n.data || {};
-  const d = { ...d1, ...d2 };
-  const docId = d.document_id;
-  const path = docId ? `/post/${encodeURIComponent(docId)}` : "/notification";
-  const tag = docId ? `doc-${docId}` : "push-default";
-  const title = n.title || d.title || "알림";
-  const body = n.body || d.body || "";
-  const icon = n.icon || "/logo192.png";
-  return { d, docId, path, tag, title, body, icon };
-}
-
-// fcm 로직 : push로 표시, 백그라운드는 주석 처리
-import { fbApp } from "./firebase";
-import { getMessaging, onBackgroundMessage } from "firebase/messaging/sw";
-
-const messaging = getMessaging(fbApp);
-
-// onBackgroundMessage(messaging, (payload) => {
-//   const n = payload?.notification || {};
-//   const d = payload?.data || {};
-//   const merged = { ...d, ...(n?.data || {}) };
-
-//   eventWaitUntilPost({ type: "FCM_BG", payload: { notification: n, data: merged } });
-// });
-
-function eventWaitUntilPost(message) {
-  self.registration?.active;
-  self.clients
-    .matchAll({ type: "window", includeUncontrolled: true })
-    .then((wins) => wins.forEach((w) => w.postMessage(message)));
-}
-
-// 포그라운드/백그라운드 모두에서 OS 알림을 확실히 표시
-self.addEventListener("push", (event) => {
-  // SW 콘솔: DevTools → Application → Service Workers
-  console.log("[SW] push event fired");
-
-  event.waitUntil(
-    (async () => {
-      try {
-        const payload = extractPayload(event);
-        console.log("[SW] payload:", payload);
-
-        const n = payload.notification || {};
-        const d1 = payload.data || {};
-        const { d, docId, path, tag, title, body, icon } = buildData(n, d1);
-
-        // 1) OS 알림(항상 먼저)
-        await self.registration.showNotification(title, {
-          body,
-          icon,
-          data: { ...d, docId, path },
-          tag, // 동일 문서 알림 대체
-          renotify: false,
-        });
-
-        // 2) (선택) 페이지로 브릿지 — 콘솔/토스트용
-        try {
-          eventWaitUntilPost({
-            type: "FCM_PUSH",
-            payload: { notification: n, data: d },
-          });
-        } catch (e) {
-          console.warn("[SW] bridge error:", e);
-        }
-      } catch (e) {
-        console.error("[SW] push handler error:", e);
-      }
-    })()
-  );
-});
-
+// 푸시 알림 클릭 로직
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-
-  const data = event.notification?.data || {};
-  const docId = data.docId || data.document_id;
-  const path =
-    data.path ||
-    (docId ? `/post/${encodeURIComponent(docId)}` : "/notification");
-
-  // 상대경로 → 절대경로로 변환
+  const d = event.notification?.data || {};
+  const docId = d.document_id;
+  const path = docId ? `/post/${encodeURIComponent(docId)}` : "/notification";
   const target = new URL(path, self.location.origin).href;
 
   event.waitUntil(
@@ -180,16 +85,10 @@ self.addEventListener("notificationclick", (event) => {
       .matchAll({ type: "window", includeUncontrolled: true })
       .then((wins) => {
         for (const w of wins) {
-          try {
-            const wUrl = new URL(w.url),
-              tUrl = new URL(target);
-            if (
-              wUrl.pathname === tUrl.pathname &&
-              wUrl.search === tUrl.search
-            ) {
-              return w.focus();
-            }
-          } catch {}
+          const wUrl = new URL(w.url),
+            tUrl = new URL(target);
+          if (wUrl.pathname === tUrl.pathname && wUrl.search === tUrl.search)
+            return w.focus();
         }
         return clients.openWindow(target);
       })
