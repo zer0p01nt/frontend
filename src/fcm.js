@@ -10,7 +10,7 @@ import { fbApp } from "./firebase";
 const API_URL = process.env.REACT_APP_API_URL;
 const VAPID_KEY = process.env.REACT_APP_FB_VAPID_KEY;
 
-// 현재 토큰 상태 선언
+// 현재 토큰 상태
 let currentToken = null;
 
 export async function bootstrapFcm({ userId = "GUEST1", onForeground } = {}) {
@@ -34,12 +34,11 @@ export async function bootstrapFcm({ userId = "GUEST1", onForeground } = {}) {
     console.log("[FCM] no serviceWorker in navigator");
     return { token: null, unsubscribe: () => {} };
   }
-
   const registration = await navigator.serviceWorker.ready;
   console.log("[FCM] SW ready:", registration?.active?.scriptURL);
 
+  // 토큰 발급
   const messaging = getMessaging(fbApp);
-
   try {
     currentToken = await getToken(messaging, {
       vapidKey: VAPID_KEY,
@@ -50,6 +49,7 @@ export async function bootstrapFcm({ userId = "GUEST1", onForeground } = {}) {
     console.error("getToken 실패", e);
   }
 
+  // 서버 등록
   if (currentToken) {
     try {
       const res = await fetch(`${API_URL}/notification/fcm/register/`, {
@@ -75,70 +75,76 @@ export async function bootstrapFcm({ userId = "GUEST1", onForeground } = {}) {
     console.log("[FCM onMessage fired]", payload);
 
     const n = payload.notification || {};
-    const d = payload?.data || {};
+    const d = payload.data || {};
 
     const title = n.title || "알림";
     const body = n.body || "";
+
     const docId = d.document_id;
     const path = docId ? `/post/${encodeURIComponent(docId)}` : "/notification";
 
     try {
-      const reg = await navigator.serviceWorker.ready;
-      await reg.showNotification(title, {
-        body,
-        data: { ...d, docId, path },
-        icon: "/logo512.png",
-        badge: "/logo192.png",
-        tag: Date.now(),
-        renotify: true,
-      });
+      // 권한 재확인
+      if (Notification.permission !== "granted") {
+        const p = await Notification.requestPermission();
+        if (p !== "granted") throw new Error("permission not granted");
+      }
+
+      // new Notification으로 시도
+      if ("Notification" in window) {
+        const notif = new Notification(title, {
+          body,
+          icon: "/logo512.png",
+          badge: "/logo192.png",
+          tag: Date.now(),
+          renotify: true,
+          data: { ...d, docId, path },
+        });
+
+        // 클릭 시 현재 탭 포커스 + 이동
+        notif.onclick = () => {
+          try {
+            window.focus();
+          } catch {}
+          window.location.href = path;
+          notif.close();
+        };
+      } else {
+        // 폴백: SW를 통해 표시
+        const reg =
+          (await navigator.serviceWorker.getRegistration()) ||
+          (await navigator.serviceWorker.ready);
+        await reg?.showNotification(title, {
+          body,
+          icon: "/logo512.png",
+          badge: "/logo192.png",
+          tag: Date.now(),
+          renotify: true,
+          data: { ...d, docId, path },
+        });
+      }
     } catch (e) {
-      console.error("[FCM] show Notification error:", e);
+      console.error("[FCM] foreground notify error:", e);
+      // 최종 폴백으로 SW 알림 시도
+      try {
+        const reg =
+          (await navigator.serviceWorker.getRegistration()) ||
+          (await navigator.serviceWorker.ready);
+        await reg?.showNotification(title, {
+          body,
+          icon: "/logo512.png",
+          badge: "/logo192.png",
+          tag: Date.now(),
+          renotify: true,
+          data: { ...d, docId, path },
+        });
+      } catch (e2) {
+        console.error("[FCM] fallback showNotification error:", e2);
+      }
     }
+
     onForeground?.(payload);
   });
-
-  // 백그라운드 수신 못하도록 방지 (주석처리)
-  // const onHide = async () => {
-  //   if (document.visibilityState === "hidden") {
-  //     try {
-  //       if (currentToken) {
-  //         await deleteToken(messaging);
-  //         currentToken = null;
-  //       }
-  //     } catch (e) {
-  //       console.warn("deleteToken 실패", e);
-  //     }
-  //   }
-  // };
-  // document.addEventListener("visibilitychange", onHide);
-
-  // 앱 재접속하면 토큰 재등록
-  // const onShow = async () => {
-  //   if (document.visibilityState === "visible" && !currentToken) {
-  //     try {
-  //       const t = await getToken(messaging, {
-  //         vapidKey: VAPID_KEY,
-  //         serviceWorkerRegistration: await navigator.serviceWorker.ready,
-  //       });
-  //       if (t) {
-  //         currentToken = t;
-  //         await fetch(`${API_URL}/notification/fcm/register/`, {
-  //           method: "POST",
-  //           headers: { "Content-Type": "application/json" },
-  //           body: JSON.stringify({
-  //             user_id: userId,
-  //             registration_token: t,
-  //             device_type: "web",
-  //           }),
-  //         });
-  //       }
-  //     } catch (e) {
-  //       console.error("재발급 실패", e);
-  //     }
-  //   }
-  // };
-  // document.addEventListener("visibilitychange", onShow);
 
   return { token: currentToken, unsubscribe };
 }
