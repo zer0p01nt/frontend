@@ -14,7 +14,7 @@ export const HeaderContainer = styled.div`
   background-color: ${({ $scrolled, $isTransparent }) =>
     $isTransparent
       ? $scrolled
-        ? "var(--color-blue-50)" // 스크롤 시 고정 색 (고정 색은 어떤 색으로?)
+        ? "var(--color-blue-400-main)" // 스크롤 시 고정 색 (고정 색은 어떤 색으로?)
         : "transparent"
       : "var(--color-base-white)"}; // 투명 모드 아니면 항상 고정 색
   display: grid;

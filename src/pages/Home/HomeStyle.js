@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import searchIcon from "../../assets/search.svg"; // searchIcon import 추가
+import searchIcon from "../../assets/search.svg";
 import homeCharacter from "../../assets/homeCharacter.png";
 
 export const HomeWrapper = styled.div`
@@ -37,7 +37,6 @@ export const FakeSearchInputWrapper = styled.div`
 
 export const ContentContainer = styled.div`
   position: relative;
-  /* 하단 패딩 : main.jsx에 관련 로직이 이미 있어서 일단 제외 */
   padding: 0 16px;
   display: flex;
   flex-direction: column;
@@ -46,13 +45,12 @@ export const ContentContainer = styled.div`
 export const TitleContainer = styled.div`
   background: linear-gradient(
     180deg,
-    var(--color-blue-50) 85.04%,
-    var(--color-pink-50) 111.61%
+    var(--color-blue-400-main) 85.04%,
+    #4298FA 111.61% 
   );
-  // 전체 컨테이너의 padding 무시하고 배경 덮기
-  width: calc(100% + 16 * 2);
+
+  width: calc(100% + 32px);
   margin: 0 -16px;
-  // 헤더까지 배경 덮기
   padding: 54px 16px 38px;
   display: flex;
   flex-direction: column;
@@ -73,7 +71,7 @@ export const TitleBox = styled.div`
 export const Character = styled.div`
   width: 30%;
   background: url(${homeCharacter}) no-repeat;
-  background-size: contain; /* 이미지가 보이도록 이 부분을 추가했습니다. */
+  background-size: contain;
   width: 106.855px;
   height: 86.842px;
   aspect-ratio: 106.85/86.84;
@@ -83,7 +81,7 @@ export const Character = styled.div`
 
 export const Title = styled.div`
   font-size: var(--Heading-md-font-size);
-  color: var(--color-text-primary);
+  color: #ffffff;
   margin: 0;
   font-weight: 600;
   line-height: var(--Heading-md-line-height);
@@ -93,10 +91,11 @@ export const Title = styled.div`
   div {
     font-weight: 500;
     font-size: var(--Body-md-font-size);
+    color: #ffffff;
   }
   strong {
     font-weight: 500;
-    color: var(--color-blue-500);
+    color: var(--color-neutral-brand-sub-teal, #45decf);
   }
 `;
 
@@ -110,6 +109,11 @@ export const InterestSection = styled.div`
 export const BadgeWrapper = styled.div`
   display: flex;
   gap: 4px;
+
+
+  & > div {
+    color: #ffffff ;
+  }
 `;
 
 export const SectionWrapper = styled.div`
@@ -145,15 +149,14 @@ export const CardListWrapper = styled.div`
 
 export const HorizontalScrollWrapper = styled.div`
   display: flex;
-  gap: 16px; /* 카드 사이 간격을 약간 조정 */
+  gap: 16px;
   overflow-x: auto;
-  align-items: flex-start; /* 카드의 높이가 달라도 위쪽 기준으로 정렬 */
+  align-items: flex-start;
 
   margin: 0 -16px;
   padding: 0 16px;
   scroll-snap-type: x mandatory;
 
-  /* 스크롤바 숨기기 */
   &::-webkit-scrollbar {
     display: none;
   }

@@ -84,7 +84,7 @@ export default function Search() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [dropdownRef]);
 
-  // 최근 검색어 클릭 시 해당 검색어로 검색 실행
+  
   const handleHistoryClick = (term) => {
     setSearchValue(term);
     handleSearchSubmit(term);

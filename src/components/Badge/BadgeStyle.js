@@ -48,7 +48,7 @@ export const BadgeContainer = styled.span`
   align-items: center;
   border-radius: var(--border-radius-rounded);
   font-size: var(--Body-sm-font-size);
-  font-weight: 600;
+  font-weight: 400;
   line-height: var(--Body-sm-line-height);
 
   ${({ color, $isFilled }) => {
@@ -63,11 +63,10 @@ export const BadgeContainer = styled.span`
     }
     // isFilled={false} : 반투명 스타일 (홈 화면용)
     else {
-      const { text } = getUnfilledBadgeColors(color);
       return css`
         background-color: rgba(254, 254, 254, 0.4);
         border: 1px solid var(--color-base-white);
-        color: ${text}; /* ▼▼▼ 글자색을 color prop에 맞게 수정 ▼▼▼ */
+        color: var(--color-base-white); 
       `;
     }
   }}
