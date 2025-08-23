@@ -24,7 +24,10 @@ export async function bootstrapFcm({ userId = "GUEST1", onForeground } = {}) {
   if (Notification.permission !== "granted") {
     const p = await Notification.requestPermission();
     console.log("[FCM] permission requested:", p);
-    if (p !== "granted") return { token: null, unsubscribe: () => {} };
+    if (p !== "granted") {
+      alert("알림 권한이 필요합니다.");
+      return { token: null, unsubscribe: () => {} };
+    }
   }
 
   if (!("serviceWorker" in navigator)) {
@@ -71,13 +74,11 @@ export async function bootstrapFcm({ userId = "GUEST1", onForeground } = {}) {
   const unsubscribe = onMessage(messaging, async (payload) => {
     console.log("[FCM onMessage fired]", payload);
 
-    const n = payload?.notification || {};
-    const d1 = payload?.data || {};
-    const d2 = n?.data || {};
-    const d = { ...d1, ...d2 };
+    const n = payload.notification;
+    const d = payload?.data;
 
-    const title = n.title || d.title || "알림";
-    const body = n.body || d.body || "";
+    const title = n.title;
+    const body = n.body;
     const docId = d.document_id;
     const path = docId ? `/post/${encodeURIComponent(docId)}` : "/notification";
     const tag = docId ? `doc-${docId}` : "push-foreground";
@@ -86,7 +87,6 @@ export async function bootstrapFcm({ userId = "GUEST1", onForeground } = {}) {
       const reg = await navigator.serviceWorker.ready;
       await reg.showNotification(title, {
         body,
-        icon: "/logo192.png",
         data: { ...d, docId, path },
         tag,
         renotify: false,
@@ -113,31 +113,31 @@ export async function bootstrapFcm({ userId = "GUEST1", onForeground } = {}) {
   // document.addEventListener("visibilitychange", onHide);
 
   // 앱 재접속하면 토큰 재등록
-  const onShow = async () => {
-    if (document.visibilityState === "visible" && !currentToken) {
-      try {
-        const t = await getToken(messaging, {
-          vapidKey: VAPID_KEY,
-          serviceWorkerRegistration: await navigator.serviceWorker.ready,
-        });
-        if (t) {
-          currentToken = t;
-          await fetch(`${API_URL}/notification/fcm/register/`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              user_id: userId,
-              registration_token: t,
-              device_type: "web",
-            }),
-          });
-        }
-      } catch (e) {
-        console.error("재발급 실패", e);
-      }
-    }
-  };
-  document.addEventListener("visibilitychange", onShow);
+  // const onShow = async () => {
+  //   if (document.visibilityState === "visible" && !currentToken) {
+  //     try {
+  //       const t = await getToken(messaging, {
+  //         vapidKey: VAPID_KEY,
+  //         serviceWorkerRegistration: await navigator.serviceWorker.ready,
+  //       });
+  //       if (t) {
+  //         currentToken = t;
+  //         await fetch(`${API_URL}/notification/fcm/register/`, {
+  //           method: "POST",
+  //           headers: { "Content-Type": "application/json" },
+  //           body: JSON.stringify({
+  //             user_id: userId,
+  //             registration_token: t,
+  //             device_type: "web",
+  //           }),
+  //         });
+  //       }
+  //     } catch (e) {
+  //       console.error("재발급 실패", e);
+  //     }
+  //   }
+  // };
+  // document.addEventListener("visibilitychange", onShow);
 
   return { token: currentToken, unsubscribe };
 }
