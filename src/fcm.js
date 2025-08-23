@@ -74,11 +74,11 @@ export async function bootstrapFcm({ userId = "GUEST1", onForeground } = {}) {
   const unsubscribe = onMessage(messaging, async (payload) => {
     console.log("[FCM onMessage fired]", payload);
 
-    const n = payload.notification;
-    const d = payload?.data;
+    const n = payload.notification || {};
+    const d = payload?.data || {};
 
-    const title = n.title;
-    const body = n.body;
+    const title = n.title || "알림";
+    const body = n.body || "";
     const docId = d.document_id;
     const path = docId ? `/post/${encodeURIComponent(docId)}` : "/notification";
     const tag = docId ? `doc-${docId}` : "push-foreground";
