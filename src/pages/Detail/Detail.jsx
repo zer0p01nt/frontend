@@ -23,6 +23,7 @@ import {
 } from "../../services/scrapService";
 import ShareToast from "../../components/ShareToast/ShareToast";
 import { formatText } from "../../utils/format";
+import RecommendBadges from "./RecommendBadges";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -222,20 +223,20 @@ export default function Detail() {
         {/* 관련 공문 추천 */}
         <S.RecommendBox>
           <S.Title>관련 공문 추천</S.Title>
-          {post.similar_documents && (
-            <>
-              {/* 뱃지 추가 필요 */}
-              {post.similar_documents?.map((doc) => (
+          {post.similar_documents?.map((doc) => (
+            <RecommendBadges key={doc.id} doc={doc}>
+              {(badges, loading) => (
                 <CardList
+                  badges={badges}
                   title={doc.doc_title}
                   date={doc.pub_date.slice(0, 10)}
                   key={doc.id}
                   onClick={() => navigate(`/post/${doc.id}`)}
                   type={post.doc_type}
                 />
-              ))}
-            </>
-          )}
+              )}
+            </RecommendBadges>
+          ))}
         </S.RecommendBox>
       </S.DetailContainer>
     </>
