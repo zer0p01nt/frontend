@@ -125,25 +125,41 @@ function eventWaitUntilPost(message) {
 
 // 포그라운드/백그라운드 모두에서 OS 알림을 확실히 표시
 self.addEventListener("push", (event) => {
-  const payload = extractPayload(event);
-  const n = payload.notification || {};
-  const d1 = payload.data || {};
-  const { d, docId, path, tag, title, body, icon } = buildData(n, d1);
-
-  // 윈도우 브릿지
-  eventWaitUntilPost({
-    type: "FCM_PUSH",
-    payload: { notification: n, data: d },
-  });
+  // SW 콘솔: DevTools → Application → Service Workers
+  console.log("[SW] push event fired");
 
   event.waitUntil(
-    self.registration.showNotification(title, {
-      body,
-      icon,
-      data: { ...d, docId, path },
-      tag,
-      renotify: false,
-    })
+    (async () => {
+      try {
+        const payload = extractPayload(event);
+        console.log("[SW] payload:", payload);
+
+        const n = payload.notification || {};
+        const d1 = payload.data || {};
+        const { d, docId, path, tag, title, body, icon } = buildData(n, d1);
+
+        // 1) OS 알림(항상 먼저)
+        await self.registration.showNotification(title, {
+          body,
+          icon,
+          data: { ...d, docId, path },
+          tag, // 동일 문서 알림 대체
+          renotify: false,
+        });
+
+        // 2) (선택) 페이지로 브릿지 — 콘솔/토스트용
+        try {
+          eventWaitUntilPost({
+            type: "FCM_PUSH",
+            payload: { notification: n, data: d },
+          });
+        } catch (e) {
+          console.warn("[SW] bridge error:", e);
+        }
+      } catch (e) {
+        console.error("[SW] push handler error:", e);
+      }
+    })()
   );
 });
 
@@ -151,7 +167,7 @@ self.addEventListener("notificationclick", (event) => {
   event.notification.close();
 
   const data = event.notification?.data || {};
-  const docId = data.document_id;
+  const docId = data.docId || data.document_id;
   const path =
     data.path ||
     (docId ? `/post/${encodeURIComponent(docId)}` : "/notification");
