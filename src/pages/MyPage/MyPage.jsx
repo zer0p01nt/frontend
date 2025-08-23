@@ -55,11 +55,14 @@ export default function MyPage() {
     null
   );
   const OpenedChatbot = detailData?.data;
+  // 펼쳤을 때 데이터 일치시킴
   useEffect(() => {
+    const id = OpenedChatbot?.id;
+    if (!id) return;
     if (openId && OpenedChatbot) {
       setDetailById((prev) => ({ ...prev, [openId]: OpenedChatbot }));
     }
-  }, [openId, OpenedChatbot]);
+  }, [OpenedChatbot]);
 
   // 상세 데이터 === detail && 상세 로딩 === isDetailLoading
   const detail = openId ? detailById[openId] : null;
