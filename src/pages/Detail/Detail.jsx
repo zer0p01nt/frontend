@@ -14,7 +14,7 @@ import buttonCircle from "../../assets/ButtonCircle.png";
 
 import * as B from "../../styles/ButtonCircle";
 import * as S from "./DetailStyle";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { REGION_MAP } from "../../constants/maps";
 import {
   createPostScrap,
@@ -28,6 +28,7 @@ const API_URL = process.env.REACT_APP_API_URL;
 
 export default function Detail() {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { id } = useParams();
   const postId = Number(id);
 
@@ -43,6 +44,27 @@ export default function Detail() {
     `${API_URL}/documents/${id}/`,
     {}
   );
+
+  // 초기에 챗봇 세션 포함 쿼리파라미터 조립
+  useEffect(() => {
+    if (isPostLoading || !post) return;
+
+    const sid = Number(post.chatbot_session_id);
+    const cur = searchParams.get("session");
+    const next = new URLSearchParams(searchParams);
+
+    if (Number.isFinite(sid)) {
+      // 다른 값이 들어있으면 그걸로 집어넣고, 없으면 새로 만듦
+      if (cur !== String(sid)) {
+        next.set("session", String(sid));
+        setSearchParams(next, { replace: true });
+      }
+    } else if (cur) {
+      // 세션이 없는데 쿼리가 남아있으면 없앰
+      next.delete("session");
+      setSearchParams(next, { replace: true });
+    }
+  }, [isPostLoading, post, searchParams, setSearchParams]);
 
   // 스크랩 관련 로직
   const [scrapId, setScrapId] = useState(null);
