@@ -74,32 +74,108 @@ self.addEventListener("message", (event) => {
 
 // FCM 백그라운드 메세지 로직
 
+// 공통 유틸
+function extractPayload(event) {
+  let payload = {};
+  try {
+    if (event?.data) {
+      try {
+        payload = event.data.json();
+      } catch {
+        payload = { raw: event.data.text() };
+      }
+    }
+  } catch {}
+  return payload || {};
+}
+
+function buildData(notification, d1) {
+  const n = notification || {};
+  const d2 = n.data || {};
+  const d = { ...d1, ...d2 };
+  const docId = d.document_id;
+  const path = docId ? `/post/${encodeURIComponent(docId)}` : "/notification";
+  const tag = docId ? `doc-${docId}` : "push-default";
+  const title = n.title || d.title || "알림";
+  const body = n.body || d.body || "";
+  const icon = n.icon || "/logo192.png";
+  return { d, docId, path, tag, title, body, icon };
+}
+
+// fcm 로직 : push로 표시, 백그라운드는 주석 처리
 import { fbApp } from "./firebase";
 import { getMessaging, onBackgroundMessage } from "firebase/messaging/sw";
 
 const messaging = getMessaging(fbApp);
 
-onBackgroundMessage(messaging, (payload) => {
-  const n = payload?.notification || {};
-  const title = n.title || "알림";
-  const options = {
-    body: n.body || "",
-    icon: n.icon || "/logo192.png",
-    image: n.image || "",
-    data: { url: n.click_action || "/" },
-  };
-  self.registration.showNotification(title, options);
+// onBackgroundMessage(messaging, (payload) => {
+//   const n = payload?.notification || {};
+//   const d = payload?.data || {};
+//   const merged = { ...d, ...(n?.data || {}) };
+
+//   eventWaitUntilPost({ type: "FCM_BG", payload: { notification: n, data: merged } });
+// });
+
+function eventWaitUntilPost(message) {
+  self.registration?.active;
+  self.clients
+    .matchAll({ type: "window", includeUncontrolled: true })
+    .then((wins) => wins.forEach((w) => w.postMessage(message)));
+}
+
+// 포그라운드/백그라운드 모두에서 OS 알림을 확실히 표시
+self.addEventListener("push", (event) => {
+  const payload = extractPayload(event);
+  const n = payload.notification || {};
+  const d1 = payload.data || {};
+  const { d, docId, path, tag, title, body, icon } = buildData(n, d1);
+
+  // 윈도우 브릿지
+  eventWaitUntilPost({
+    type: "FCM_PUSH",
+    payload: { notification: n, data: d },
+  });
+
+  event.waitUntil(
+    self.registration.showNotification(title, {
+      body,
+      icon,
+      data: { ...d, docId, path },
+      tag,
+      renotify: false,
+    })
+  );
 });
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  const url = event.notification?.data?.url || "/";
+
+  const data = event.notification?.data || {};
+  const docId = data.document_id;
+  const path =
+    data.path ||
+    (docId ? `/post/${encodeURIComponent(docId)}` : "/notification");
+
+  // 상대경로 → 절대경로로 변환
+  const target = new URL(path, self.location.origin).href;
+
   event.waitUntil(
     clients
       .matchAll({ type: "window", includeUncontrolled: true })
       .then((wins) => {
-        for (const w of wins) if ("focus" in w) return w.focus();
-        return clients.openWindow(url);
+        for (const w of wins) {
+          try {
+            const wUrl = new URL(w.url),
+              tUrl = new URL(target);
+            if (
+              wUrl.pathname === tUrl.pathname &&
+              wUrl.search === tUrl.search
+            ) {
+              return w.focus();
+            }
+          } catch {}
+        }
+        return clients.openWindow(target);
       })
   );
 });

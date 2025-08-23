@@ -3,11 +3,15 @@ import {
   getToken,
   isSupported,
   onMessage,
+  deleteToken,
 } from "firebase/messaging";
 import { fbApp } from "./firebase";
 
 const API_URL = process.env.REACT_APP_API_URL;
 const VAPID_KEY = process.env.REACT_APP_FB_VAPID_KEY;
+
+// 현재 토큰 상태 선언
+let currentToken = null;
 
 export async function bootstrapFcm({ userId = "GUEST1", onForeground } = {}) {
   console.log("[FCM] boot start");
@@ -33,28 +37,26 @@ export async function bootstrapFcm({ userId = "GUEST1", onForeground } = {}) {
 
   const messaging = getMessaging(fbApp);
 
-  let token = null;
   try {
-    token = await getToken(messaging, {
+    currentToken = await getToken(messaging, {
       vapidKey: VAPID_KEY,
       serviceWorkerRegistration: registration,
     });
-    console.log("[FCM] token:", token?.slice?.(0, 12) || token);
+    console.log("[FCM] token:", currentToken);
   } catch (e) {
     console.error("getToken 실패", e);
   }
 
-  if (token) {
-    const payload = {
-      user_id: userId,
-      registration_token: token,
-      device_type: "web",
-    };
+  if (currentToken) {
     try {
       const res = await fetch(`${API_URL}/notification/fcm/register/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          user_id: userId,
+          registration_token: currentToken,
+          device_type: "web",
+        }),
       });
       const body = await res.text();
       console.log("[FCM] register resp:", res.status, body);
@@ -65,18 +67,77 @@ export async function bootstrapFcm({ userId = "GUEST1", onForeground } = {}) {
     console.log("No Token");
   }
 
-  const unsubscribe = onMessage(messaging, (payload) => {
+  // 포그라운드 수신
+  const unsubscribe = onMessage(messaging, async (payload) => {
     console.log("[FCM onMessage fired]", payload);
+
     const n = payload?.notification || {};
-    const title = n.title || "알림";
-    const opts = { body: n.body || "", icon: n.icon || "/logo192.png" };
+    const d1 = payload?.data || {};
+    const d2 = n?.data || {};
+    const d = { ...d1, ...d2 };
+
+    const title = n.title || d.title || "알림";
+    const body = n.body || d.body || "";
+    const docId = d.document_id;
+    const path = docId ? `/post/${encodeURIComponent(docId)}` : "/notification";
+    const tag = docId ? `doc-${docId}` : "push-foreground";
+
     try {
-      new Notification(title, opts);
-    } catch {
+      const reg = await navigator.serviceWorker.ready;
+      await reg.showNotification(title, {
+        body,
+        icon: "/logo192.png",
+        data: { ...d, docId, path },
+        tag,
+        renotify: false,
+      });
+    } catch (e) {
       console.error("[FCM] show Notification error:", e);
     }
     onForeground?.(payload);
   });
 
-  return { token, unsubscribe };
+  // 백그라운드 수신 못하도록 방지
+  const onHide = async () => {
+    if (document.visibilityState === "hidden") {
+      try {
+        if (currentToken) {
+          await deleteToken(messaging); // 브라우저 토큰 폐기
+          currentToken = null;
+        }
+      } catch (e) {
+        console.warn("deleteToken 실패", e);
+      }
+    }
+  };
+  document.addEventListener("visibilitychange", onHide);
+
+  // 앱 재접속하면 토큰 재등록
+  const onShow = async () => {
+    if (document.visibilityState === "visible" && !currentToken) {
+      try {
+        const t = await getToken(messaging, {
+          vapidKey: VAPID_KEY,
+          serviceWorkerRegistration: await navigator.serviceWorker.ready,
+        });
+        if (t) {
+          currentToken = t;
+          await fetch(`${API_URL}/notification/fcm/register/`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              user_id: userId,
+              registration_token: t,
+              device_type: "web",
+            }),
+          });
+        }
+      } catch (e) {
+        console.error("재발급 실패", e);
+      }
+    }
+  };
+  document.addEventListener("visibilitychange", onShow);
+
+  return { token: currentToken, unsubscribe };
 }
