@@ -98,19 +98,19 @@ export async function bootstrapFcm({ userId = "GUEST1", onForeground } = {}) {
   });
 
   // 백그라운드 수신 못하도록 방지
-  const onHide = async () => {
-    if (document.visibilityState === "hidden") {
-      try {
-        if (currentToken) {
-          await deleteToken(messaging); // 브라우저 토큰 폐기
-          currentToken = null;
-        }
-      } catch (e) {
-        console.warn("deleteToken 실패", e);
-      }
-    }
-  };
-  document.addEventListener("visibilitychange", onHide);
+  // const onHide = async () => {
+  //   if (document.visibilityState === "hidden") {
+  //     try {
+  //       if (currentToken) {
+  //         await deleteToken(messaging);
+  //         currentToken = null;
+  //       }
+  //     } catch (e) {
+  //       console.warn("deleteToken 실패", e);
+  //     }
+  //   }
+  // };
+  // document.addEventListener("visibilitychange", onHide);
 
   // 앱 재접속하면 토큰 재등록
   const onShow = async () => {
