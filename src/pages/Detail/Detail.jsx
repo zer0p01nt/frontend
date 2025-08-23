@@ -81,8 +81,7 @@ export default function Detail() {
       try {
         const id = await findScrapId(postId);
         if (!cancelled) setScrapId(id);
-      } catch (e) {
-        console.error("스크랩 목록 조회 실패", e);
+      } catch {
       } finally {
         if (!cancelled) setScrapReady(true);
       }
