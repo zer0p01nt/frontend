@@ -17,21 +17,34 @@ const calculateDday = (dead_date) => {
 };
 
 // '다가오는 관심 일정' 외 다른 목록들을 위한 뱃지 생성 함수
-export const makeBadges = (r) => [
-  {
+export const makeBadges = (r) => {
+  let badges = [];
+  badges.push({
     text: REGION_MAP[r.region_id],
     color: "blue",
-  },
-  ...(r.categories ?? []).map((c) => ({
-    text: c.category_name,
-    color: "teal",
-  })),
-];
+  });
+
+  badges.push(
+    ...(r.categories ?? []).map((c) => ({
+      text: c.category_name,
+      color: "teal",
+    }))
+  );
+
+  // 뱃지가 3개를 초과하면 '+N'으로 처리하는 로직
+  if (badges.length > 3) {
+    const remainingCount = badges.length - 3;
+    badges = badges.slice(0, 3);
+    badges.push({ text: `+${remainingCount}`, color: "teal" });
+  }
+
+  return badges;
+};
 
 // '다가오는 관심 일정' (스크랩 목록)을 위한 뱃지 생성 함수
 export const makeScrapBadges = (r) => {
   let badges = [];
-  
+
   // 디데이 뱃지 로직 (가장 먼저 추가)
   if (r.has_deadline) {
     const dDay = calculateDday(r.dead_date);
@@ -45,11 +58,13 @@ export const makeScrapBadges = (r) => {
     text: REGION_MAP[r.region.id],
     color: "blue",
   });
-  
-  badges.push(...(r.categories ?? []).map((c) => ({
-    text: c.category_name,
-    color: "teal",
-  })));
+
+  badges.push(
+    ...(r.categories ?? []).map((c) => ({
+      text: c.category_name,
+      color: "teal",
+    }))
+  );
 
   // 뱃지가 2개를 초과하면 '+N'으로 처리하는 로직
   if (badges.length > 2) {

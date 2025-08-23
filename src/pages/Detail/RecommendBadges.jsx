@@ -32,5 +32,15 @@ export default function RecommendBadges({ doc, children }) {
     return [region, ...categories].filter(Boolean);
   }, [data]);
 
-  return children(badges, isLoading);
+  let renderBadges;
+  // 뱃지가 3개를 초과하면 '+N'으로 처리하는 로직
+  if (badges.length > 3) {
+    const remainingCount = badges.length - 3;
+    renderBadges = badges.slice(0, 3);
+    renderBadges.push({ text: `+${remainingCount}`, color: "teal" });
+  } else {
+    renderBadges = badges;
+  }
+
+  return children(renderBadges, isLoading);
 }
