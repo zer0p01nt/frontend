@@ -4,8 +4,8 @@ import styled from "styled-components";
 export const TitleContainer = styled.div`
   background: linear-gradient(
     180deg,
-    var(--color-blue-50) 85.04%,
-    var(--color-pink-50) 111.61%
+    var(--color-blue-400-main) 85.04%,
+    #4298fa 111.61%
   );
   // 전체 컨테이너의 padding 무시하고 배경 덮기
   margin: 0 -16px;
@@ -47,7 +47,7 @@ export const TextBox = styled.div`
 `;
 
 export const Username = styled.div`
-  color: var(--color-base-black);
+  color: var(--color-base-white);
   font-size: var(--Heading-lg-font-size);
   font-weight: 700;
   line-height: var(--Heading-lg-line-height);
@@ -55,14 +55,14 @@ export const Username = styled.div`
 `;
 
 export const Text = styled.span`
-  color: var(--color-base-black);
+  color: var(--color-base-white);
   font-size: var(--Heading-sm-font-size);
   font-weight: 600;
   line-height: var(--Heading-sm-line-height);
   letter-spacing: var(--letter-spacing);
 
   strong {
-    color: var(--color-neutral-brand-primary);
+    color: var(--color-neutral-brand-sub-teal);
     font-weight: 600;
   }
 `;

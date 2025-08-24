@@ -29,6 +29,7 @@ export const HeaderContainer = styled.div`
     return cols.join(" ");
   }};
   z-index: 100;
+  color: ${({ $isTransparent }) => $isTransparent ? "var(--color-base-white)" : "var(--color-base-black)"};
 `;
 
 export const HeaderBack = styled.button`
@@ -43,7 +44,6 @@ export const HeaderBack = styled.button`
 export const HeaderTitle = styled.div`
   min-width: 0;
   width: 100%;
-  color: var(--color-base-black);
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
