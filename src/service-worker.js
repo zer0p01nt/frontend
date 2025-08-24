@@ -13,26 +13,29 @@ import { precacheAndRoute, createHandlerBoundToURL } from "workbox-precaching";
 import { registerRoute } from "workbox-routing";
 import { StaleWhileRevalidate } from "workbox-strategies";
 
-import { initializeApp } from "firebase/app";
 import { getMessaging, onBackgroundMessage } from "firebase/messaging/sw";
+import { fbApp } from "./firebase"; // 또는 SW 안에서 initializeApp
 
-const fb = initializeApp({
-  apiKey: process.env.REACT_APP_FB_API_KEY,
-  authDomain: process.env.REACT_APP_FB_AUTH_DOMAIN,
-  projectId: process.env.REACT_APP_FB_PROJECT_ID,
-  messagingSenderId: process.env.REACT_APP_FB_MESSAGING_SENDER_ID,
-  appId: process.env.REACT_APP_FB_APP_ID,
-});
+const messaging = getMessaging(fbApp);
 
-const swMessaging = getMessaging(fb);
+onBackgroundMessage(messaging, async (payload) => {
+  const n = payload.notification || {};
+  const d = payload.data || {};
 
-onBackgroundMessage(swMessaging, (payload) => {
-  // Service Worker 콘솔에 찍힙니다.
-  console.log("[SW bg message]", payload);
-  const n = payload?.notification || {};
-  const title = n.title || "알림";
-  const body = n.body || "";
-  self.registration.showNotification(title, { body });
+  const title = n.title || d.title || "알림";
+  const body = n.body || d.body || "";
+  const docId = d.document_id;
+  const tag = docId ? `doc-${docId}` : "push";
+
+  await self.registration.showNotification(title, {
+    body,
+    tag,
+    renotify: false,
+    data: { ...d, document_id: docId },
+    icon: "/logo512.png",
+    badge: "/logo192.png",
+    requireInteraction: false,
+  });
 });
 
 clientsClaim();

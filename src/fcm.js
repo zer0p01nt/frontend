@@ -70,6 +70,12 @@ export async function bootstrapFcm({ onForeground } = {}) {
   // 포그라운드 수신
   const unsubscribe = onMessage(messaging, async (payload) => {
     console.log("[FCM onMessage fired]", payload);
+    const hasNotification = !!payload?.notification;
+    if (hasNotification) {
+      // SW한테 넘기고 여기서는 표시 x
+      onForeground?.(payload);
+      return;
+    }
 
     const n = payload.notification || {};
     const d = payload.data || {};
@@ -78,7 +84,6 @@ export async function bootstrapFcm({ onForeground } = {}) {
     const body = n.body || d.body || "";
 
     const docId = d.document_id;
-    const path = docId ? `/post/${encodeURIComponent(docId)}` : "/notification";
 
     try {
       const reg =
@@ -90,7 +95,7 @@ export async function bootstrapFcm({ onForeground } = {}) {
         badge: "/logo192.png",
         tag: docId ? `doc-${docId}` : "push-foreground",
         renotify: true,
-        data: { ...d, document_id: docId, path },
+        data: { ...d, document_id: docId },
       });
     } catch (e) {
       console.error("showNotification error:", e);
