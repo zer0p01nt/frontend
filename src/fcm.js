@@ -97,6 +97,9 @@ export async function bootstrapFcm() {
 
   // 포그라운드 수신
   const unsubscribe = onMessage(messaging, async (payload) => {
+    console.log(payload);
+    if (payload && payload.notification) return;
+
     const n = payload.notification || {};
     const d = payload.data || {};
 

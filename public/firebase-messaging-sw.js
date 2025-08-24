@@ -71,29 +71,13 @@ async function showOnlyOneNoti(title, options) {
 }
 
 self.addEventListener("push", (e) => {
+  const payload = e.data ? e.data.json() : {};
+  const { title, options } = buildNotification(payload);
   e.waitUntil(
     (async () => {
-      let payload = {};
-      try {
-        payload = e.data
-          ? e.data.json
-            ? await e.data.json()
-            : JSON.parse(e.data.text())
-          : {};
-      } catch {
-        try {
-          payload = JSON.parse(e.data.text());
-        } catch {}
-      }
-
-      const { title, options } = buildNotification(payload);
-      const clientsList = await clients.matchAll({
-        type: "window",
-        includeUncontrolled: true,
-      });
-      // 열려 있는 창이 있으면 onMessage, 없으면 SW
-      if (clientsList.length === 0) {
+      if (payload && payload.notification) {
         await showOnlyOneNoti(title, options);
+        return;
       }
     })()
   );
