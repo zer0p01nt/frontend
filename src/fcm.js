@@ -90,16 +90,16 @@ export async function initFcm() {
   return token;
 }
 
-// export function listenForeground(onForeground) {
-//   const messaging = getMessaging(fbApp);
-//   const stop = onMessage(messaging, (payload) => {
-//     try {
-//       onForeground?.(payload);
-//     } catch (e) {
-//       console.error("[FCM] onForeground 처리 중 오류", e);
-//     }
-//   });
-//   return function stopForeground() {
-//     stop(); // onMessage unsubscribe
-//   };
-// }
+export function listenForeground(onForeground) {
+  const messaging = getMessaging(fbApp);
+  const stop = onMessage(messaging, (payload) => {
+    try {
+      onForeground?.(payload);
+    } catch (e) {
+      console.error("[FCM] onForeground 처리 중 오류", e);
+    }
+  });
+  return function stopForeground() {
+    stop(); // onMessage unsubscribe
+  };
+}
