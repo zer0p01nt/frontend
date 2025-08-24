@@ -78,15 +78,6 @@ export const SortButton = styled.button`
   color: var(--color-neutral-600);
   font-size: var(--Body-sm-font-size);
   font-weight: 500;
-
-  &::after {
-    content: "";
-    width: 7px;
-    height: 7px;
-    border: solid var(--color-neutral-500);
-    border-width: 0 2px 2px 0;
-    transform: translateY(-2px) rotate(45deg);
-  }
 `;
 
 export const DropdownMenu = styled.ul`
