@@ -8,7 +8,7 @@ export default function PushBtn() {
     try {
       const last = getLastToken();
       if (!last) {
-        alert("알림 권한 허용 후 새로고침해 주세요.");
+        alert("알림 권한을 허용해 주세요.");
         return;
       }
 
@@ -21,7 +21,7 @@ export default function PushBtn() {
       const text = await res.text();
       console.log("서버에 푸시 테스트 요청 보냄", res.status, text);
       if (!res.ok) {
-        alert(`테스트 푸시 요청 실패(${res.status}). 응답: ${text}`);
+        console.error(`테스트 푸시 요청 실패(${res.status}). 응답: ${text}`);
         return;
       }
       alert("테스트 알림을 보냈습니다.");

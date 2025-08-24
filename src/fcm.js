@@ -41,7 +41,7 @@ async function sendToken(token) {
     }),
   });
   const text = await res.text();
-  console.log("register resp:", res.status, text);
+  console.log("FCM 토큰 서버 등록 : ", res.status, text);
   if (!res.ok) throw new Error(`register failed: ${res.status}`);
   setLS(LS_TOKEN, token); // fetch 성공하면 마지막 토큰 갱신
 }
@@ -90,14 +90,11 @@ export async function bootstrapFcm() {
       } catch (e) {
         console.error("FCM 토큰 등록 요청 에러", e);
       }
-    } else {
-      console.log("토큰 변경 없음");
     }
   }
 
   // 포그라운드 수신
   const unsubscribe = onMessage(messaging, async (payload) => {
-    console.log(payload);
     if (payload && payload.notification) return;
 
     const n = payload.notification || {};
@@ -124,7 +121,7 @@ export async function bootstrapFcm() {
         data: { ...d, document_id: docId, path },
       });
     } catch (e) {
-      console.error("showNotification error:", e);
+      console.error("showNotification 오류:", e);
     }
   });
   return { token: currentToken, unsubscribe };

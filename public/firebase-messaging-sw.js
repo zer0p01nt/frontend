@@ -39,8 +39,8 @@ self.addEventListener("activate", (evt) => evt.waitUntil(self.clients.claim()));
 // });
 
 function buildNotification(payload) {
-  const n = payload.notification;
-  const d = payload.data;
+  const n = (payload && payload.notification) || {};
+  const d = (payload && payload.data) || {};
 
   const title = n.title ?? d.title ?? "알림";
   const body = n.body ?? d.body ?? "";
@@ -78,6 +78,14 @@ self.addEventListener("push", (e) => {
       if (payload && payload.notification) {
         await showOnlyOneNoti(title, options);
         return;
+      }
+
+      const clientsList = await clients.matchAll({
+        type: "window",
+        includeUncontrolled: true,
+      });
+      if (clientsList.length === 0) {
+        await showOnlyOneNoti(title, options);
       }
     })()
   );
