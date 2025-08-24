@@ -1,36 +1,30 @@
+// src/fcm.js
 import {
   getMessaging,
   getToken,
   isSupported,
   onMessage,
-  // deleteToken,
 } from "firebase/messaging";
 import { fbApp } from "./firebase";
 
 const API_URL = process.env.REACT_APP_API_URL;
 const VAPID_KEY = process.env.REACT_APP_FB_VAPID_KEY;
 
-// 마지막으로 서버에 보낸 토큰
 const LS_TOKEN = "fcm:lastSentToken";
-
-// 현재 토큰 상태
-let currentToken = null;
-
-function getLS(key) {
+const getLS = (k) => {
   try {
-    return localStorage.getItem(key);
+    return localStorage.getItem(k);
   } catch {
     return null;
   }
-}
-
-function setLS(key, value) {
+};
+const setLS = (k, v) => {
   try {
-    return localStorage.setItem(key, value);
+    localStorage.setItem(k, v);
   } catch {}
-}
+};
 
-async function sendToken(token) {
+async function sendTokenToServer(token) {
   const res = await fetch(`${API_URL}/notification/fcm/register/`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -40,88 +34,72 @@ async function sendToken(token) {
       device_type: "web",
     }),
   });
-  const text = await res.text();
-  console.log("register resp:", res.status, text);
   if (!res.ok) throw new Error(`register failed: ${res.status}`);
-  setLS(LS_TOKEN, token); // fetch 성공하면 마지막 토큰 갱신
+  setLS(LS_TOKEN, token);
 }
 
-// 푸시 버튼에 토큰 보내기
 export function getLastToken() {
   return getLS(LS_TOKEN);
 }
 
-export async function bootstrapFcm({ onForeground } = {}) {
+// getToken 중복 호출 방지
+let inFlightToken = null;
+
+export async function initFcm() {
   const ok = await isSupported().catch(() => false);
-  if (!ok) return { token: null, unsubscribe: () => {} };
+  if (!ok) return null;
 
   if (Notification.permission !== "granted") {
     const p = await Notification.requestPermission();
-    if (p !== "granted") {
-      alert("알림 권한이 필요합니다.");
-      return { token: null, unsubscribe: () => {} };
-    }
+    if (p !== "granted") return null;
   }
 
-  if (!("serviceWorker" in navigator)) {
-    console.log("no serviceWorker in navigator");
-    return { token: null, unsubscribe: () => {} };
-  }
-  const registration = await navigator.serviceWorker.ready;
-  console.log("SW ready:", registration?.active?.scriptURL);
+  if (!("serviceWorker" in navigator)) return null;
+
+  const registration =
+    (await navigator.serviceWorker.getRegistration(
+      "/firebase-messaging-sw.js"
+    )) || (await navigator.serviceWorker.register("/firebase-messaging-sw.js"));
 
   const messaging = getMessaging(fbApp);
 
-  // 포그라운드 수신
-  const unsubscribe = onMessage(messaging, async (payload) => {
-    console.log("[FCM onMessage fired]", payload);
-
-    const n = payload.notification || {};
-    const d = payload.data || {};
-
-    const title = n.title || d.title || "알림";
-    const body = n.body || d.body || "";
-
-    const docId = d.document_id;
-
-    try {
-      await registration.showNotification(title, {
-        body,
-        icon: "/logo512.png",
-        badge: "/logo192.png",
-        tag: "push-foreground",
-        renotify: true,
-        data: { ...d, document_id: docId },
-      });
-    } catch (e) {
-      console.error("showNotification error:", e);
-    }
-    onForeground?.(payload);
-  });
-
-  // 토큰 발급 (같은 토큰이면 그대로 반환)
-  try {
-    currentToken = await getToken(messaging, {
+  if (!inFlightToken) {
+    inFlightToken = getToken(messaging, {
       vapidKey: VAPID_KEY,
       serviceWorkerRegistration: registration,
+    }).catch((e) => {
+      console.error("getToken 실패", e);
+      return null;
     });
-    console.log("FCM token:", currentToken);
-  } catch (e) {
-    console.error("getToken 실패", e);
   }
 
-  // 서버 전송 (토큰이 바뀐 경우에만)
-  if (currentToken) {
-    const lastSent = getLS(LS_TOKEN);
-    if (lastSent !== currentToken) {
-      try {
-        await sendToken(currentToken);
-      } catch (e) {
-        console.error("FCM 토큰 등록 요청 에러", e);
-      }
-    } else {
-      console.log("토큰 변경 없음");
+  const token = await inFlightToken;
+  if (!token) return null;
+
+  const last = getLS(LS_TOKEN);
+  if (last !== token) {
+    try {
+      await sendTokenToServer(token);
+    } catch (e) {
+      console.error("[FCM] 토큰 서버 등록 실패", e);
     }
+  } else {
+    console.log("[FCM] 토큰 변경 없음");
   }
-  return { token: currentToken, unsubscribe };
+
+  return token;
+}
+
+export function listenForeground(onForeground) {
+  const messaging = getMessaging(fbApp);
+  const stop = onMessage(messaging, (payload) => {
+    try {
+      onForeground?.(payload);
+    } catch (e) {
+      console.error("[FCM] onForeground 처리 중 오류", e);
+    }
+  });
+  return function stopForeground() {
+    stop(); // onMessage unsubscribe
+  };
 }

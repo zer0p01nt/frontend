@@ -1,7 +1,6 @@
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import { BrowserRouter } from "react-router-dom";
-import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -10,9 +9,14 @@ root.render(
   </BrowserRouter>
 );
 
-serviceWorkerRegistration.register();
+import { initFcm, listenForeground } from "./fcm";
 
-import { bootstrapFcm } from "./fcm";
-bootstrapFcm({
-  onForeground: (p) => console.log("[FCM foreground payload]", p),
-});
+(async () => {
+  const token = await initFcm();
+  console.log("[FCM] token", token);
+
+  // 포그라운드 로그
+  const stopForeground = listenForeground((p) => {
+    console.log("[FCM foreground payload]", p);
+  });
+})();
