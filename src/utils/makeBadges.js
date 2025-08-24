@@ -55,7 +55,7 @@ export const makeScrapBadges = (r) => {
 
   // 나머지 뱃지들 추가
   badges.push({
-    text: REGION_MAP[r.region.id],
+    text: REGION_MAP[r.region_id],
     color: "blue",
   });
 
@@ -66,10 +66,11 @@ export const makeScrapBadges = (r) => {
     }))
   );
 
-  // 뱃지가 2개를 초과하면 '+N'으로 처리하는 로직
-  if (badges.length > 2) {
-    const remainingCount = badges.length - 2;
-    badges = badges.slice(0, 2);
+  // 뱃지가 3개를 초과하면 '+N'으로 처리하는 로직
+  // 가시성에 따라 그냥 +N도 없이 할 수도 있을 것 같아요
+  if (badges.length > 3) {
+    const remainingCount = badges.length - 3;
+    badges = badges.slice(0, 3);
     badges.push({ text: `+${remainingCount}`, color: "teal" });
   }
 

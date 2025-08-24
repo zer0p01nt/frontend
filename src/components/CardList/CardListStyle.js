@@ -15,7 +15,6 @@ const CardImage = styled.div`
   justify-content: center;
   align-items: center;
 
-
   background: ${({ $hasRealImage }) =>
     $hasRealImage
       ? "transparent"
@@ -79,14 +78,15 @@ const variants = {
     ${baseListStyles}
     padding: 12px 24px;
   `,
-  recommend: css` // 새로운 variant 추가
+  recommend: css`
+    // 새로운 variant 추가
     ${baseListStyles}
     padding: 12px 0px; // 좌우 패딩 제거
   `,
   card: css`
     display: flex;
     flex-direction: column;
-    width: 180px;
+    width: 210px;
     padding: 10px 8px;
     gap: 8px;
     flex-shrink: 0;

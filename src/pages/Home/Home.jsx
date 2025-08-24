@@ -37,9 +37,11 @@ export default function Home() {
   );
   const recentAlerts = recentAlertsData?.recent_alerts ?? [];
 
-  // 3. [스크랩한 공문]을 '다가오는 관심 일정' 섹션에 표시
-  const { data: scrapedPostsData, isLoading: isScrapedPostsLoading } =
-    useFetch(`${API_URL}/scrap/documents/?order=deadline&page=1&page_size=5`, {});
+  // 3. 마감일이 가까운 스크랩 공문 조회
+  const { data: scrapedPostsData, isLoading: isScrapedPostsLoading } = useFetch(
+    `${API_URL}/documents/upcoming-deadlines/`,
+    {}
+  );
   const scrapedPosts = scrapedPostsData?.data?.results ?? [];
 
   // 4. [관심 지역 최근 소식] API 연동
@@ -82,12 +84,12 @@ export default function Home() {
                       {(profile?.data?.user_regions ?? [])
                         .slice(0, 2)
                         .map((r) => (
-                          <Badge color="blue" isFilled={false} key={r.id}>
+                          <Badge color='blue' isFilled={false} key={r.id}>
                             {r.region?.district}
                           </Badge>
                         ))}
                       {profile?.data?.user_regions.length >= 3 && (
-                        <Badge color="pink" isFilled={false}>
+                        <Badge color='pink' isFilled={false}>
                           +{profile?.data?.user_regions.length - 2}
                         </Badge>
                       )}
@@ -101,7 +103,7 @@ export default function Home() {
                         .slice(0, 2)
                         .map((c) => (
                           <Badge
-                            color="teal"
+                            color='teal'
                             isFilled={false}
                             key={c.category?.id}
                           >
@@ -109,7 +111,7 @@ export default function Home() {
                           </Badge>
                         ))}
                       {profile?.data?.user_categories.length >= 3 && (
-                        <Badge color="teal" isFilled={false}>
+                        <Badge color='teal' isFilled={false}>
                           +{profile?.data?.user_categories.length - 2}
                         </Badge>
                       )}
@@ -133,7 +135,7 @@ export default function Home() {
             <S.SectionHeader>
               <S.SectionTitle>관심 분야의 최근 알림</S.SectionTitle>
               <MoreBtn
-                value="더보기"
+                value='더보기'
                 onClick={() => navigate("/notification")}
               />
             </S.SectionHeader>
@@ -158,7 +160,7 @@ export default function Home() {
             <S.SectionHeader>
               <S.SectionTitle>다가오는 관심 일정</S.SectionTitle>
               <MoreBtn
-                value="더보기"
+                value='더보기'
                 onClick={() => navigate("/scrap/posts")}
               />
             </S.SectionHeader>
@@ -167,14 +169,14 @@ export default function Home() {
                 scrapedPosts.map((item) => (
                   // 👇 [수정] 다시 item.id, item.doc_title 등으로 되돌렸습니다.
                   <CardList
-                    key={item.id}
-                    variant="card"
-                    badges={makeScrapBadges(item)}
-                    title={item.doc_title}
-                    date={item.pub_date.slice(0, 10)}
-                    onClick={() => navigate(`/post/${item.id}`)}
-                    image={item.image_url}
-                    type={item.doc_type}
+                    key={item.document.id}
+                    variant='card'
+                    badges={makeScrapBadges(item.document)}
+                    title={item.document.doc_title}
+                    date={item.document.pub_date.slice(0, 10)}
+                    onClick={() => navigate(`/post/${item.document.id}`)}
+                    image={item.document.image_url}
+                    type={item.document.doc_type}
                   />
                 ))}
             </S.HorizontalScrollWrapper>
@@ -184,7 +186,7 @@ export default function Home() {
           <div>
             <S.SectionHeader>
               <S.SectionTitle>관심 지역 최근 소식</S.SectionTitle>
-              <MoreBtn value="더보기" onClick={() => navigate("/news")} />
+              <MoreBtn value='더보기' onClick={() => navigate("/news")} />
             </S.SectionHeader>
             <S.CardListWrapper>
               {!isNewsLoading &&
