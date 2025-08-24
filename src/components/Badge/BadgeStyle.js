@@ -48,7 +48,8 @@ export const BadgeContainer = styled.span`
   align-items: center;
   border-radius: var(--border-radius-rounded);
   font-size: var(--Body-sm-font-size);
-  font-weight: 400;
+  /* isFilled 값에 따라 font-weight를 다르게 설정 */
+  font-weight: ${({ $isFilled }) => ($isFilled ? "600" : "400")};
   line-height: var(--Body-sm-line-height);
 
   ${({ color, $isFilled }) => {
@@ -66,7 +67,7 @@ export const BadgeContainer = styled.span`
       return css`
         background-color: rgba(254, 254, 254, 0.4);
         border: 1px solid var(--color-base-white);
-        color: var(--color-base-white); 
+        color: var(--color-base-white);
       `;
     }
   }}

@@ -20,9 +20,8 @@ export const FakeSearchInputWrapper = styled.div`
   box-shadow: var(--shadow-default);
   gap: 5px;
   cursor: pointer;
-  /* transform을 삭제하고, negative margin으로 요소를 위로 올립니다. */
   margin-top: -22.5px;
-  position: relative; /* 다른 요소와 겹칠 때 순서를 보장합니다. */
+  position: relative; 
 
   span {
     color: var(--color-text-primary-subtitle);

@@ -29,10 +29,10 @@ export const SearchHistoryItem = styled.li`
   align-items: center;
   padding: 12px 0;
   font-size: var(--Body-md-font-size);
-  cursor: pointer; /* ✅ 클릭 가능하도록 커서 변경 */
+  cursor: pointer;
 
   &:hover {
-    background-color: var(--color-neutral-100); /* ✅ 마우스 올렸을 때 배경색 변경 */
+    background-color: var(--color-neutral-100); 
   }
 
   span:first-child {
@@ -78,6 +78,7 @@ export const SortButton = styled.button`
   color: var(--color-neutral-600);
   font-size: var(--Body-sm-font-size);
   font-weight: 500;
+  white-space: nowrap;
 `;
 
 export const DropdownMenu = styled.ul`

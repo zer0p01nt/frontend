@@ -167,7 +167,6 @@ export default function Home() {
             <S.HorizontalScrollWrapper>
               {!isScrapedPostsLoading &&
                 scrapedPosts.map((item) => (
-                  // 👇 [수정] 다시 item.id, item.doc_title 등으로 되돌렸습니다.
                   <CardList
                     key={item.document.id}
                     variant='card'
