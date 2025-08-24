@@ -103,7 +103,7 @@ export async function bootstrapFcm() {
     const title = n.title;
     const body = n.body;
 
-    const docId = d.document_id;
+    const docId = d.document_id || null;
     const path = docId ? `/post/${encodeURIComponent(docId)}` : "/notification";
     const tag = docId ? `doc-${docId}` : "push";
 
