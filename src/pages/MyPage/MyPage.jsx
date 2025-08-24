@@ -141,7 +141,7 @@ export default function MyPage() {
           {!isProfileLoading && profile && (
             <>
               {(profile.data.user_regions ?? []).map((r) => (
-                <Badge color='blue' key={r.id}>
+                <Badge color='blue' key={r.region?.id}>
                   {r.region?.district}
                 </Badge>
               ))}

@@ -46,7 +46,7 @@ export default function Profile() {
       setCategories(profile.data.user_categories ?? []);
       // 초기 region_id 저장
       const initKey = (profile.data.user_regions ?? [])
-        .map((r) => r.id)
+        .map((r) => r.region.id)
         .sort((a, b) => a - b)
         .join(",");
       initRegionIdRef.current = initKey;
@@ -56,7 +56,7 @@ export default function Profile() {
   // ------------------------ 지역 ------------------------
   // 기존 지역 저장
   const selectedRegionIds = useMemo(
-    () => new Set(regions.map((r) => r.id)),
+    () => new Set(regions.map((r) => r.region.id)),
     [regions]
   );
   const canAddMoreRegions = regions.length < 3;
@@ -169,7 +169,7 @@ export default function Profile() {
     }
 
     // 프로필에 추가
-    setRegions((prev) => [...prev, { id, region: { district: raw.district } }]);
+    setRegions((prev) => [...prev, { region: { id, district: raw.district } }]);
   };
 
   // ------------------------ 카테고리 ------------------------
@@ -252,7 +252,7 @@ export default function Profile() {
 
       // 현재 region_id key
       const currentRegionKey = regions
-        .map((r) => r.id)
+        .map((r) => r.region.id)
         .sort((a, b) => a - b)
         .join(",");
       const regionsChanged = currentRegionKey !== initRegionIdRef.current;
@@ -266,19 +266,19 @@ export default function Profile() {
         ...(regionsChanged
           ? {
               regions: regions.map((r) => ({
-                region_id: r.id,
+                region_id: r.region.id,
                 type: "관심지역",
               })),
             }
           : {}),
       };
 
+      await putProfile(body);
+
       // 이제부터 이게 초기 region_id
       if (regionsChanged) {
         initRegionIdRef.current = currentRegionKey;
       }
-
-      await putProfile(body);
 
       if (closeBtn === "region") setRegionOpen(false);
       if (closeBtn === "category") setCategoryOpen(false);
@@ -344,7 +344,7 @@ export default function Profile() {
                     {!isProfileLoading && profile && (
                       <>
                         {regions.map((r) => (
-                          <B.HiddenLabel>
+                          <B.HiddenLabel key={r.id}>
                             <S.HiddenInput
                               type='button'
                               id={r.id}

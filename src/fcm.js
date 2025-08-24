@@ -31,7 +31,7 @@ async function sendTokenToServer(token) {
     body: JSON.stringify({
       user_id: "GUEST1",
       registration_token: token,
-      device_type: "android",
+      device_type: "web",
     }),
   });
   if (!res.ok) throw new Error(`register failed: ${res.status}`);
