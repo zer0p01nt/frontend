@@ -10,4 +10,14 @@ root.render(
 );
 
 import { bootstrapFcm } from "./fcm";
-bootstrapFcm();
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker
+    .register("/firebase-messaging-sw.js", { scope: "/" })
+    .then(async () => {
+      await navigator.serviceWorker.ready;
+      bootstrapFcm();
+    })
+    .catch((err) => console.error("[SW] register failed:", err));
+} else {
+  bootstrapFcm();
+}
