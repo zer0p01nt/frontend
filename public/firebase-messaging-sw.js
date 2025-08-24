@@ -42,9 +42,9 @@ function buildNotification(payload) {
   const n = payload.notification;
   const d = payload.data;
 
-  const title = n.title;
-  const body = n.body;
-  const docId = d.document_id || d.data.document_id || null;
+  const title = n.title ?? d.title ?? "알림";
+  const body = n.body ?? d.body ?? "";
+  const docId = d?.document_id ?? d?.docId ?? null;
   const path = docId ? `/post/${encodeURIComponent(docId)}` : "/notification";
   const tag = docId ? `doc-${docId}` : "push";
 
@@ -71,10 +71,22 @@ async function showOnlyOneNoti(title, options) {
 }
 
 self.addEventListener("push", (e) => {
-  const payload = e.data ? e.data.json() : {};
-  const { title, options } = buildNotification(payload);
   e.waitUntil(
     (async () => {
+      let payload = {};
+      try {
+        payload = e.data
+          ? e.data.json
+            ? await e.data.json()
+            : JSON.parse(e.data.text())
+          : {};
+      } catch {
+        try {
+          payload = JSON.parse(e.data.text());
+        } catch {}
+      }
+
+      const { title, options } = buildNotification(payload);
       const clientsList = await clients.matchAll({
         type: "window",
         includeUncontrolled: true,
