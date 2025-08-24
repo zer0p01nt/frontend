@@ -39,11 +39,11 @@ export default function Home() {
 
   // 3. [스크랩한 공문]을 '다가오는 관심 일정' 섹션에 표시
   const { data: scrapedPostsData, isLoading: isScrapedPostsLoading } =
-    useFetch(`${API_URL}/scrap/documents/?order=latest&page=1&page_size=5`, {});
+    useFetch(`${API_URL}/scrap/documents/?order=deadline&page=1&page_size=5`, {});
   const scrapedPosts = scrapedPostsData?.data?.results ?? [];
 
   // 4. [관심 지역 최근 소식] API 연동
-  const markedRegion = profile?.data?.user_regions?.[0]?.region?.district; 
+  const markedRegion = profile?.data?.user_regions?.[0]?.region?.district;
   const markedRegionId = markedRegion ? NAME_REGION_MAP[markedRegion] : null;
   const newsUrl =
     !isProfileLoading && markedRegionId
@@ -69,7 +69,7 @@ export default function Home() {
           <S.TitleWrapper>
             <S.TitleBox>
               <S.Title>
-                {isProfileLoading ? "사용자" : profile?.data?.name || "사용자"} 
+                {isProfileLoading ? "사용자" : profile?.data?.name || "사용자"}
                 님!
                 <div>
                   오늘도 <strong>맞춤 소식</strong> 전해드릴게요
@@ -82,12 +82,12 @@ export default function Home() {
                       {(profile?.data?.user_regions ?? [])
                         .slice(0, 2)
                         .map((r) => (
-                          <Badge color='blue' isFilled={false} key={r.id}>
+                          <Badge color="blue" isFilled={false} key={r.id}>
                             {r.region?.district}
                           </Badge>
                         ))}
-                      {profile?.data?.user_regions.length >= 3 && ( 
-                        <Badge color='pink' isFilled={false}>
+                      {profile?.data?.user_regions.length >= 3 && (
+                        <Badge color="pink" isFilled={false}>
                           +{profile?.data?.user_regions.length - 2}
                         </Badge>
                       )}
@@ -97,19 +97,19 @@ export default function Home() {
                 <S.BadgeWrapper>
                   {!isProfileLoading && profile && (
                     <>
-                      {(profile?.data?.user_categories ?? []) 
+                      {(profile?.data?.user_categories ?? [])
                         .slice(0, 2)
                         .map((c) => (
                           <Badge
-                            color='teal'
+                            color="teal"
                             isFilled={false}
                             key={c.category?.id}
                           >
                             {c.category?.category_name}
                           </Badge>
                         ))}
-                      {profile?.data?.user_categories.length >= 3 && ( 
-                        <Badge color='teal' isFilled={false}>
+                      {profile?.data?.user_categories.length >= 3 && (
+                        <Badge color="teal" isFilled={false}>
                           +{profile?.data?.user_categories.length - 2}
                         </Badge>
                       )}
@@ -133,7 +133,7 @@ export default function Home() {
             <S.SectionHeader>
               <S.SectionTitle>관심 분야의 최근 알림</S.SectionTitle>
               <MoreBtn
-                value='더보기'
+                value="더보기"
                 onClick={() => navigate("/notification")}
               />
             </S.SectionHeader>
@@ -156,23 +156,23 @@ export default function Home() {
           {/* --- 스크랩한 공문 --- */}
           <div>
             <S.SectionHeader>
-              <S.SectionTitle>다가오는 관심 일정
-              </S.SectionTitle>
+              <S.SectionTitle>다가오는 관심 일정</S.SectionTitle>
               <MoreBtn
-                value='더보기'
+                value="더보기"
                 onClick={() => navigate("/scrap/posts")}
               />
             </S.SectionHeader>
             <S.HorizontalScrollWrapper>
               {!isScrapedPostsLoading &&
                 scrapedPosts.map((item) => (
+                  // 👇 [수정] 다시 item.id, item.doc_title 등으로 되돌렸습니다.
                   <CardList
                     key={item.id}
-                    variant='card'
+                    variant="card"
                     badges={makeScrapBadges(item)}
                     title={item.doc_title}
                     date={item.pub_date.slice(0, 10)}
-                    onClick={() => navigate(`/post/${item.document}`)}
+                    onClick={() => navigate(`/post/${item.id}`)}
                     image={item.image_url}
                     type={item.doc_type}
                   />
@@ -184,7 +184,7 @@ export default function Home() {
           <div>
             <S.SectionHeader>
               <S.SectionTitle>관심 지역 최근 소식</S.SectionTitle>
-              <MoreBtn value='더보기' onClick={() => navigate("/news")} />
+              <MoreBtn value="더보기" onClick={() => navigate("/news")} />
             </S.SectionHeader>
             <S.CardListWrapper>
               {!isNewsLoading &&

@@ -73,11 +73,15 @@ export const BadgeWrapper = styled.div`
 const variants = {
   list: css`
     ${baseListStyles}
-    padding: 12px;
+    padding: 12px 8px;
   `,
   notification: css`
     ${baseListStyles}
     padding: 12px 24px;
+  `,
+  recommend: css` // 새로운 variant 추가
+    ${baseListStyles}
+    padding: 12px 0px; // 좌우 패딩 제거
   `,
   card: css`
     display: flex;

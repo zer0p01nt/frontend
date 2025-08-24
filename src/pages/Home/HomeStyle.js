@@ -7,7 +7,7 @@ export const HomeWrapper = styled.div`
 `;
 
 export const FakeSearchInputWrapper = styled.div`
-  width: 100%;
+ width: 100%;
   max-width: 362px;
   height: 45px;
   display: flex;
@@ -20,7 +20,9 @@ export const FakeSearchInputWrapper = styled.div`
   box-shadow: var(--shadow-default);
   gap: 5px;
   cursor: pointer;
-  transform: translateY(-50%);
+  /* transform을 삭제하고, negative margin으로 요소를 위로 올립니다. */
+  margin-top: -22.5px;
+  position: relative; /* 다른 요소와 겹칠 때 순서를 보장합니다. */
 
   span {
     color: var(--color-text-primary-subtitle);
@@ -46,7 +48,7 @@ export const TitleContainer = styled.div`
   background: linear-gradient(
     180deg,
     var(--color-blue-400-main) 85.04%,
-    #4298fa 111.61%
+    #4298FA 111.61%
   );
 
   width: calc(100% + 32px);
@@ -118,14 +120,15 @@ export const BadgeWrapper = styled.div`
 export const SectionWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
+  margin-top: 12px;
 `;
 
 export const SectionHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 8px;
+  padding: 0 8px 12px;
 `;
 
 export const SectionTitle = styled.h2`

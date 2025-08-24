@@ -1,15 +1,14 @@
 import styled from "styled-components";
 
-// 제목 부분 전체를 감싸는 컨테이너
+
 export const TitleContainer = styled.div`
+  
   background: linear-gradient(
     180deg,
     var(--color-blue-400-main) 85.04%,
-    #4298fa 111.61%
+    #4298FA 111.61%
   );
-  // 전체 컨테이너의 padding 무시하고 배경 덮기
   margin: 0 -16px;
-  // 헤더까지 배경 덮기
   padding: 66px 24px 24px;
   display: flex;
   flex-direction: column;
@@ -76,13 +75,16 @@ export const BadgeWrapper = styled.div`
   border: 1px solid var(--color-blue-50);
   background: var(--color-base-white);
   flex-wrap: wrap;
-  transform: translateY(-27px);
+  margin-top: -27px;
+  position: relative;
+  z-index: 1;
 `;
 
 export const SectionContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 24px;
+  margin-top: 12px;
 `;
 
 export const NoScraped = styled.div`

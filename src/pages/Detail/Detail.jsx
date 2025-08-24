@@ -221,7 +221,7 @@ export default function Detail() {
 
         {/* 관련 공문 추천 */}
         <S.RecommendBox>
-          <S.Title>관련 공문 추천</S.Title>
+          <S.RecommendTitle>관련 공문 추천</S.RecommendTitle>
           {post.similar_documents?.map((doc) => (
             <RecommendBadges key={doc.id} doc={doc}>
               {(badges, loading) => (
@@ -232,6 +232,7 @@ export default function Detail() {
                   key={doc.id}
                   onClick={() => navigate(`/post/${doc.id}`)}
                   type={post.doc_type}
+                  variant="recommend"
                 />
               )}
             </RecommendBadges>
