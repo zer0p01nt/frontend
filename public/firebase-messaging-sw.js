@@ -5,6 +5,9 @@ importScripts(
   "https://www.gstatic.com/firebasejs/12.1.0/firebase-messaging-compat.js"
 );
 
+self.addEventListener("install", () => self.skipWaiting());
+self.addEventListener("activate", (evt) => evt.waitUntil(self.clients.claim()));
+
 firebase.initializeApp({
   apiKey: "AIzaSyCzMqxMRpkho-eQnFbWabwrLzxR2AyzFTw",
   authDomain: "villit.firebaseapp.com",
@@ -18,6 +21,7 @@ firebase.initializeApp({
 const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage((payload) => {
+  console.log(payload);
   const title = payload.notification?.title || "알림";
   const body = payload.notification?.body || "";
   self.registration.showNotification(title, {
