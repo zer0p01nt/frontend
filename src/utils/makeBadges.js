@@ -55,7 +55,7 @@ export const makeScrapBadges = (r) => {
 
   // 나머지 뱃지들 추가
   badges.push({
-    text: REGION_MAP[r.region_id],
+    text: REGION_MAP[r.region_id] || REGION_MAP[r.region.id],
     color: "blue",
   });
 
