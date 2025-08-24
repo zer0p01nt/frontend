@@ -1,31 +1,17 @@
 import * as S from "./PushBtnStyle";
-import { getMessaging, getToken } from "firebase/messaging";
-import { fbApp } from "../../firebase";
+import { getLastToken } from "../../fcm";
 
 const API_URL = process.env.REACT_APP_API_URL;
-const VAPID_KEY = process.env.REACT_APP_FB_VAPID_KEY;
 
 export default function PushBtn() {
   const handleTestPush = async () => {
     try {
-      // 최신 토큰 재발급
-      const reg = await navigator.serviceWorker.ready;
-      const t = await getToken(getMessaging(fbApp), {
-        vapidKey: VAPID_KEY,
-        serviceWorkerRegistration: reg,
-      });
-
-      // 바로 서버에 재등록
-      if (t) {
-        await fetch(`${API_URL}/notification/fcm/register/`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            user_id: "GUEST1",
-            registration_token: t,
-            device_type: "web",
-          }),
-        });
+      const last = getLastToken();
+      if (!last) {
+        alert(
+          "알림이 아직 등록되지 않았습니다. 알림 권한 허용 후 새로고침해 주세요."
+        );
+        return;
       }
 
       // 테스트 푸시
@@ -36,6 +22,10 @@ export default function PushBtn() {
       });
       const text = await res.text();
       console.log("서버에 푸시 테스트 요청 보냄", res.status, text);
+      if (!res.ok) {
+        alert(`테스트 푸시 요청 실패(${res.status}). 응답: ${text}`);
+        return;
+      }
       alert("테스트 알림을 보냈습니다.");
     } catch (e) {
       console.error(e);

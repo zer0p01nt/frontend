@@ -94,6 +94,18 @@ onBackgroundMessage(messaging, async (payload) => {
   });
 });
 
+// 확인용 로직
+self.addEventListener("push", (event) => {
+  try {
+    const raw = event.data ? event.data.text() : null;
+    console.log("[SW] push event raw:", raw);
+    const json = event.data ? event.data.json() : null;
+    console.log("[SW] push event json:", json);
+  } catch (e) {
+    console.warn("[SW] push event parse error:", e);
+  }
+});
+
 // 푸시 알림 클릭 로직
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();

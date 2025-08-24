@@ -46,6 +46,11 @@ async function sendToken(token) {
   setLS(LS_TOKEN, token); // fetch 성공하면 마지막 토큰 갱신
 }
 
+// 푸시 버튼에 토큰 보내기
+export function getLastToken() {
+  return getLS(LS_TOKEN);
+}
+
 export async function bootstrapFcm({ onForeground } = {}) {
   const ok = await isSupported().catch(() => false);
   if (!ok) return { token: null, unsubscribe: () => {} };
@@ -80,10 +85,7 @@ export async function bootstrapFcm({ onForeground } = {}) {
     const docId = d.document_id;
 
     try {
-      const reg =
-        (await navigator.serviceWorker.getRegistration()) ||
-        (await navigator.serviceWorker.ready);
-      await reg?.showNotification(title, {
+      await registration.showNotification(title, {
         body,
         icon: "/logo512.png",
         badge: "/logo192.png",
