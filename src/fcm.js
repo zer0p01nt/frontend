@@ -67,31 +67,6 @@ export async function bootstrapFcm({ onForeground } = {}) {
 
   const messaging = getMessaging(fbApp);
 
-  // 토큰 발급 (같은 토큰이면 그대로 반환)
-  try {
-    currentToken = await getToken(messaging, {
-      vapidKey: VAPID_KEY,
-      serviceWorkerRegistration: registration,
-    });
-    console.log("FCM token:", currentToken);
-  } catch (e) {
-    console.error("getToken 실패", e);
-  }
-
-  // 서버 전송 (토큰이 바뀐 경우에만)
-  if (currentToken) {
-    const lastSent = getLS(LS_TOKEN);
-    if (lastSent !== currentToken) {
-      try {
-        await sendToken(currentToken);
-      } catch (e) {
-        console.error("FCM 토큰 등록 요청 에러", e);
-      }
-    } else {
-      console.log("토큰 변경 없음");
-    }
-  }
-
   // 포그라운드 수신
   const unsubscribe = onMessage(messaging, async (payload) => {
     console.log("[FCM onMessage fired]", payload);
@@ -122,5 +97,30 @@ export async function bootstrapFcm({ onForeground } = {}) {
     }
     onForeground?.(payload);
   });
+
+  // 토큰 발급 (같은 토큰이면 그대로 반환)
+  try {
+    currentToken = await getToken(messaging, {
+      vapidKey: VAPID_KEY,
+      serviceWorkerRegistration: registration,
+    });
+    console.log("FCM token:", currentToken);
+  } catch (e) {
+    console.error("getToken 실패", e);
+  }
+
+  // 서버 전송 (토큰이 바뀐 경우에만)
+  if (currentToken) {
+    const lastSent = getLS(LS_TOKEN);
+    if (lastSent !== currentToken) {
+      try {
+        await sendToken(currentToken);
+      } catch (e) {
+        console.error("FCM 토큰 등록 요청 에러", e);
+      }
+    } else {
+      console.log("토큰 변경 없음");
+    }
+  }
   return { token: currentToken, unsubscribe };
 }
