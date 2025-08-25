@@ -92,6 +92,10 @@ const variants = {
     flex-shrink: 0;
     border-radius: var(--border-radius-2xl);
 
+    &:active {
+      background-color: var(--color-neutral-100);
+    }
+
     ${BadgeWrapper} {
       flex-wrap: wrap;
       margin-bottom: 0;
@@ -123,6 +127,10 @@ export const CardContainer = styled.div`
   background: var(--color-base-white);
   ${({ $variant }) => variants[$variant]}
   cursor: pointer;
+
+  &:active {
+    background-color: var(--color-neutral-100);
+  }
 `;
 
 export { ContentWrapper, CardImage };

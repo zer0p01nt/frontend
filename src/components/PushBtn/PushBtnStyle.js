@@ -12,7 +12,8 @@ export const PushBtnContainer = styled.div`
 `;
 
 export const PushBtnText = styled.div`
-  color: var(--color-base-black);
+  color: ${({ $loading }) =>
+    $loading ? "var(--color-neutral-400)" : "var(--color-base-black)"};
   font-weight: 500;
   font-size: var(--Body-md-font-size);
 `;
@@ -20,7 +21,10 @@ export const PushBtnText = styled.div`
 export const PushButton = styled.button`
   border-radius: var(--border-radius-rounded);
   box-shadow: var(--shadow-default);
-  background-color: var(--color-neutral-brand-primary);
+  background-color: ${({ $loading }) =>
+    $loading
+      ? "var(--color-neutral-400)"
+      : "var(--color-neutral-brand-primary)"};
   color: var(--color-base-white);
   padding: 6px 12px;
   font-weight: 500;

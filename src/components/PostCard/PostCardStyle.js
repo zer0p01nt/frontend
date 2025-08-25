@@ -8,6 +8,10 @@ export const Container = styled.div`
   align-items: center;
   border-bottom: 0.5px solid var(--color-neutral-200);
   cursor: pointer;
+
+  &:active {
+    background-color: var(--color-neutral-100);
+  }
 `;
 
 export const ContentWrapper = styled.div`
@@ -52,7 +56,6 @@ export const CardImage = styled.div`
   justify-content: center;
   align-items: center;
   overflow: hidden;
-
 
   background: ${({ $hasRealImage }) =>
     $hasRealImage

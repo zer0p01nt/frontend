@@ -1,11 +1,15 @@
 import * as S from "./PushBtnStyle";
 import { getLastToken } from "../../fcm";
+import { useState } from "react";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
 export default function PushBtn() {
+  const [loading, setLoading] = useState(false);
+
   const handleTestPush = async () => {
     try {
+      setLoading(true);
       const last = getLastToken();
       if (!last) {
         alert("알림 권한을 허용해 주세요.");
@@ -27,12 +31,22 @@ export default function PushBtn() {
       alert("테스트 알림을 보냈습니다.");
     } catch (e) {
       console.error(e);
+    } finally {
+      setLoading(false);
     }
   };
   return (
     <S.PushBtnContainer>
-      <S.PushBtnText>푸시 알림을 테스트 해 보세요.</S.PushBtnText>
-      <S.PushButton onClick={handleTestPush}>테스트</S.PushButton>
+      <S.PushBtnText $loading={loading}>
+        {loading ? "잠시 기다려 주세요." : "푸시 알림을 테스트 해 보세요."}
+      </S.PushBtnText>
+      <S.PushButton
+        onClick={handleTestPush}
+        $loading={loading}
+        disabled={loading}
+      >
+        {loading ? "로딩 중" : "테스트"}
+      </S.PushButton>
     </S.PushBtnContainer>
   );
 }
