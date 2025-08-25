@@ -51,6 +51,28 @@ export function getLastToken() {
   return getLS(LS_TOKEN);
 }
 
+function buildNotification(payload) {
+  const n = (payload && payload.notification) || {};
+  const d = (payload && payload.data) || {};
+
+  const title = n.title ?? d.title ?? "알림";
+  const body = n.body ?? d.body ?? "";
+  const docId = d?.document_id ?? d?.docId ?? null;
+  const path = docId ? `/post/${encodeURIComponent(docId)}` : "/notification";
+  const tag = docId ? `doc-${docId}` : "push";
+
+  const options = {
+    body,
+    icon: "/logo512.png",
+    badge: "/logo192.png",
+    tag,
+    renotify: false,
+    data: { ...d, document_id: docId, path },
+  };
+
+  return { title, options };
+}
+
 export async function bootstrapFcm() {
   const ok = await isSupported().catch(() => false);
   if (!ok) return { token: null, unsubscribe: () => {} };
@@ -95,31 +117,18 @@ export async function bootstrapFcm() {
 
   // 포그라운드 수신
   const unsubscribe = onMessage(messaging, async (payload) => {
-    if (payload && payload.notification) return;
+    // 다중탭 중복 수신 방지
+    if (document.visibilityState !== "visible") return;
 
-    const n = payload.notification || {};
-    const d = payload.data || {};
-
-    const title = n.title ?? d.title ?? "알림";
-    const body = n.body ?? d.body ?? "";
-
-    const docId = d?.document_id ?? d?.docId ?? null;
-    const path = docId ? `/post/${encodeURIComponent(docId)}` : "/notification";
-    const tag = docId ? `doc-${docId}` : "push";
+    const { title, options } = buildNotification(payload);
 
     try {
       const existing = await registration.getNotifications({
         includeTriggered: true,
       });
+      const tag = options.tag;
       existing.filter((n) => n.tag === tag).forEach((n) => n.close());
-      await registration.showNotification(title, {
-        body,
-        icon: "/logo512.png",
-        badge: "/logo192.png",
-        tag,
-        renotify: false,
-        data: { ...d, document_id: docId, path },
-      });
+      await registration.showNotification(title, options);
     } catch (e) {
       console.error("showNotification 오류:", e);
     }

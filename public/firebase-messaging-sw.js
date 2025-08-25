@@ -70,21 +70,29 @@ async function showOnlyOneNoti(title, options) {
   return self.registration.showNotification(title, options);
 }
 
+async function anyClientVisible() {
+  const list = await self.clients.matchAll({
+    type: "window",
+    includeUncontrolled: true,
+  });
+  return list.some((c) => {
+    try {
+      return c.visibilityState === "visible";
+    } catch {
+      return true;
+    }
+  });
+}
+
 self.addEventListener("push", (e) => {
   const payload = e.data ? e.data.json() : {};
   const { title, options } = buildNotification(payload);
+
   e.waitUntil(
     (async () => {
-      if (payload && payload.notification) {
-        await showOnlyOneNoti(title, options);
-        return;
-      }
-
-      const clientsList = await clients.matchAll({
-        type: "window",
-        includeUncontrolled: true,
-      });
-      if (clientsList.length === 0) {
+      const hasVisible = await anyClientVisible();
+      // 보이는 탭이 없을 때만 SW가 표시
+      if (!hasVisible) {
         await showOnlyOneNoti(title, options);
       }
     })()
