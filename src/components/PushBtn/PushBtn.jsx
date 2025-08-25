@@ -7,11 +7,38 @@ const API_URL = process.env.REACT_APP_API_URL;
 export default function PushBtn({ setToastShow }) {
   const [loading, setLoading] = useState(false);
 
+  // iOS 감지
+  const isIOS = () => {
+    if (typeof navigator === "undefined") return false;
+    const ua = navigator.userAgent || "";
+    const isiOSUA = /iPad|iPhone|iPod/.test(ua);
+    const isIPadOS13Plus = ua.includes("Mac") && navigator.maxTouchPoints > 1;
+    return isiOSUA || isIPadOS13Plus;
+  };
+
+  // PWA 모드 감지
+  const isPWAMode = () => {
+    if (typeof window === "undefined") return false;
+    const modes = ["standalone", "fullscreen", "minimal-ui"];
+    return (
+      modes.some((m) => window.matchMedia(`(display-mode: ${m})`).matches) ||
+      window.navigator.standalone === true
+    );
+  };
+
   const handleTestPush = async () => {
     try {
       setLoading(true);
       const last = getLastToken();
       if (!last) {
+        // iOS이면 PWA 모드 아닐 경우 분기 처리
+        if (isIOS() && !isPWAMode()) {
+          alert(
+            "iOS에서는 홈 화면에 설치한 웹앱에서만 푸시 알림을 받을 수 있습니다.\n" +
+              '"공유" 버튼 > "홈 화면에 추가"로 설치한 뒤 다시 시도해 주세요.'
+          );
+          return;
+        }
         alert("알림 권한을 허용해 주세요.");
         return;
       }
