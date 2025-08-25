@@ -86,6 +86,7 @@ async function anyClientVisible() {
 
 self.addEventListener("push", (e) => {
   const payload = e.data ? e.data.json() : {};
+  console.log(payload);
   const { title, options } = buildNotification(payload);
 
   e.waitUntil(

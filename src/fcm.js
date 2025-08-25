@@ -117,6 +117,7 @@ export async function bootstrapFcm() {
 
   // 포그라운드 수신
   const unsubscribe = onMessage(messaging, async (payload) => {
+    console.log(payload);
     // 다중탭 중복 수신 방지
     if (document.visibilityState !== "visible") return;
 
