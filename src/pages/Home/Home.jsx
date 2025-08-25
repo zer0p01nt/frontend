@@ -172,7 +172,6 @@ export default function Home() {
                     variant='card'
                     badges={makeScrapBadges(item.document)}
                     title={item.document.doc_title}
-                    date={item.document.pub_date.slice(0, 10)}
                     onClick={() => navigate(`/post/${item.document.id}`)}
                     image={item.document.image_url}
                     type={item.document.doc_type}
