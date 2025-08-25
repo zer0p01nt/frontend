@@ -42,6 +42,7 @@ export const UnreadMark = styled.div`
   background-color: var(--color-blue-400-main);
   border-radius: 50%;
   margin-left: 8px;
+  flex-shrink: 0;
 `;
 
 const baseListStyles = css`
