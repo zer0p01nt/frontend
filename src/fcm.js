@@ -41,7 +41,7 @@ async function sendToken(token) {
     }),
   });
   const text = await res.text();
-  console.log("FCM 토큰 서버 등록 : ", res.status, text);
+  // console.log("FCM 토큰 서버 등록 : ", res.status, text);
   if (!res.ok) throw new Error(`register failed: ${res.status}`);
   setLS(LS_TOKEN, token); // fetch 성공하면 마지막 토큰 갱신
 }
@@ -103,7 +103,7 @@ export async function bootstrapFcm() {
       vapidKey: VAPID_KEY,
       serviceWorkerRegistration: registration,
     });
-    console.log("FCM token:", currentToken);
+    // console.log("FCM token:", currentToken);
   } catch (e) {
     console.error("getToken 실패", e);
   }

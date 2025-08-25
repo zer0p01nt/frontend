@@ -23,7 +23,7 @@ export default function PushBtn() {
         body: JSON.stringify({ user_id: "GUEST1" }),
       });
       const text = await res.text();
-      console.log("서버에 푸시 테스트 요청 보냄", res.status, text);
+      // console.log("서버에 푸시 테스트 요청 보냄", res.status, text);
       if (!res.ok) {
         console.error(`테스트 푸시 요청 실패(${res.status}). 응답: ${text}`);
         return;
