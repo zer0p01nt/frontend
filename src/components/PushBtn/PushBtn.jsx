@@ -4,7 +4,7 @@ import { useState } from "react";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-export default function PushBtn() {
+export default function PushBtn({ setToastShow }) {
   const [loading, setLoading] = useState(false);
 
   const handleTestPush = async () => {
@@ -28,7 +28,11 @@ export default function PushBtn() {
         console.error(`테스트 푸시 요청 실패(${res.status}). 응답: ${text}`);
         return;
       }
-      alert("테스트 알림을 보냈습니다.");
+
+      // alert 대신 토스트 띄움
+      setToastShow(true);
+      // 1초 후 사라짐
+      setTimeout(() => setToastShow(false), 1000);
     } catch (e) {
       console.error(e);
     } finally {

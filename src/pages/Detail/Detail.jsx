@@ -148,7 +148,11 @@ export default function Detail() {
       {!isPostLoading && post && (
         <Chatbot isOpen={isOpen} handleClose={handleClose} postId={post.id} />
       )}
-      <ShareToast isVisible={toastShow} />
+      <ShareToast
+        isVisible={toastShow}
+        title='링크가 복사됐어요!'
+        content='원하는 곳에 붙여 넣어 공유해 보세요.'
+      />
 
       {/* 페이지 UI */}
       <S.DetailContainer>
@@ -232,7 +236,7 @@ export default function Detail() {
                   key={doc.id}
                   onClick={() => navigate(`/post/${doc.id}`)}
                   type={post.doc_type}
-                  variant="recommend"
+                  variant='recommend'
                 />
               )}
             </RecommendBadges>

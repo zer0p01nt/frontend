@@ -17,9 +17,10 @@ import {
   NAME_REGION_MAP,
 } from "../../constants/maps";
 import PushBtn from "../../components/PushBtn/PushBtn";
+import ShareToast from "../../components/ShareToast/ShareToast.jsx";
 
 const API_URL = process.env.REACT_APP_API_URL;
-const READ_NOTIFICATIONS_KEY = 'readNotifications';
+const READ_NOTIFICATIONS_KEY = "readNotifications";
 
 export default function Notification() {
   const navigate = useNavigate();
@@ -93,10 +94,17 @@ export default function Notification() {
     navigate(`/post/${item.document_info.id}`);
   };
   // -------------------------
+  // 푸시 버튼 토스트
+  const [toastShow, setToastShow] = useState(false);
 
   return (
     <>
       <Header hasBack={false} title='알림' hasScrap={false} />
+      <ShareToast
+        isVisible={toastShow}
+        title='테스트 알림이 전송됐어요!'
+        content='지금 확인해 보세요.'
+      />
       <S.NotificationContainer>
         <CategoryBar onCategoryChange={handleCategoryChange} />
         <F.SmallFilterWrapper>
@@ -110,7 +118,7 @@ export default function Notification() {
           />
         </F.SmallFilterWrapper>
 
-        <PushBtn />
+        <PushBtn setToastShow={setToastShow} />
         {!isLoading &&
           (notifications.length > 0 ? (
             notifications.map((item) => {
