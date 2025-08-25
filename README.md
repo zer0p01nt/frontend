@@ -32,6 +32,10 @@
     <tr>
       <td align="center">역할을 자유롭게 작성해 주세요.</td>
       <td align="center">
+        <div>홈 페이지, 검색 페이지</div>
+        <div>알림 페이지, 소식 페이지</div>
+      </td>
+      <td align="center">
         <div>마이페이지, 정보수정</div>
         <div>공문 상세페이지, 챗봇</div>
         <div>공문 스크랩, 챗봇 스크랩</div>
