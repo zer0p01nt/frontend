@@ -11,6 +11,7 @@ import ChatbotBox from "../../components/ChatbotBox/ChatbotBox";
 import Badge from "../../components/Badge/Badge";
 import { makeScrapBadges } from "../../utils/makeBadges";
 import character from "../../assets/Character.png";
+import { deleteChatbotScrap } from "../../services/scrapService";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -81,9 +82,6 @@ export default function MyPage() {
         setIsDeleting(true);
         await deleteChatbotScrap(id);
 
-        // items에서도 삭제
-        setItems((prev) => prev.filter((it) => it.id !== id));
-
         // 캐시에서 삭제
         setDetailById((prev) => {
           const { [id]: _removed, ...rest } = prev;
@@ -134,7 +132,11 @@ export default function MyPage() {
                 </S.Text>
               </S.TextBox>
             </S.TitleBox>
-            <MoreBtn value='수정하기' onClick={() => navigate("/profile")} atMyPage={true} />
+            <MoreBtn
+              value='수정하기'
+              onClick={() => navigate("/profile")}
+              atMyPage={true}
+            />
           </S.TitleWrapper>
         </S.TitleContainer>
         <S.BadgeWrapper>
