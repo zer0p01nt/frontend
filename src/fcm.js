@@ -30,6 +30,7 @@ function setLS(key, value) {
   } catch {}
 }
 
+// 토큰을 서버에 등록
 async function sendToken(token) {
   const res = await fetch(`${API_URL}/notification/fcm/register/`, {
     method: "POST",
@@ -51,22 +52,21 @@ export function getLastToken() {
   return getLS(LS_TOKEN);
 }
 
+// 알림 포맷 정리
 function buildNotification(payload) {
   const n = (payload && payload.notification) || {};
   const d =
     (payload && payload.data) || (payload && payload.notification.data) || {};
 
-  const title =
-    n.title ?? d.title ?? "📍 [서울특별시 도봉구/문화] 관련 공문이 등록됐어요!";
-  const body =
-    n.body ?? d.body ?? '"제22회 에너지의 날 행사" 지금 확인해보세요';
+  const title = n.title ?? d.title ?? "";
+  const body = n.body ?? d.body ?? "";
   const docId = d?.document_id ?? d?.docId ?? null;
   const path = docId ? `/post/${encodeURIComponent(docId)}` : "/notification";
   const tag = docId ? `doc-${docId}` : "push";
 
   const options = {
     body,
-    icon: "/logo512.png",
+    // icon: "/logo512.png",
     badge: "/logo192.png",
     tag,
     renotify: true,
@@ -76,6 +76,29 @@ function buildNotification(payload) {
   return { title, options };
 }
 
+// new Notification으로 포그라운드 수신하는 함수
+function showPageNotification(title, options) {
+  const tag = options?.tag || "push";
+  const prev = openNotiMap.get(tag);
+  if (prev) {
+    try {
+      prev.close();
+    } catch {}
+  }
+
+  const n = new Notification(title, options);
+  n.onclick = (e) => {
+    try {
+      e?.preventDefault?.();
+    } catch {}
+    const path = options?.data?.path || "/notification";
+    window.focus();
+    window.location.assign(path);
+    n.close();
+  };
+}
+
+// 토큰 및 알림 처리
 export async function bootstrapFcm() {
   const ok = await isSupported().catch(() => false);
   if (!ok) return { token: null, unsubscribe: () => {} };
@@ -130,7 +153,17 @@ export async function bootstrapFcm() {
       // });
       // const tag = options.tag;
       // existing.filter((n) => n.tag === tag).forEach((n) => n.close());
-      await registration.showNotification(title, options);
+
+      if (
+        document.visibilityState === "visible" &&
+        "Notification" in window &&
+        Notification.permission === "granted"
+      ) {
+        showPageNotification(title, options);
+      } else {
+        // sw로 폴백
+        await registration.showNotification(title, options);
+      }
     } catch (e) {
       console.error("showNotification 오류:", e);
     }
