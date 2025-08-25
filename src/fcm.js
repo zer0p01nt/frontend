@@ -53,10 +53,13 @@ export function getLastToken() {
 
 function buildNotification(payload) {
   const n = (payload && payload.notification) || {};
-  const d = (payload && payload.data) || {};
+  const d =
+    (payload && payload.data) || (payload && payload.notification.data) || {};
 
-  const title = n.title ?? d.title ?? "알림";
-  const body = n.body ?? d.body ?? "";
+  const title =
+    n.title ?? d.title ?? "📍 [서울특별시 도봉구/문화] 관련 공문이 등록됐어요!";
+  const body =
+    n.body ?? d.body ?? '"제22회 에너지의 날 행사" 지금 확인해보세요';
   const docId = d?.document_id ?? d?.docId ?? null;
   const path = docId ? `/post/${encodeURIComponent(docId)}` : "/notification";
   const tag = docId ? `doc-${docId}` : "push";
@@ -66,7 +69,7 @@ function buildNotification(payload) {
     icon: "/logo512.png",
     badge: "/logo192.png",
     tag,
-    renotify: false,
+    renotify: true,
     data: { ...d, document_id: docId, path },
   };
 
@@ -118,17 +121,15 @@ export async function bootstrapFcm() {
   // 포그라운드 수신
   const unsubscribe = onMessage(messaging, async (payload) => {
     console.log(payload);
-    // 다중탭 중복 수신 방지
-    if (document.visibilityState !== "visible") return;
 
     const { title, options } = buildNotification(payload);
 
     try {
-      const existing = await registration.getNotifications({
-        includeTriggered: true,
-      });
-      const tag = options.tag;
-      existing.filter((n) => n.tag === tag).forEach((n) => n.close());
+      // const existing = await registration.getNotifications({
+      //   includeTriggered: true,
+      // });
+      // const tag = options.tag;
+      // existing.filter((n) => n.tag === tag).forEach((n) => n.close());
       await registration.showNotification(title, options);
     } catch (e) {
       console.error("showNotification 오류:", e);
