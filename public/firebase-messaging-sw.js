@@ -15,7 +15,7 @@ function buildNotification(payload) {
   const options = {
     body,
     icon: "/logo512.png",
-    // badge: "/logo192.png",
+    badge: "/logo192.png",
     tag,
     renotify: true,
     data: { ...d, document_id: docId, path },
@@ -35,19 +35,20 @@ async function showOnlyOneNoti(title, options) {
   return self.registration.showNotification(title, options);
 }
 
-// async function anyClientVisible() {
-//   const list = await self.clients.matchAll({
-//     type: "window",
-//     includeUncontrolled: true,
-//   });
-//   return list.some((c) => {
-//     try {
-//       return c.visibilityState === "visible";
-//     } catch {
-//       return true;
-//     }
-//   });
-// }
+// 포그라운드/백그라운드 구분
+async function anyClientVisible() {
+  const list = await self.clients.matchAll({
+    type: "window",
+    includeUncontrolled: true,
+  });
+  return list.some((c) => {
+    try {
+      return c.visibilityState === "visible";
+    } catch {
+      return true;
+    }
+  });
+}
 
 // 푸시 알림 관리
 self.addEventListener("push", (e) => {
@@ -57,7 +58,11 @@ self.addEventListener("push", (e) => {
 
   e.waitUntil(
     (async () => {
-      await showOnlyOneNoti(title, options);
+      const hasVisible = await anyClientVisible();
+      // 보이는 탭이 있을 때만 SW가 표시
+      if (hasVisible) {
+        await showOnlyOneNoti(title, options);
+      }
     })()
   );
 });

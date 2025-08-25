@@ -58,9 +58,9 @@ export function getLastToken() {
 //     (payload && payload.data) || (payload && payload.notification.data) || {};
 
 //   const title =
-//     n.title ?? d.title ?? "📍 [서울특별시 도봉구/문화] 관련 공문이 등록됐어요!";
+//     n.title ?? d.title ?? "";
 //   const body =
-//     n.body ?? d.body ?? '"제22회 에너지의 날 행사" 지금 확인해보세요';
+//     n.body ?? d.body ?? "";
 //   const docId = d?.document_id ?? d?.docId ?? null;
 //   const path = docId ? `/post/${encodeURIComponent(docId)}` : "/notification";
 //   const tag = docId ? `doc-${docId}` : "push";
@@ -120,22 +120,22 @@ export async function bootstrapFcm() {
     }
   }
 
-  // 포그라운드 수신
-  const unsubscribe = onMessage(messaging, async (payload) => {
-    console.log("[메세지 도착]", payload);
+  // 포그라운드 수신 => SW에 일임
+  // const unsubscribe = onMessage(messaging, async (payload) => {
+  //   console.log("[메세지 도착]", payload);
 
-    // const { title, options } = buildNotification(payload);
+  // const { title, options } = buildNotification(payload);
 
-    // try {
-    // const existing = await registration.getNotifications({
-    //   includeTriggered: true,
-    // });
-    // const tag = options.tag;
-    // existing.filter((n) => n.tag === tag).forEach((n) => n.close());
-    //   await registration.showNotification(title, options);
-    // } catch (e) {
-    //   console.error("showNotification 오류:", e);
-    // }
-  });
-  return { token: currentToken, unsubscribe };
+  // try {
+  // const existing = await registration.getNotifications({
+  //   includeTriggered: true,
+  // });
+  // const tag = options.tag;
+  // existing.filter((n) => n.tag === tag).forEach((n) => n.close());
+  //   await registration.showNotification(title, options);
+  // } catch (e) {
+  //   console.error("showNotification 오류:", e);
+  // }
+  // });
+  return { token: currentToken };
 }
