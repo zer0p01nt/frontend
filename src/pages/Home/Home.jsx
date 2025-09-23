@@ -12,60 +12,6 @@ import { NAME_REGION_MAP } from "../../constants/maps.js";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-// 더미데이터 추가
-const MOCKDATA = [
-  {
-    id: 26,
-    document: 34,
-    doc_title: "''도봉구 여름 물놀이장으로 장애인 가족 초대''",
-    doc_type: "PARTICIPATION",
-    doc_type_display: "참여",
-    has_deadline: true,
-    pub_date: "2025-07-21T13:40:00+09:00",
-    dead_date: "2025-09-27T00:00:00+09:00",
-    region: {
-      id: 6,
-      city: "서울특별시",
-      district: "도봉구",
-      full_name: "서울특별시 도봉구",
-    },
-    categories: [
-      {
-        id: 2,
-        category_name: "문화",
-      },
-    ],
-    image_url:
-      "https://viewer.dobong.go.kr/WEB_FILE/bbs/bcode22/docView/223bb760aae6c637c3ee12b14ae5897f.files/image.jpg",
-    created_at: "2025-09-23T15:30:05.162047+09:00",
-  },
-  {
-    id: 9,
-    document: 99,
-    doc_title: "탄소공감마일리지 환경의 날 이벤트",
-    doc_type: "PARTICIPATION",
-    doc_type_display: "참여",
-    has_deadline: true,
-    pub_date: "2025-06-10T10:51:00+09:00",
-    dead_date: "2025-10-05T00:00:00+09:00",
-    region: {
-      id: 6,
-      city: "서울특별시",
-      district: "도봉구",
-      full_name: "서울특별시 도봉구",
-    },
-    categories: [
-      {
-        id: 5,
-        category_name: "환경",
-      },
-    ],
-    image_url:
-      "https://viewer.dobong.go.kr/WEB_FILE/bbs/bcode22/docView/88e30ee2c96085ded5784ec2fc7232ff.files/image.jpg",
-    created_at: "2025-08-25T19:54:05.272966+09:00",
-  },
-];
-
 export default function Home() {
   const navigate = useNavigate();
   const goToSearch = () => {
@@ -219,8 +165,7 @@ export default function Home() {
               />
             </S.SectionHeader>
             <S.HorizontalScrollWrapper>
-              {/* 더미데이터 주입을 위한 주석처리 */}
-              {/* {!isScrapedPostsLoading &&
+              {!isScrapedPostsLoading &&
                 scrapedPosts.map((item) => (
                   <CardList
                     key={item.document.id}
@@ -231,18 +176,7 @@ export default function Home() {
                     image={item.document.image_url}
                     type={item.document.doc_type}
                   />
-                ))} */}
-              {MOCKDATA.map((item) => (
-                <CardList
-                  key={item.id}
-                  variant='card'
-                  badges={makeScrapBadges(item)}
-                  title={item.doc_title}
-                  onClick={() => navigate(`/post/${item.id}`)}
-                  image={item.image_url}
-                  type={item.doc_type}
-                />
-              ))}
+                ))}
             </S.HorizontalScrollWrapper>
           </div>
 
