@@ -110,8 +110,8 @@ const variants = {
         ${({ $hasRealImage }) =>
           !$hasRealImage &&
           css`
-            max-width: 80%;
-            max-height: 50%;
+            max-width: 100%;
+            max-height: 100%;
           `}
       }
     }

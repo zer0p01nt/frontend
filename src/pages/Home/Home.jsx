@@ -15,42 +15,54 @@ const API_URL = process.env.REACT_APP_API_URL;
 // 더미데이터 추가
 const MOCKDATA = [
   {
-    id: 2036,
-    doc_title: "도봉구 청년 경제특강 참여자 모집",
-    doc_content:
-      "도봉구 청년 및 관심있는 구민을 대상으로「도봉구 청년 경제특강」을 개최합니다.경제 전문가'슈카'를 초청하여 청년들의 경제적 자립을 위한 투자 전략 등의 내용 으로 경제 특강을 진행하오니 관심있는 분들의 많은 참여 부탁드립니다.*특 강 명:큰 거 온다.. '슈카'와 함께하는 경제 특강*특강일시:2025. 9. 18.(목) 15:00*장 소:도봉구청2층 선인봉",
+    id: 26,
+    document: 34,
+    doc_title: "''도봉구 여름 물놀이장으로 장애인 가족 초대''",
     doc_type: "PARTICIPATION",
     doc_type_display: "참여",
-    pub_date: "2025-08-21T21:23:00+09:00",
-    dead_date: "2025-10-18T00:00:00+09:00",
     has_deadline: true,
+    pub_date: "2025-07-21T13:40:00+09:00",
+    dead_date: "2025-09-27T00:00:00+09:00",
+    region: {
+      id: 6,
+      city: "서울특별시",
+      district: "도봉구",
+      full_name: "서울특별시 도봉구",
+    },
     categories: [
       {
-        id: 4,
-        category_name: "경제",
+        id: 2,
+        category_name: "문화",
       },
     ],
-    region_id: 6,
-    image_url: null,
+    image_url:
+      "https://viewer.dobong.go.kr/WEB_FILE/bbs/bcode22/docView/223bb760aae6c637c3ee12b14ae5897f.files/image.jpg",
+    created_at: "2025-09-23T15:30:05.162047+09:00",
   },
   {
-    id: 2040,
-    doc_title: "2025 반려식물 체험 프로그램 수강생 모집 안내",
-    doc_content:
-      "2025반려식물 체험 프로그램 수강생 모집 안내구민들에게 정서적 안정과 건강 증진에 기여하고자 도봉구민 대상으로“반려식물 체험프로그램”수강생을 다음과 같이 모집합니다.1.교 육 명: 2025년 반려식물 체험 프로그램2.대 상:도봉구 주민3.신청기간:2025. 8. 19.(화) 10:00∼마감시까지4.교육기간:2025. 9. 10. ~ 11. 19. (매주",
+    id: 9,
+    document: 99,
+    doc_title: "탄소공감마일리지 환경의 날 이벤트",
     doc_type: "PARTICIPATION",
     doc_type_display: "참여",
-    pub_date: "2025-08-21T14:03:00+09:00",
-    dead_date: "2025-10-19T00:00:00+09:00",
     has_deadline: true,
+    pub_date: "2025-06-10T10:51:00+09:00",
+    dead_date: "2025-10-05T00:00:00+09:00",
+    region: {
+      id: 6,
+      city: "서울특별시",
+      district: "도봉구",
+      full_name: "서울특별시 도봉구",
+    },
     categories: [
       {
-        id: 8,
-        category_name: "행정",
+        id: 5,
+        category_name: "환경",
       },
     ],
-    region_id: 6,
-    image_url: null,
+    image_url:
+      "https://viewer.dobong.go.kr/WEB_FILE/bbs/bcode22/docView/88e30ee2c96085ded5784ec2fc7232ff.files/image.jpg",
+    created_at: "2025-08-25T19:54:05.272966+09:00",
   },
 ];
 
