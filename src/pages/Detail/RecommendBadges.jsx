@@ -8,7 +8,7 @@ const API_URL = process.env.REACT_APP_API_URL;
 // children(badges, loading) 형태로 가져와 CardList에 넘김
 
 export default function RecommendBadges({ doc, children }) {
-  const url = doc?.id ? `${API_URL}/documents/${doc.id}` : null;
+  const url = doc?.id ? `${API_URL}/documents/${doc.id}/` : null;
   const { data, isLoading } = useFetch(url, {});
 
   const badges = useMemo(() => {

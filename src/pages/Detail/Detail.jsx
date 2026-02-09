@@ -43,7 +43,7 @@ export default function Detail() {
   // 공문 본문 fetch
   const { data: post, isLoading: isPostLoading } = useFetch(
     `${API_URL}/documents/${id}/`,
-    {}
+    {},
   );
 
   // 초기에 챗봇 세션 포함 쿼리파라미터 조립
@@ -235,7 +235,8 @@ export default function Detail() {
                   date={doc.pub_date.slice(0, 10)}
                   key={doc.id}
                   onClick={() => navigate(`/post/${doc.id}`)}
-                  type={post.doc_type}
+                  type={doc.doc_type}
+                  image={doc.image_url}
                   variant='recommend'
                 />
               )}

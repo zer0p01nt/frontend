@@ -1,6 +1,4 @@
-// src/pages/Search/Search.jsx
-
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import Header from "../../components/Header/Header";
 import SearchInputField from "../../components/SearchInputField/SearchInputField";
 import CardList from "../../components/CardList/CardList";
@@ -25,7 +23,7 @@ const addSearchHistory = (term) => {
   history = history.filter((item) => item.term !== term);
   const newEntry = {
     term,
-    date: new Date().toLocaleString("ko-KR").slice(2, -1),
+    date: new Date().toLocaleString("ko-KR").slice(0, 12),
   };
   const newHistory = [newEntry, ...history].slice(0, 10);
   localStorage.setItem("searchHistory", JSON.stringify(newHistory));
@@ -46,7 +44,7 @@ export default function Search() {
 
   const searchUrl = searchQuery
     ? `${API_URL}/documents/search/?q=${encodeURIComponent(
-        searchQuery
+        searchQuery,
       )}&order=${order}`
     : null;
 
@@ -84,13 +82,13 @@ export default function Search() {
 
   return (
     <>
-      <Header hasBack={true} title="검색" hasScrap={false} />
+      <Header hasBack={true} title='검색' hasScrap={false} />
       <S.SearchContainer>
         <SearchInputField
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
           onSubmit={() => handleSearchSubmit(searchValue)}
-          placeholder="궁금한 공문 내용을 검색해 보세요"
+          placeholder='궁금한 공문 내용을 검색해 보세요'
         />
 
         {isSearched ? (

@@ -63,7 +63,7 @@ export default function Notification() {
   const handleCategoriesChange = useCallback((labels) => {
     const key = [
       ...new Set(
-        labels.map((l) => NAME_CATEGORY_MAP[l]).filter(Number.isFinite)
+        labels.map((l) => NAME_CATEGORY_MAP[l]).filter(Number.isFinite),
       ),
     ]
       .sort((a, b) => a - b)
@@ -130,7 +130,7 @@ export default function Notification() {
                   key={item.id}
                   variant='notification'
                   badges={makeNotiBadges(item)}
-                  title={item.title}
+                  title={item.title || item.doc_title}
                   date={item.notification_time.slice(0, 10)}
                   isUnread={isUnread}
                   onClick={() => handleNotificationClick(item)} // 수정된 핸들러 연결

@@ -1,3 +1,6 @@
+// msw 서비스워커 추가
+importScripts("./mockServiceWorker.js");
+
 self.addEventListener("install", () => self.skipWaiting());
 self.addEventListener("activate", (evt) => evt.waitUntil(self.clients.claim()));
 
@@ -63,7 +66,7 @@ self.addEventListener("push", (e) => {
       if (hasVisible) {
         await showOnlyOneNoti(title, options);
       }
-    })()
+    })(),
   );
 });
 
@@ -91,6 +94,6 @@ self.addEventListener("notificationclick", (e) => {
         } catch {}
       }
       await clients.openWindow(targetUrl);
-    })()
+    })(),
   );
 });

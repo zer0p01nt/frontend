@@ -28,19 +28,19 @@ export default function Home() {
   const alertsUrl =
     !isProfileLoading && categoryIds.length > 0
       ? `${API_URL}/documents/categories/recent-alerts/?category_ids=${encodeURIComponent(
-          categoryIds.join(",")
+          categoryIds.join(","),
         )}`
       : null;
   const { data: recentAlertsData, isLoading: isAlertsLoading } = useFetch(
     alertsUrl,
-    {}
+    {},
   );
   const recentAlerts = recentAlertsData?.recent_alerts ?? [];
 
   // 3. 마감일이 가까운 스크랩 공문 조회
   const { data: scrapedPostsData, isLoading: isScrapedPostsLoading } = useFetch(
     `${API_URL}/documents/upcoming-deadlines/`,
-    {}
+    {},
   );
   const scrapedPosts = scrapedPostsData?.data?.results ?? [];
 
@@ -53,7 +53,7 @@ export default function Home() {
       : null;
   const { data: recentNewsData, isLoading: isNewsLoading } = useFetch(
     newsUrl,
-    {}
+    {},
   );
   const recentNews = recentNewsData?.recent_news ?? [];
 
@@ -71,7 +71,7 @@ export default function Home() {
           <S.TitleWrapper>
             <S.TitleBox>
               <S.Title>
-                {isProfileLoading ? "사용자" : profile?.data?.name || "사용자"}
+                {profile?.data?.name || "사용자"}
                 님!
                 <div>
                   오늘도 <strong>맞춤 소식</strong> 전해드릴게요

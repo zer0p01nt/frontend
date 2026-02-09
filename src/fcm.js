@@ -115,7 +115,7 @@ export async function bootstrapFcm() {
       try {
         await sendToken(currentToken);
       } catch (e) {
-        console.error("FCM 토큰 등록 요청 에러", e);
+        // console.error("FCM 토큰 등록 요청 에러", e);
       }
     }
   }

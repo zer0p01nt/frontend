@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import useFetch from "./useFetch";
 
 const API_URL = process.env.REACT_APP_API_URL;
@@ -7,7 +6,7 @@ const API_URL = process.env.REACT_APP_API_URL;
 export default function useProfile() {
   const { data: profile = {}, isLoading: isProfileLoading } = useFetch(
     `${API_URL}/user/profile/`,
-    {}
+    {},
   );
   return { profile, isProfileLoading };
 }
