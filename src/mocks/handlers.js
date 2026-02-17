@@ -340,7 +340,7 @@ export const handlers = [
     // documents 배열에서 ID가 일치하는 공문 찾기
     const post = documents.find((d) => d.id === Number(id)) || documents[0];
 
-    // await delay(300);
+    await delay(500);
 
     return HttpResponse.json({
       ...post,
@@ -450,6 +450,8 @@ export const handlers = [
     };
 
     chatbotSessions.push(newSession);
+
+    await delay(800);
 
     return HttpResponse.json(
       {

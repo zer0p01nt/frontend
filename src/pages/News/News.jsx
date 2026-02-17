@@ -23,6 +23,7 @@ import {
   NAME_CATEGORY_MAP,
   NAME_REGION_MAP,
 } from "../../constants/maps";
+import PageTitle from "../../components/PageTitle/PageTitle.jsx";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -34,7 +35,7 @@ export default function News() {
   // 1. [지금 많이 보는 공문] 배너 API 연동
   const { data: hotNewsData, isLoading: isHotNewsLoading } = useFetch(
     `${API_URL}/documents/?order=views&page_size=3`,
-    {}
+    {},
   );
   const hotNews = hotNewsData?.results ?? [];
 
@@ -100,7 +101,7 @@ export default function News() {
         setPage((prevPage) => prevPage + 1);
       }
     },
-    [hasMore, isPostsLoading]
+    [hasMore, isPostsLoading],
   );
 
   useEffect(() => {
@@ -123,7 +124,8 @@ export default function News() {
 
   return (
     <>
-      <Header hasBack={false} title="소식" hasScrap={false} />
+      <PageTitle title='소식' />
+      <Header hasBack={false} title='소식' hasScrap={false} />
       <S.NewsContainer>
         {/* 1. 오버레이가 덮으면 안 되는 상단 영역 */}
         <S.TopSection>

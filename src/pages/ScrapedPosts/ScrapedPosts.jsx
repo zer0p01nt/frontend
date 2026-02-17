@@ -20,6 +20,7 @@ import {
   NAME_REGION_MAP,
 } from "../../constants/maps";
 import Empty from "../../components/Empty/Empty";
+import PageTitle from "../../components/PageTitle/PageTitle";
 
 const API_URL = process.env.REACT_APP_API_URL;
 const PAGE_SIZE = 10;
@@ -162,7 +163,7 @@ export default function ScrapedPosts() {
           setPage((prev) => prev + 1);
         }
       },
-      { root: null, rootMargin: "200px", threshold: 0 }
+      { root: null, rootMargin: "200px", threshold: 0 },
     );
 
     io.observe(ref);
@@ -171,6 +172,7 @@ export default function ScrapedPosts() {
 
   return (
     <>
+      <PageTitle title='스크랩한 공문' />
       {/* fixed 되는 컴포넌트들 */}
       <Header hasBack={true} title='스크랩한 공문' hasScrap={false} />
       <ButtonWrapper>

@@ -22,25 +22,6 @@ const getFilledBadgeColors = (color) => {
   }
 };
 
-// isFilled={false} 일 때 (테두리만 있는 스타일)
-const getUnfilledBadgeColors = (color) => {
-  switch (color) {
-    case "pink":
-      return {
-        text: "var(--color-pink-600)",
-      };
-    case "teal":
-      return {
-        text: "var(--color-teal-600)", // Figma: #00C4B7
-      };
-    case "blue":
-    default:
-      return {
-        text: "var(--color-blue-400-main)", // Figma: #2769FF
-      };
-  }
-};
-
 export const BadgeContainer = styled.span`
   display: inline-flex;
   padding: ${({ $isFilled }) => ($isFilled ? "4px 12px" : "2px 12px")};
@@ -51,6 +32,7 @@ export const BadgeContainer = styled.span`
   /* isFilled 값에 따라 font-weight를 다르게 설정 */
   font-weight: ${({ $isFilled }) => ($isFilled ? "600" : "400")};
   line-height: var(--Body-sm-line-height);
+  white-space: nowrap;
 
   ${({ color, $isFilled }) => {
     // isFilled={true} : 테두리가 없는 채워진 스타일

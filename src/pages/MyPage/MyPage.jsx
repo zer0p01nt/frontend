@@ -12,6 +12,7 @@ import Badge from "../../components/Badge/Badge";
 import { makeScrapBadges } from "../../utils/makeBadges";
 import character from "../../assets/Character.png";
 import { deleteChatbotScrap } from "../../services/scrapService";
+import PageTitle from "../../components/PageTitle/PageTitle";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -24,13 +25,13 @@ export default function MyPage() {
   // 공문 스크랩
   const { data: postdata, isLoading: isPostsLoading } = useFetch(
     `${API_URL}/scrap/documents/?order=latest&page=1&page_size=3`,
-    {}
+    {},
   );
   const scrapedPosts = postdata?.data?.results ?? [];
 
   // 챗봇 스크랩
   const { data: chatbotdata, isLoading: isChatbotsLoading } = useFetch(
-    `${API_URL}/scrap/chatbot/?order=latest&page=1&page_size=3`
+    `${API_URL}/scrap/chatbot/?order=latest&page=1&page_size=3`,
   );
   const scrapedChatbots = chatbotdata?.data?.results ?? [];
 
@@ -53,7 +54,7 @@ export default function MyPage() {
   // 챗봇 스크랩 상세 조회
   const { data: detailData, isLoading: isDetailDataLoading } = useFetch(
     openUrl,
-    null
+    null,
   );
   const OpenedChatbot = detailData?.data;
   // 펼쳤을 때 데이터 일치시킴
@@ -104,11 +105,12 @@ export default function MyPage() {
         setIsDeleting(false);
       }
     },
-    [isDeleting, detailById]
+    [isDeleting, detailById],
   );
 
   return (
     <>
+      <PageTitle title='마이페이지' />
       <Header
         hasBack={false}
         title='마이페이지'

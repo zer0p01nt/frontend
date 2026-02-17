@@ -9,6 +9,7 @@ import useFetch from "../../hooks/useFetch";
 import { useNavigate } from "react-router-dom";
 import { makeBadges } from "../../utils/makeBadges";
 import DropIcon from "../../assets/Back Icon.svg";
+import PageTitle from "../../components/PageTitle/PageTitle";
 
 // --- 최근 검색어 관리를 위한 함수 ---
 const getSearchHistory = () => {
@@ -80,8 +81,17 @@ export default function Search() {
     handleSearchSubmit(term);
   };
 
+  const handleDeleteHistory = (e, term) => {
+    e.stopPropagation();
+    let history = getSearchHistory();
+    history = history.filter((item) => item.term !== term);
+    localStorage.setItem("searchHistory", JSON.stringify(history));
+    setRecentSearches(history);
+  };
+
   return (
     <>
+      <PageTitle title='검색' />
       <Header hasBack={true} title='검색' hasScrap={false} />
       <S.SearchContainer>
         <SearchInputField
@@ -145,7 +155,23 @@ export default function Search() {
                   key={item.term}
                   onClick={() => handleHistoryClick(item.term)}
                 >
-                  <span>{item.term}</span>
+                  <span>
+                    <button onClick={(e) => handleDeleteHistory(e, item.term)}>
+                      <svg
+                        xmlns='http://www.w3.org/2000/svg'
+                        width='11'
+                        height='11'
+                        viewBox='0 0 11 11'
+                        fill='none'
+                      >
+                        <path
+                          d='M5.23802 6.44659L1.47785 10.2065C1.31008 10.3744 1.1067 10.4565 0.867705 10.4526C0.628514 10.4489 0.425038 10.3632 0.257276 10.1955C0.0895133 10.0277 0.0056322 9.82239 0.0056322 9.57953C0.0056322 9.33667 0.0895133 9.13136 0.257276 8.9636L4.00615 5.21472L0.246271 1.48351C0.0783162 1.31575 -0.00373089 1.11044 0.000130147 0.867576C0.00379813 0.62491 0.0895133 0.419695 0.257276 0.251933C0.425038 0.083978 0.630348 0 0.873207 0C1.11607 0 1.32138 0.083978 1.48914 0.251933L5.23802 4.01181L8.96923 0.251933C9.13699 0.083978 9.34037 0 9.57937 0C9.81856 0 10.022 0.083978 10.1898 0.251933C10.3695 0.431472 10.4594 0.639678 10.4594 0.876553C10.4594 1.11343 10.3695 1.31575 10.1898 1.48351L6.44092 5.21472L10.2008 8.97489C10.3688 9.14265 10.4527 9.34603 10.4527 9.58503C10.4527 9.82422 10.3688 10.0277 10.2008 10.1955C10.0213 10.3752 9.81306 10.4651 9.57618 10.4651C9.33931 10.4651 9.13699 10.3752 8.96923 10.1955L5.23802 6.44659Z'
+                          fill='#a3a1a1'
+                        />
+                      </svg>
+                    </button>
+                    <div>{item.term}</div>
+                  </span>
                   <span>{item.date}</span>
                 </S.SearchHistoryItem>
               ))}

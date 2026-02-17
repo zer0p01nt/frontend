@@ -1,3 +1,6 @@
+// deadline 있는 문서의 마감일을 항상 현재 연도보다 1년 뒤로 설정
+const oneYearLater = new Date().getFullYear() + 1;
+
 export const documents = [
   {
     id: 1,
@@ -237,7 +240,7 @@ export const documents = [
       category_tags: ["문화"],
     },
     has_deadline: true,
-    dead_date: "2027-04-02T13:59:00Z",
+    dead_date: `${oneYearLater}-04-02T13:59:00Z`,
     similar_documents: [
       {
         id: 1,
@@ -297,7 +300,7 @@ export const documents = [
       category_tags: ["경제", "복지"],
     },
     has_deadline: true,
-    dead_date: "2027-02-05T00:00:00Z",
+    dead_date: `${oneYearLater}-02-05T00:00:00Z`,
     similar_documents: [
       {
         id: 1,
@@ -360,7 +363,7 @@ export const documents = [
       category_tags: ["주택", "환경", "안전"],
     },
     has_deadline: true,
-    dead_date: "2027-02-13T00:00:00Z",
+    dead_date: `${oneYearLater}-02-13T00:00:00Z`,
     similar_documents: [
       {
         id: 2,
@@ -422,7 +425,7 @@ export const documents = [
       category_tags: ["환경", "복지"],
     },
     has_deadline: true,
-    dead_date: "2027-01-29T00:00:00Z",
+    dead_date: `${oneYearLater}-01-29T00:00:00Z`,
     similar_documents: [
       {
         id: 2,
@@ -593,7 +596,7 @@ export const documents = [
       category_tags: ["경제", "안전", "복지"],
     },
     has_deadline: true,
-    dead_date: "2026-12-07T00:00:00Z",
+    dead_date: `${oneYearLater}-12-07T00:00:00Z`,
     similar_documents: [
       {
         id: 1,

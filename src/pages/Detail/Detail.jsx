@@ -24,6 +24,7 @@ import {
 import ShareToast from "../../components/ShareToast/ShareToast";
 import { formatText } from "../../utils/format";
 import RecommendBadges from "./RecommendBadges";
+import PageTitle from "../../components/PageTitle/PageTitle";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -127,6 +128,14 @@ export default function Detail() {
 
   return (
     <>
+      {/* [지역명] 공문명 - Villit */}
+      {!isPostLoading ? (
+        <PageTitle
+          title={`[${REGION_MAP[post?.region_id]}] ${post?.doc_title}`}
+        />
+      ) : (
+        <PageTitle title='공문 상세보기' />
+      )}
       {/* fixed 되는 컴포넌트들 */}
       <Header
         hasBack={true}

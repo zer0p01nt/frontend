@@ -7,7 +7,7 @@ export const HomeWrapper = styled.div`
 `;
 
 export const FakeSearchInputWrapper = styled.div`
- width: 100%;
+  width: 100%;
   max-width: 362px;
   height: 45px;
   display: flex;
@@ -21,7 +21,7 @@ export const FakeSearchInputWrapper = styled.div`
   gap: 5px;
   cursor: pointer;
   margin-top: -22.5px;
-  position: relative; 
+  position: relative;
 
   span {
     color: var(--color-text-primary-subtitle);
@@ -47,7 +47,7 @@ export const TitleContainer = styled.div`
   background: linear-gradient(
     180deg,
     var(--color-blue-400-main) 85.04%,
-    #4298FA 111.61%
+    #4298fa 111.61%
   );
 
   width: calc(100% + 32px);
@@ -60,7 +60,7 @@ export const TitleContainer = styled.div`
 export const TitleWrapper = styled.div`
   display: flex;
   justify-content: space-between;
-  padding: 0 28px 0 8px;
+  padding: 0 20px 0 10px;
 `;
 
 export const TitleBox = styled.div`
@@ -157,6 +157,7 @@ export const HorizontalScrollWrapper = styled.div`
   margin: 0 -16px;
   padding: 0 16px;
   scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
 
   &::-webkit-scrollbar {
     display: none;

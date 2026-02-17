@@ -42,7 +42,7 @@ export const makeBadges = (r) => {
 };
 
 // '다가오는 관심 일정' (스크랩 목록)을 위한 뱃지 생성 함수
-export const makeScrapBadges = (r) => {
+export const makeScrapBadges = (r, atHome = false) => {
   let badges = [];
 
   // 디데이 뱃지 로직 (가장 먼저 추가)
@@ -71,7 +71,9 @@ export const makeScrapBadges = (r) => {
   if (badges.length > 3) {
     const remainingCount = badges.length - 3;
     badges = badges.slice(0, 3);
-    badges.push({ text: `+${remainingCount}`, color: "teal" });
+    if (!atHome) {
+      badges.push({ text: `+${remainingCount}`, color: "teal" });
+    }
   }
 
   return badges;

@@ -32,12 +32,24 @@ export const SearchHistoryItem = styled.li`
   cursor: pointer;
 
   &:hover {
-    background-color: var(--color-neutral-100); 
+    background-color: var(--color-neutral-100);
   }
 
   span:first-child {
     color: var(--color-base-black);
     font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  button {
+    width: 11px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    object-fit: contain;
   }
 
   span:last-child {

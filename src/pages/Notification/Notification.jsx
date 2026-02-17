@@ -18,6 +18,7 @@ import {
 } from "../../constants/maps";
 import PushBtn from "../../components/PushBtn/PushBtn";
 import ShareToast from "../../components/ShareToast/ShareToast.jsx";
+import PageTitle from "../../components/PageTitle/PageTitle.jsx";
 
 const API_URL = process.env.REACT_APP_API_URL;
 const READ_NOTIFICATIONS_KEY = "readNotifications";
@@ -99,6 +100,7 @@ export default function Notification() {
 
   return (
     <>
+      <PageTitle title='알림' />
       <Header hasBack={false} title='알림' hasScrap={false} />
       <ShareToast
         isVisible={toastShow}

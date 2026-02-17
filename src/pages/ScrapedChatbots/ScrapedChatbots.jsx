@@ -17,6 +17,7 @@ import ChatbotBox from "../../components/ChatbotBox/ChatbotBox";
 import DropIcon from "../../assets/Back Icon.svg";
 import { deleteChatbotScrap } from "../../services/scrapService";
 import Empty from "../../components/Empty/Empty";
+import PageTitle from "../../components/PageTitle/PageTitle";
 
 const API_URL = process.env.REACT_APP_API_URL;
 const PAGE_SIZE = 10;
@@ -81,7 +82,7 @@ export default function ScrapedChatbots() {
 
   const { data: chatbotdata, isLoading: isChatbotsLoading } = useFetch(
     listUrl,
-    {}
+    {},
   );
 
   // 응답 데이터 생기면 갱신
@@ -136,7 +137,7 @@ export default function ScrapedChatbots() {
           setPage((prev) => prev + 1);
         }
       },
-      { root: null, rootMargin: "200px", threshold: 0 }
+      { root: null, rootMargin: "200px", threshold: 0 },
     );
 
     io.observe(ref);
@@ -159,7 +160,7 @@ export default function ScrapedChatbots() {
   // 챗봇 스크랩 상세 조회
   const { data: detailData, isLoading: isDetailDataLoading } = useFetch(
     openUrl,
-    null
+    null,
   );
   const OpenedChatbot = detailData?.data;
 
@@ -214,11 +215,12 @@ export default function ScrapedChatbots() {
         setIsDeleting(false);
       }
     },
-    [isDeleting, detailById]
+    [isDeleting, detailById],
   );
 
   return (
     <>
+      <PageTitle title='스크랩한 챗봇' />
       {/* fixed 되는 컴포넌트들 */}
       <Header hasBack={true} title='스크랩한 챗봇' hasScrap={false} />
       <ButtonWrapper>

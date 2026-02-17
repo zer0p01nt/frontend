@@ -17,6 +17,7 @@ import SearchInputField from "../../components/SearchInputField/SearchInputField
 import close from "../../assets/Profile/close_small.svg";
 import add from "../../assets/Profile/add.svg";
 import DisableToast from "../../components/DisableToast/DisableToast.jsx";
+import PageTitle from "../../components/PageTitle/PageTitle.jsx";
 
 const ALL_CATEGORY_LABEL = "모든 주제";
 const PAGE_SIZE = 10;
@@ -57,7 +58,7 @@ export default function Profile() {
   // 기존 지역 저장
   const selectedRegionIds = useMemo(
     () => new Set(regions.map((r) => r.region.id)),
-    [regions]
+    [regions],
   );
   const canAddMoreRegions = regions.length < 3;
 
@@ -135,7 +136,7 @@ export default function Profile() {
       (entries) => {
         if (entries[0].isIntersecting) fetchNextPage();
       },
-      { root: null, rootMargin: "200px", threshold: 0 }
+      { root: null, rootMargin: "200px", threshold: 0 },
     );
     io.observe(ref);
     return () => io.disconnect();
@@ -176,7 +177,7 @@ export default function Profile() {
   // 선택한 카테고리
   const selectedNames = useMemo(() => {
     return new Set(
-      categories.map((c) => c.category?.category_name).filter(Boolean)
+      categories.map((c) => c.category?.category_name).filter(Boolean),
     );
   }, [categories]);
 
@@ -204,8 +205,8 @@ export default function Profile() {
     if (selectedNames.has(ALL_CATEGORY_LABEL)) {
       setCategories((prev) =>
         prev.filter(
-          (item) => item.category?.category_name !== ALL_CATEGORY_LABEL
-        )
+          (item) => item.category?.category_name !== ALL_CATEGORY_LABEL,
+        ),
       );
     }
 
@@ -223,7 +224,7 @@ export default function Profile() {
         const a = it.category?.id ?? it.category?.category_name;
         const b = c.category?.id ?? c.category?.category_name;
         return a !== b;
-      })
+      }),
     );
   };
 
@@ -246,7 +247,7 @@ export default function Profile() {
 
       // 모든 주제가 선택되어 있으면 category_ids를 빈 배열로 보냄
       const hasAll = categories.some(
-        (c) => c?.category?.category_name === ALL_CATEGORY_LABEL
+        (c) => c?.category?.category_name === ALL_CATEGORY_LABEL,
       );
       const category_ids = hasAll ? [] : categories.map((c) => c?.category?.id);
 
@@ -292,6 +293,7 @@ export default function Profile() {
 
   return (
     <>
+      <PageTitle title='정보 수정' />
       {/* fixed 되는 컴포넌트들 */}
       <Header hasBack={true} title='정보 수정' hasScrap={false} />
       <DisableToast isVisible={toastShow} />
@@ -350,7 +352,7 @@ export default function Profile() {
                               id={r.id}
                               onClick={() =>
                                 setRegions((prev) =>
-                                  prev.filter((item) => item.id !== r.id)
+                                  prev.filter((item) => item.id !== r.id),
                                 )
                               }
                             />
@@ -404,7 +406,7 @@ export default function Profile() {
                         const already =
                           id &&
                           (regions.some(
-                            (r) => mapNameId(r.region.district) === id
+                            (r) => mapNameId(r.region.district) === id,
                           ) ||
                             selectedRegionIds.has(id));
 
