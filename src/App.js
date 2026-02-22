@@ -77,7 +77,7 @@ function App() {
     <>
       <GlobalStyle />
       <Main>
-        <AnimatePresence mode='popLayout' custom={direction}>
+        <AnimatePresence mode='popLayout' initial={false} custom={direction}>
           <Routes location={location} key={location.pathname}>
             <Route element={<WithNav direction={direction} />}>
               {/* Navigator가 있는 경우 */}
