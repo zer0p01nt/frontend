@@ -19,6 +19,12 @@ export const ChatbotInputForm = styled.form`
   position: fixed;
   bottom: 16px;
   z-index: 1;
+
+  &:focus-within {
+    border: 0.5px solid var(--color-blue-400-main);
+  }
+
+  transition: border 0.2s ease-in-out;
 `;
 
 export const ChatbotInputField = styled.input`
@@ -41,7 +47,8 @@ export const ChatbotBtn = styled.button`
   aspect-ratio: 1/1;
   border: none;
   background-color: transparent;
-  background-image: url(${({ $isLoading }) => $isLoading ? arrowFalse : arrowTrue});
+  background-image: url(${({ $isLoading }) =>
+    $isLoading ? arrowFalse : arrowTrue});
   background-size: cover;
   background-repeat: no-repeat;
   cursor: pointer;

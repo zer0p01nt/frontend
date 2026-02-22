@@ -28,8 +28,9 @@ export const HeaderContainer = styled.div`
     if ($hasScrap) cols.push("24px");
     return cols.join(" ");
   }};
-  z-index: 100;
-  color: ${({ $isTransparent }) => $isTransparent ? "var(--color-base-white)" : "var(--color-base-black)"};
+  z-index: 10000;
+  color: ${({ $isTransparent }) =>
+    $isTransparent ? "var(--color-base-white)" : "var(--color-base-black)"};
 `;
 
 export const HeaderBack = styled.button`
@@ -58,7 +59,8 @@ export const HeaderScrap = styled.button`
   height: 24px;
   flex-shrink: 0;
   aspect-ratio: 1/1;
-  background-image: url(${({ $isScrap }) => $isScrap ? scrapTrue : scrapFalse});
+  background-image: url(${({ $isScrap }) =>
+    $isScrap ? scrapTrue : scrapFalse});
   background-repeat: no-repeat;
 `;
 

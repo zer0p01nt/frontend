@@ -1,24 +1,28 @@
-import React, { useState, useMemo, useCallback, useEffect } from "react";
-import Header from "../../components/Header/Header";
-import GoToTop from "../../components/GoToTop/GoToTop";
-import CategoryBar from "../../components/CategoryBar/CategoryBar.jsx";
-import CardList from "../../components/CardList/CardList";
-import SmallFilter from "../../components/SmallFilter/SmallFilter";
-import * as B from "../../styles/ButtonCircle";
-import * as S from "./NotificationStyle";
-import * as F from "../../components/SmallFilter/SmallFilterStyle";
-import useFetch from "../../hooks/useFetch";
-import NotificationEmpty from "./NotificationEmpty";
-import { makeNotiBadges } from "../../utils/makeBadges";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+
+import useFetch from "../../hooks/useFetch";
+import { makeNotiBadges } from "../../utils/makeBadges";
 import {
   CATEGORY_TYPE_MAP,
   NAME_CATEGORY_MAP,
   NAME_REGION_MAP,
 } from "../../constants/maps";
+
+import * as B from "../../styles/ButtonCircle";
+import * as S from "./NotificationStyle";
+import * as F from "../../components/SmallFilter/SmallFilterStyle";
+
+import NotificationEmpty from "./NotificationEmpty";
+import Header from "../../components/Header/Header";
+import GoToTop from "../../components/GoToTop/GoToTop";
+import CategoryBar from "../../components/CategoryBar/CategoryBar.jsx";
+import CardList from "../../components/CardList/CardList";
+import SmallFilter from "../../components/SmallFilter/SmallFilter";
 import PushBtn from "../../components/PushBtn/PushBtn";
 import ShareToast from "../../components/ShareToast/ShareToast.jsx";
 import PageTitle from "../../components/PageTitle/PageTitle.jsx";
+import CardListSkeleton from "../../components/CardList/CardListSkeleton.jsx";
 
 const API_URL = process.env.REACT_APP_API_URL;
 const READ_NOTIFICATIONS_KEY = "readNotifications";
@@ -26,7 +30,7 @@ const READ_NOTIFICATIONS_KEY = "readNotifications";
 export default function Notification() {
   const navigate = useNavigate();
 
-  // --- '읽은 알림' 상태 관리 (localStorage 연동) ---
+  // '읽은 알림' 상태 관리 (localStorage 연동)
   const [readIds, setReadIds] = useState(() => {
     try {
       const stored = localStorage.getItem(READ_NOTIFICATIONS_KEY);
@@ -40,7 +44,6 @@ export default function Notification() {
   useEffect(() => {
     localStorage.setItem(READ_NOTIFICATIONS_KEY, JSON.stringify([...readIds]));
   }, [readIds]);
-  // ----------------------------------------------------
 
   // 필터 상태
   const [docType, setDocType] = useState(undefined);
@@ -85,7 +88,7 @@ export default function Notification() {
   const { data: notificationData, isLoading } = useFetch(listUrl, {});
   const notifications = notificationData?.data?.results ?? [];
 
-  // --- 알림 클릭 핸들러 ---
+  //알림 클릭 핸들러
   const handleNotificationClick = (item) => {
     // '읽음' 상태가 아니면 readIds에 추가
     if (!item.is_read) {
@@ -94,7 +97,7 @@ export default function Notification() {
     // 상세 페이지로 이동
     navigate(`/post/${item.document_info.id}`);
   };
-  // -------------------------
+
   // 푸시 버튼 토스트
   const [toastShow, setToastShow] = useState(false);
 
@@ -121,29 +124,32 @@ export default function Notification() {
         </F.SmallFilterWrapper>
 
         <PushBtn setToastShow={setToastShow} />
-        {!isLoading &&
-          (notifications.length > 0 ? (
-            notifications.map((item) => {
-              // 서버에서 is_read가 false이고, 로컬에서도 읽지 않았을 때만 isUnread를 true로 설정
-              const isUnread = !item.is_read && !readIds.has(item.id);
+        {isLoading ? (
+          Array(5)
+            .fill(0)
+            .map((_, i) => <CardListSkeleton key={i} variant='notification' />)
+        ) : notifications.length > 0 ? (
+          notifications.map((item) => {
+            // 서버에서 is_read가 false이고, 로컬에서도 읽지 않았을 때만 isUnread를 true로 설정
+            const isUnread = !item.is_read && !readIds.has(item.id);
 
-              return (
-                <CardList
-                  key={item.id}
-                  variant='notification'
-                  badges={makeNotiBadges(item)}
-                  title={item.title || item.doc_title}
-                  date={item.notification_time.slice(0, 10)}
-                  isUnread={isUnread}
-                  onClick={() => handleNotificationClick(item)} // 수정된 핸들러 연결
-                  image={item.document_info.image_url}
-                  type={item.document_info.doc_type}
-                />
-              );
-            })
-          ) : (
-            <NotificationEmpty />
-          ))}
+            return (
+              <CardList
+                key={item.id}
+                variant='notification'
+                badges={makeNotiBadges(item)}
+                title={item.title || item.doc_title}
+                date={item.notification_time.slice(0, 10)}
+                isUnread={isUnread}
+                onClick={() => handleNotificationClick(item)} // 수정된 핸들러 연결
+                image={item.document_info.image_url}
+                type={item.document_info.doc_type}
+              />
+            );
+          })
+        ) : (
+          <NotificationEmpty />
+        )}
       </S.NotificationContainer>
 
       <B.ButtonWrapper>

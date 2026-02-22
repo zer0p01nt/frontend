@@ -23,7 +23,6 @@ const GlobalStyle = createGlobalStyle`
     --Body-sm-line-height: 18px;
 
     // letter-spacing
-    // 0 아니면 이 변수만 씁니다
     --letter-spacing: -0.20000000298023224px;
 
     // Effect Styles
@@ -44,7 +43,6 @@ const GlobalStyle = createGlobalStyle`
     --border-width-sm: 1px;
 
     // Colors
-    // 작업 수월하도록 색상 중복되더라도 컬러팔레트 이름에 맞게 다 넣어놨습니다
     --color-base-black: #191919;
     --color-base-white: #fefefe;
 
@@ -113,7 +111,7 @@ const GlobalStyle = createGlobalStyle`
 
   html {
     box-sizing: border-box;
-    /* 스크롤 안 보이게 하는 설정  : 이 부분만 주석처리 해주시면 됩니다! */
+    /* 스크롤 안 보이게 하는 설정 */
     overflow-y: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;

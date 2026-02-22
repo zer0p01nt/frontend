@@ -1,5 +1,13 @@
 import { useCallback, useEffect, useRef, useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
+
 import useFetch from "../../hooks/useFetch";
+import { makeScrapBadges } from "../../utils/makeBadges";
+import {
+  CATEGORY_TYPE_MAP,
+  NAME_CATEGORY_MAP,
+  NAME_REGION_MAP,
+} from "../../constants/maps";
 
 import * as S from "./ScrapedPostsStyle";
 import * as D from "../Search/SearchStyle";
@@ -10,17 +18,11 @@ import { ButtonWrapper } from "../../styles/ButtonCircle";
 import Filter from "../../components/Filter/Filter";
 import CategoryBar from "../../components/CategoryBar/CategoryBar";
 import CardList from "../../components/CardList/CardList";
-
-import DropIcon from "../../assets/Back Icon.svg";
-import { makeScrapBadges } from "../../utils/makeBadges";
-import { useNavigate } from "react-router-dom";
-import {
-  CATEGORY_TYPE_MAP,
-  NAME_CATEGORY_MAP,
-  NAME_REGION_MAP,
-} from "../../constants/maps";
 import Empty from "../../components/Empty/Empty";
 import PageTitle from "../../components/PageTitle/PageTitle";
+import CardListSkeleton from "../../components/CardList/CardListSkeleton";
+
+import DropIcon from "../../assets/Back Icon.svg";
 
 const API_URL = process.env.REACT_APP_API_URL;
 const PAGE_SIZE = 10;
@@ -214,7 +216,11 @@ export default function ScrapedPosts() {
         </S.OrderContainer>
 
         <S.PostsWrapper>
-          {items.length > 0 ? (
+          {isPostsLoading ? (
+            Array(5)
+              .fill(0)
+              .map((_, i) => <CardListSkeleton key={i} variant='list' />)
+          ) : items.length > 0 ? (
             items.map((p) => (
               <CardList
                 badges={makeScrapBadges(p)}

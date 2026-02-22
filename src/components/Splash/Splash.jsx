@@ -2,6 +2,11 @@ import * as S from "./SplashStyle";
 import homeIcon from "../../assets/homeIcon.svg";
 import { useEffect, useState } from "react";
 
+/**
+ * 홈 화면 첫 진입 시 나타나는 스플래시 화면 컴포넌트
+ * @param {object} props
+ * @param {React.ReactNode} props.children - 스플래시 화면 이후에 표시될 자식 컴포넌트들
+ */
 export default function Splash({ children }) {
   const [isFading, setIsFading] = useState(false);
   const [isMounted, setIsMounted] = useState(true);

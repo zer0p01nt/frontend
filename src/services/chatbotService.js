@@ -1,5 +1,6 @@
 const API_URL = process.env.REACT_APP_API_URL;
 
+// 챗봇 세션 생성
 export async function createSession({ postId, firstMessage }) {
   const res = await fetch(`${API_URL}/chatbot/sessions/`, {
     method: "POST",
@@ -21,6 +22,7 @@ export async function createSession({ postId, firstMessage }) {
   return res.json();
 }
 
+// 세션 가져오기
 export async function getSession(sessionId) {
   const res = await fetch(`${API_URL}/chatbot/sessions/${sessionId}/`, {
     method: "GET",
@@ -30,6 +32,7 @@ export async function getSession(sessionId) {
   return res.json();
 }
 
+// 메시지 전송
 export async function sendMessage(sessionId, message) {
   const res = await fetch(
     `${API_URL}/chatbot/sessions/${sessionId}/messages/`,
@@ -37,12 +40,13 @@ export async function sendMessage(sessionId, message) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message }),
-    }
+    },
   );
   if (!res.ok) throw new Error("Failed to send message");
   return res.json();
 }
 
+// 세션 삭제
 export async function deleteSession(sessionId) {
   const res = await fetch(`${API_URL}/chatbot/sessions/${sessionId}/`, {
     method: "DELETE",

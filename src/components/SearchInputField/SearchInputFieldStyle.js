@@ -18,6 +18,12 @@ export const SearchInputForm = styled.form`
   background-color: var(--color-base-white);
   box-shadow: var(--shadow-default);
   gap: 5px;
+
+  &:focus-within {
+    border: 0.5px solid var(--color-blue-400-main);
+  }
+
+  transition: border 0.2s ease-in-out;
 `;
 
 export const SearchInput = styled.input`

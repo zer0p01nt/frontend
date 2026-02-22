@@ -1,16 +1,19 @@
-import React from "react";
-import * as S from "./HomeStyle.js";
 import { useNavigate } from "react-router-dom";
+
+import useProfile from "../../hooks/useProfile.js";
+import useFetch from "../../hooks/useFetch.js";
+import { NAME_REGION_MAP } from "../../constants/maps.js";
+import { makeBadges, makeScrapBadges } from "../../utils/makeBadges.js";
+
+import * as S from "./HomeStyle.js";
+
 import CardList from "../../components/CardList/CardList";
 import Badge from "../../components/Badge/Badge";
 import Header from "../../components/Header/Header.jsx";
-import useProfile from "../../hooks/useProfile.js";
-import useFetch from "../../hooks/useFetch.js";
-import { makeBadges, makeScrapBadges } from "../../utils/makeBadges.js";
 import MoreBtn from "../../components/MoreBtn/MoreBtn.jsx";
-import { NAME_REGION_MAP } from "../../constants/maps.js";
 import PageTitle from "../../components/PageTitle/PageTitle.jsx";
 import Splash from "../../components/Splash/Splash.jsx";
+import CardListSkeleton from "../../components/CardList/CardListSkeleton.jsx";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -145,18 +148,23 @@ export default function Home() {
                   />
                 </S.SectionHeader>
                 <S.CardListWrapper>
-                  {!isAlertsLoading &&
-                    recentAlerts.map((item) => (
-                      <CardList
-                        key={item.id}
-                        badges={makeBadges(item)}
-                        title={item.doc_title}
-                        date={item.pub_date.slice(0, 10)}
-                        onClick={() => navigate(`/post/${item.id}`)}
-                        image={item.image_url}
-                        type={item.doc_type}
-                      />
-                    ))}
+                  {isAlertsLoading
+                    ? Array(3)
+                        .fill(0)
+                        .map((_, i) => (
+                          <CardListSkeleton key={i} variant='list' />
+                        ))
+                    : recentAlerts.map((item) => (
+                        <CardList
+                          key={item.id}
+                          badges={makeBadges(item)}
+                          title={item.doc_title}
+                          date={item.pub_date.slice(0, 10)}
+                          onClick={() => navigate(`/post/${item.id}`)}
+                          image={item.image_url}
+                          type={item.doc_type}
+                        />
+                      ))}
                 </S.CardListWrapper>
               </div>
 
@@ -170,18 +178,23 @@ export default function Home() {
                   />
                 </S.SectionHeader>
                 <S.HorizontalScrollWrapper>
-                  {!isScrapedPostsLoading &&
-                    scrapedPosts.map((item) => (
-                      <CardList
-                        key={item.document.id}
-                        variant='card'
-                        badges={makeScrapBadges(item.document, true)}
-                        title={item.document.doc_title}
-                        onClick={() => navigate(`/post/${item.document.id}`)}
-                        image={item.document.image_url}
-                        type={item.document.doc_type}
-                      />
-                    ))}
+                  {isScrapedPostsLoading
+                    ? Array(3)
+                        .fill(0)
+                        .map((_, i) => (
+                          <CardListSkeleton key={i} variant='card' />
+                        ))
+                    : scrapedPosts.map((item) => (
+                        <CardList
+                          key={item.document.id}
+                          variant='card'
+                          badges={makeScrapBadges(item.document, true)}
+                          title={item.document.doc_title}
+                          onClick={() => navigate(`/post/${item.document.id}`)}
+                          image={item.document.image_url}
+                          type={item.document.doc_type}
+                        />
+                      ))}
                 </S.HorizontalScrollWrapper>
               </div>
 
@@ -192,18 +205,23 @@ export default function Home() {
                   <MoreBtn value='더보기' onClick={() => navigate("/news")} />
                 </S.SectionHeader>
                 <S.CardListWrapper>
-                  {!isNewsLoading &&
-                    recentNews.map((item) => (
-                      <CardList
-                        key={item.id}
-                        badges={makeBadges(item)}
-                        title={item.doc_title}
-                        date={item.pub_date.slice(0, 10)}
-                        onClick={() => navigate(`/post/${item.id}`)}
-                        image={item.image_url}
-                        type={item.doc_type}
-                      />
-                    ))}
+                  {isNewsLoading
+                    ? Array(3)
+                        .fill(0)
+                        .map((_, i) => (
+                          <CardListSkeleton key={i} variant='list' />
+                        ))
+                    : recentNews.map((item) => (
+                        <CardList
+                          key={item.id}
+                          badges={makeBadges(item)}
+                          title={item.doc_title}
+                          date={item.pub_date.slice(0, 10)}
+                          onClick={() => navigate(`/post/${item.id}`)}
+                          image={item.image_url}
+                          type={item.doc_type}
+                        />
+                      ))}
                 </S.CardListWrapper>
               </div>
             </S.SectionWrapper>

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+
 import useProfile from "../../hooks/useProfile";
 import { fetchRegions, putProfile } from "../../services/profileService.js";
-
 import {
   CATEGORY_OPTIONS,
   NAME_CATEGORY_MAP,
@@ -13,11 +13,11 @@ import * as B from "../../components/Button/ButtonStyle";
 
 import Header from "../../components/Header/Header";
 import SearchInputField from "../../components/SearchInputField/SearchInputField";
+import DisableToast from "../../components/DisableToast/DisableToast.jsx";
+import PageTitle from "../../components/PageTitle/PageTitle.jsx";
 
 import close from "../../assets/Profile/close_small.svg";
 import add from "../../assets/Profile/add.svg";
-import DisableToast from "../../components/DisableToast/DisableToast.jsx";
-import PageTitle from "../../components/PageTitle/PageTitle.jsx";
 
 const ALL_CATEGORY_LABEL = "모든 주제";
 const PAGE_SIZE = 10;

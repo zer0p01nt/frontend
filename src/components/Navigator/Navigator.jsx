@@ -1,6 +1,6 @@
+import { useLocation, useNavigate } from "react-router-dom";
 import * as S from "./NavigatorStyle";
 import { navItems } from "./NavigatorIcons";
-import { useLocation, useNavigate } from "react-router-dom";
 
 export default function Navigator() {
   const location = useLocation();

@@ -1,6 +1,8 @@
 import styled from "styled-components";
 
 const MainWrapper = styled.div`
+  position: relative;
+  overflow-x: hidden;
   width: 100%;
   max-width: 393px;
   margin: 0 auto;

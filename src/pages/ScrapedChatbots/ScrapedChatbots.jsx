@@ -1,5 +1,9 @@
 import { useRef, useState, useEffect, useMemo, useCallback } from "react";
+
 import useFetch from "../../hooks/useFetch";
+import { useChatbotSmallFilter } from "../../utils/smallFilter";
+import { CATEGORY_OPTIONS, NAME_CATEGORY_MAP } from "../../constants/maps";
+import { deleteChatbotScrap } from "../../services/scrapService";
 
 import * as S from "./ScrapedChatbotStyle";
 import * as P from "../ScrapedPosts/ScrapedPostsStyle";
@@ -9,15 +13,13 @@ import * as D from "../Search/SearchStyle";
 import GoToTop from "../../components/GoToTop/GoToTop";
 import Header from "../../components/Header/Header";
 import { ButtonWrapper } from "../../styles/ButtonCircle";
-import { useChatbotSmallFilter } from "../../utils/smallFilter";
-import { CATEGORY_OPTIONS, NAME_CATEGORY_MAP } from "../../constants/maps";
 import Button from "../../components/Button/Button";
 import ChatbotBox from "../../components/ChatbotBox/ChatbotBox";
-
-import DropIcon from "../../assets/Back Icon.svg";
-import { deleteChatbotScrap } from "../../services/scrapService";
 import Empty from "../../components/Empty/Empty";
 import PageTitle from "../../components/PageTitle/PageTitle";
+import ChatbotBoxSkeleton from "../../components/ChatbotBox/ChatbotBoxSkeleton";
+
+import DropIcon from "../../assets/Back Icon.svg";
 
 const API_URL = process.env.REACT_APP_API_URL;
 const PAGE_SIZE = 10;
@@ -267,7 +269,11 @@ export default function ScrapedChatbots() {
           </D.ResultHeader>
         </P.OrderContainer>
         <S.ContentContainer>
-          {items.length > 0 ? (
+          {isChatbotsLoading ? (
+            Array(5)
+              .fill(0)
+              .map((_, i) => <ChatbotBoxSkeleton key={i} />)
+          ) : items.length > 0 ? (
             items.map((c) => (
               <ChatbotBox
                 key={c.id}

@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 import summaryCharacter from "../../assets/summaryCharacter.png";
 
 // 전체 컨테이너
@@ -87,7 +87,8 @@ export const AIBox = styled.div`
   gap: 16px;
   border-radius: var(--border-radius-xl);
   border: 1px solid rgba(79, 132, 255, 0.4);
-  background: linear-gradient(
+  background:
+    linear-gradient(
       to bottom,
       rgba(254, 254, 254, 0.4) 16%,
       rgba(187, 210, 255, 0.4) 84%,
@@ -101,7 +102,7 @@ export const AIBox = styled.div`
 export const AICharacter = styled.div`
   width: 171.592px;
   aspect-ratio: 131/112;
-  opacity: 0.7; 
+  opacity: 0.7;
   background-image: url(${summaryCharacter});
   background-repeat: no-repeat;
   position: absolute;
@@ -194,4 +195,43 @@ export const RecommendBox = styled.div`
   padding: 0 24px;
   flex-direction: column;
   /* align-items: center; */
+`;
+
+/* DetailSkeleton.jsx */
+const skeletonGradient = keyframes`
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+`;
+
+export const SkeletonBase = css`
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: ${skeletonGradient} 1.5s infinite linear;
+  border-radius: 8px;
+`;
+
+export const SkeletonBadge = styled.div`
+  width: 60px;
+  height: 24px;
+  ${SkeletonBase}
+`;
+
+export const SkeletonTitle = styled.div`
+  width: 90%;
+  height: 28px;
+  margin: 8px 0;
+  ${SkeletonBase}
+`;
+
+export const SkeletonLine = styled.div`
+  width: ${({ $width }) => $width || "100%"};
+  height: ${({ $height }) => $height || "16px"};
+  ${SkeletonBase}
+`;
+
+export const SkeletonBox = styled.div`
+  width: 100%;
+  height: ${({ $height }) => $height || "100px"};
+  ${SkeletonBase}
+  opacity: 0.6;
 `;

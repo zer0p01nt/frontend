@@ -1,8 +1,13 @@
 import { useEffect, useMemo, useState, useRef } from "react";
 import { useFilterSelections, useGroups } from "../../utils/filter";
-import Button from "../../components/Button/Button";
 import * as S from "./FilterStyle";
+import Button from "../../components/Button/Button";
 
+/**
+ * 필터 컴포넌트
+ * @param {object} props
+ * @param {Function} props.onChange - 선택된 필터 값이 변경될 때 호출되는 콜백 함수
+ */
 export default function Filter({ onChange }) {
   const { groups, isLoading } = useGroups();
   const { selected, toggleSelection } = useFilterSelections(groups);
@@ -67,7 +72,7 @@ export default function Filter({ onChange }) {
     Array.from(selected[g.id] ?? []).map((opt) => ({
       groupId: g.id,
       value: opt,
-    }))
+    })),
   );
 
   return (

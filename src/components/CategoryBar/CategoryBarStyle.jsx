@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const CategoryContainer = styled.div`
   position: sticky;
   top: 42px;
-  z-index: 25; /* ▼▼▼ z-index 값을 15에서 25로 수정 ▼▼▼ */
+  z-index: 25;
   background-color: var(--color-base-white);
 
   display: flex;

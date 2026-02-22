@@ -1,34 +1,24 @@
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+
+import useFetch from "../../hooks/useFetch";
+import { makeBadges } from "../../utils/makeBadges";
+import {
+  getSearchHistory,
+  addSearchHistory,
+  deleteSearchHistory,
+} from "../../services/searchService";
+
+import * as B from "../../styles/ButtonCircle";
+import * as S from "./SearchStyle";
+
 import Header from "../../components/Header/Header";
 import SearchInputField from "../../components/SearchInputField/SearchInputField";
 import CardList from "../../components/CardList/CardList";
 import GoToTop from "../../components/GoToTop/GoToTop";
-import * as B from "../../styles/ButtonCircle";
-import * as S from "./SearchStyle";
-import useFetch from "../../hooks/useFetch";
-import { useNavigate } from "react-router-dom";
-import { makeBadges } from "../../utils/makeBadges";
-import DropIcon from "../../assets/Back Icon.svg";
 import PageTitle from "../../components/PageTitle/PageTitle";
 
-// --- 최근 검색어 관리를 위한 함수 ---
-const getSearchHistory = () => {
-  const history = localStorage.getItem("searchHistory");
-  return history ? JSON.parse(history) : [];
-};
-
-const addSearchHistory = (term) => {
-  if (!term) return;
-  let history = getSearchHistory();
-
-  history = history.filter((item) => item.term !== term);
-  const newEntry = {
-    term,
-    date: new Date().toLocaleString("ko-KR").slice(0, 12),
-  };
-  const newHistory = [newEntry, ...history].slice(0, 10);
-  localStorage.setItem("searchHistory", JSON.stringify(newHistory));
-};
+import DropIcon from "../../assets/Back Icon.svg";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -79,14 +69,6 @@ export default function Search() {
   const handleHistoryClick = (term) => {
     setSearchValue(term);
     handleSearchSubmit(term);
-  };
-
-  const handleDeleteHistory = (e, term) => {
-    e.stopPropagation();
-    let history = getSearchHistory();
-    history = history.filter((item) => item.term !== term);
-    localStorage.setItem("searchHistory", JSON.stringify(history));
-    setRecentSearches(history);
   };
 
   return (
@@ -156,7 +138,11 @@ export default function Search() {
                   onClick={() => handleHistoryClick(item.term)}
                 >
                   <span>
-                    <button onClick={(e) => handleDeleteHistory(e, item.term)}>
+                    <button
+                      onClick={(e) =>
+                        setRecentSearches(deleteSearchHistory(e, item.term))
+                      }
+                    >
                       <svg
                         xmlns='http://www.w3.org/2000/svg'
                         width='11'

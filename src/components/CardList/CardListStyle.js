@@ -1,4 +1,4 @@
-import styled, { css } from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 
 const ContentWrapper = styled.div`
   display: flex;
@@ -132,6 +132,8 @@ export const CardContainer = styled.div`
   &:active {
     background-color: var(--color-neutral-100);
   }
+
+  transition: background-color 0.2s ease;
 `;
 
 export { ContentWrapper, CardImage };
@@ -166,4 +168,43 @@ export const Date = styled.p`
   font-weight: 400;
   line-height: 18px;
   margin: 0;
+`;
+
+/* CardListSkeleton.jsx */
+// CardListStyle.js 에 추가
+const skeletonGradient = keyframes`
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+`;
+
+export const SkeletonBase = css`
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: ${skeletonGradient} 1.5s infinite linear;
+  border-radius: 4px;
+`;
+
+export const SkeletonBadge = styled.div`
+  width: 50px;
+  height: 20px;
+  ${SkeletonBase}
+`;
+
+export const SkeletonTitle = styled.div`
+  width: 80%;
+  height: 18px;
+  margin-bottom: 8px;
+  ${SkeletonBase}
+`;
+
+export const SkeletonDate = styled.div`
+  width: 40%;
+  height: 14px;
+  ${SkeletonBase}
+`;
+
+export const SkeletonImage = styled.div`
+  width: 100%;
+  height: 100%;
+  ${SkeletonBase}
 `;

@@ -1,29 +1,26 @@
-// src/pages/News/News.jsx
+import { useRef, useState, useEffect, useCallback, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 
-import React, {
-  useRef,
-  useState,
-  useEffect,
-  useCallback,
-  useMemo,
-} from "react";
-import Header from "../../components/Header/Header";
-import GoToTop from "../../components/GoToTop/GoToTop";
-import CategoryBar from "../../components/CategoryBar/CategoryBar.jsx";
-import Filter from "../../components/Filter/Filter";
-import PostCard from "../../components/PostCard/PostCard";
-import Badge from "../../components/Badge/Badge";
-import * as B from "../../styles/ButtonCircle";
-import * as S from "./NewsStyle";
 import useFetch from "../../hooks/useFetch";
 import { makeBadges } from "../../utils/makeBadges";
-import { useNavigate } from "react-router-dom";
 import {
   CATEGORY_TYPE_MAP,
   NAME_CATEGORY_MAP,
   NAME_REGION_MAP,
 } from "../../constants/maps";
+
+import * as B from "../../styles/ButtonCircle";
+import * as S from "./NewsStyle";
+
+import Header from "../../components/Header/Header";
+import GoToTop from "../../components/GoToTop/GoToTop";
+import CategoryBar from "../../components/CategoryBar/CategoryBar.jsx";
+import Filter from "../../components/Filter/Filter";
+import CardList from "../../components/CardList/CardList.jsx";
+import Badge from "../../components/Badge/Badge";
 import PageTitle from "../../components/PageTitle/PageTitle.jsx";
+import CardListSkeleton from "../../components/CardList/CardListSkeleton.jsx";
+import Empty from "../../components/Empty/Empty.jsx";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -164,17 +161,25 @@ export default function News() {
             <Filter onChange={handleFilter} />
           </S.FilterWrapper>
 
-          {posts.map((item) => (
-            <PostCard
-              key={item.id}
-              badges={makeBadges(item)}
-              title={item.doc_title}
-              date={item.pub_date.slice(0, 10)}
-              onClick={() => navigate(`/post/${item.id}`)}
-              image={item.image_url}
-              type={item.doc_type}
-            />
-          ))}
+          {isPostsLoading ? (
+            Array(5)
+              .fill(0)
+              .map((_, i) => <CardListSkeleton key={i} variant='list' />)
+          ) : posts?.length !== 0 ? (
+            posts.map((item) => (
+              <CardList
+                key={item.id}
+                badges={makeBadges(item)}
+                title={item.doc_title}
+                date={item.pub_date.slice(0, 10)}
+                onClick={() => navigate(`/post/${item.id}`)}
+                image={item.image_url}
+                type={item.doc_type}
+              />
+            ))
+          ) : (
+            <Empty text='조건에 맞는 공문이 없어요' />
+          )}
           <div ref={loadMoreRef} />
         </S.ListSection>
       </S.NewsContainer>

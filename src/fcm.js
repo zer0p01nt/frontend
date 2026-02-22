@@ -51,32 +51,6 @@ export function getLastToken() {
   return getLS(LS_TOKEN);
 }
 
-// 알림 포맷 정리
-// function buildNotification(payload) {
-//   const n = (payload && payload.notification) || {};
-//   const d =
-//     (payload && payload.data) || (payload && payload.notification.data) || {};
-
-//   const title =
-//     n.title ?? d.title ?? "";
-//   const body =
-//     n.body ?? d.body ?? "";
-//   const docId = d?.document_id ?? d?.docId ?? null;
-//   const path = docId ? `/post/${encodeURIComponent(docId)}` : "/notification";
-//   const tag = docId ? `doc-${docId}` : "push";
-
-//   const options = {
-//     body,
-//     // icon: "/logo512.png",
-//     badge: "/logo192.png",
-//     tag,
-//     renotify: true,
-//     data: { ...d, document_id: docId, path },
-//   };
-
-//   return { title, options };
-// }
-
 // 토큰 및 알림 처리
 export async function bootstrapFcm() {
   const ok = await isSupported().catch(() => false);

@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import * as S from "./ChatbotStyle";
-import ChatbotInputField from "../ChatbotInputField/ChatbotInputField";
+import { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+
 import {
   createSession,
   getSession,
@@ -12,9 +12,20 @@ import {
   deleteChatbotScrap,
   listChatbotScrap,
 } from "../../services/scrapService";
-import { useSearchParams } from "react-router-dom";
+
+import * as S from "./ChatbotStyle";
+
+import ChatbotInputField from "../ChatbotInputField/ChatbotInputField";
+
 import noChatbot from "../../assets/nochatbot.png";
 
+/**
+ * 공문 상세 페이지의 AI 챗봇 컴포넌트
+ * @param {object} props
+ * @param {boolean} props.isOpen - 챗봇 열림 여부
+ * @param {Function} props.handleClose - 챗봇 닫는 함수
+ * @param {number} props.postId - 현재 공문 ID (세션 관리 및 API 요청에 사용)
+ */
 export default function Chatbot({ isOpen, handleClose, postId }) {
   // URL 쿼리 파라미터 접근
   const [searchParams, setSearchParams] = useSearchParams();
@@ -137,7 +148,7 @@ export default function Chatbot({ isOpen, handleClose, postId }) {
         if (cancelled) return;
         const items = res?.data?.data?.results ?? res?.data?.results ?? [];
         const myItems = items.filter(
-          (x) => x.session_info?.id === Number(sessionId)
+          (x) => x.session_info?.id === Number(sessionId),
         );
 
         // 스크랩 목록에서 유저 메세지 프리뷰로 스크랩 매핑
@@ -202,8 +213,8 @@ export default function Chatbot({ isOpen, handleClose, postId }) {
         const msgs = Array.isArray(payload.messages)
           ? payload.messages
           : Array.isArray(created?.data?.messages)
-          ? created.data.messages
-          : [];
+            ? created.data.messages
+            : [];
 
         setMessages(msgs);
         return;
@@ -290,7 +301,7 @@ export default function Chatbot({ isOpen, handleClose, postId }) {
     }
 
     const ok = window.confirm(
-      "현재 챗봇 대화를 삭제할까요? 이 작업은 되돌릴 수 없습니다."
+      "현재 챗봇 대화를 삭제할까요? 이 작업은 되돌릴 수 없습니다.",
     );
     if (!ok) return;
 
@@ -352,7 +363,7 @@ export default function Chatbot({ isOpen, handleClose, postId }) {
                       />
                     </S.AIChat>
                   </S.AIChatWrapper>
-                )
+                ),
               )}
             </S.Chats>
           ) : (

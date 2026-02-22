@@ -1,4 +1,5 @@
 import { http, HttpResponse, delay } from "msw";
+
 import { documents } from "./documents";
 import { scrapedChatbots } from "./scrapedChatbots";
 import { scrapedPosts } from "./scrapedPosts";
@@ -141,6 +142,8 @@ export const handlers = [
         .sort((a, b) => new Date(b.pub_date) - new Date(a.pub_date))
         .slice(0, 3);
 
+      await delay(500);
+
       return HttpResponse.json({
         recent_alerts: alerts,
       });
@@ -162,6 +165,8 @@ export const handlers = [
       ) // 마감 임박순
       .slice(0, 3);
 
+    await delay(500);
+
     return HttpResponse.json({
       data: {
         results: deadlinePosts,
@@ -180,6 +185,8 @@ export const handlers = [
         .filter((doc) => doc.region_id === Number(regionId))
         .sort((a, b) => new Date(b.pub_date) - new Date(a.pub_date))
         .slice(0, 3);
+
+      await delay(500);
 
       return HttpResponse.json({
         recent_news: news,
@@ -217,6 +224,8 @@ export const handlers = [
       (a, b) => new Date(b.notification_time) - new Date(a.notification_time),
     );
 
+    await delay(500);
+
     return HttpResponse.json({
       data: {
         results: filtered,
@@ -226,7 +235,7 @@ export const handlers = [
   }),
 
   // scrapService/listPostScrap
-  http.get(`${API_URL}/scrap/documents/`, ({ request }) => {
+  http.get(`${API_URL}/scrap/documents/`, async ({ request }) => {
     const url = new URL(request.url);
 
     // 쿼리 파라미터 추출
@@ -261,6 +270,8 @@ export const handlers = [
       filtered.sort((a, b) => new Date(a.pub_date) - new Date(b.pub_date));
     }
 
+    await delay(500);
+
     return HttpResponse.json({
       data: {
         results: filtered,
@@ -271,12 +282,8 @@ export const handlers = [
   }),
 
   // scrapService/createPostScrap
-  http.post(`${API_URL}/scrap/documents/`, async ({ request }) => {
-    const { document_id } = await request.json();
-
+  http.post(`${API_URL}/scrap/documents/`, async () => {
     const newScrapId = Math.floor(Math.random() * 10000);
-    const newScrap = { id: newScrapId, document: document_id };
-    scrapedPosts.push(newScrap);
 
     return HttpResponse.json(
       {
@@ -287,10 +294,7 @@ export const handlers = [
   }),
 
   // scrapService/deletePostScrap
-  http.delete(`${API_URL}/scrap/documents/:scrapId/`, ({ params }) => {
-    const { scrapId } = params;
-    scrapedPosts = scrapedPosts.filter((s) => s.id !== Number(scrapId));
-
+  http.delete(`${API_URL}/scrap/documents/:scrapId/`, () => {
     return new HttpResponse(null, { status: 204 });
   }),
 
@@ -327,6 +331,8 @@ export const handlers = [
     if (order === "views") {
       filtered.sort((a, b) => b.views - a.views);
     }
+
+    await delay(500);
 
     return HttpResponse.json({
       results: filtered,
@@ -377,6 +383,8 @@ export const handlers = [
       filtered.sort((a, b) => new Date(a.pub_date) - new Date(b.pub_date));
     }
 
+    await delay(500);
+
     return HttpResponse.json({
       data: {
         results: filtered,
@@ -390,7 +398,7 @@ export const handlers = [
   http.get(`${API_URL}/scrap/chatbot/:openId/`, async ({ params }) => {
     const { openId } = params;
 
-    await delay(400);
+    await delay(500);
 
     const detail = scrapedChatbots.find(
       (chatbot) => chatbot.id === Number(openId),

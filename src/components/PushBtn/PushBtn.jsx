@@ -4,6 +4,11 @@ import { useState } from "react";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
+/**
+ * 알림 테스트 버튼 컴포넌트
+ * @param {object} props
+ * @param {Function} props.setToastShow - 푸시 테스트 성공 시 토스트 표시 상태를 업데이트하는 함수
+ */
 export default function PushBtn({ setToastShow }) {
   const [loading, setLoading] = useState(false);
 
@@ -35,7 +40,7 @@ export default function PushBtn({ setToastShow }) {
         if (isIOS() && !isPWAMode()) {
           alert(
             "iOS에서는 홈 화면에 설치한 웹앱에서만 푸시 알림을 받을 수 있습니다.\n" +
-              '"공유" 버튼 > "홈 화면에 추가"로 설치한 뒤 다시 시도해 주세요.'
+              '"공유" 버튼 > "홈 화면에 추가"로 설치한 뒤 다시 시도해 주세요.',
           );
           return;
         }
