@@ -17,6 +17,7 @@ import ScrapedPosts from "./pages/ScrapedPosts/ScrapedPosts";
 import Profile from "./pages/Profile/Profile";
 import Notification from "./pages/Notification/Notification.jsx";
 import News from "./pages/News/News";
+import NotFound from "./pages/NotFound/NotFound.jsx";
 
 // 페이지 전환 애니메이션을 위한 경로별 우선순위 정의
 const PAGE_ORDER = {
@@ -36,6 +37,9 @@ const getPageIndex = (path) => {
   if (path.startsWith("/post/")) return 20; // 상세 페이지는 가장 깊은 경로
   return PAGE_ORDER[path] || 0;
 };
+
+// 이전 인덱스를 기억하기 위한 변수
+let lastIndex = 0;
 
 // Navigator를 띄우는 레이아웃
 function WithNav({ direction }) {
@@ -60,19 +64,10 @@ function WithoutNav({ direction }) {
 
 function App() {
   const location = useLocation(); // 현재 경로 감지
-  const [direction, setDirection] = useState(1);
-  const [prevPath, setPrevPath] = useState(location.pathname);
 
-  // 경로가 바뀔 때마다 방향 계산 -> 애니메이션에 반영
-  useEffect(() => {
-    const prevIndex = getPageIndex(prevPath);
-    const currIndex = getPageIndex(location.pathname);
-
-    if (prevPath !== location.pathname) {
-      setDirection(currIndex < prevIndex ? -1 : 1);
-      setPrevPath(location.pathname);
-    }
-  }, [location.pathname, prevPath]);
+  const currentIndex = getPageIndex(location.pathname);
+  const direction = currentIndex < lastIndex ? -1 : 1;
+  lastIndex = currentIndex; // 다음 렌더링을 위해 현재 인덱스 저장
   return (
     <>
       <GlobalStyle />
@@ -93,6 +88,7 @@ function App() {
               <Route path='/profile' element={<Profile />} />
               <Route path='/scrap/posts' element={<ScrapedPosts />} />
               <Route path='/scrap/chatbots' element={<ScrapedChatbots />} />
+              <Route path='*' element={<NotFound />} />
             </Route>
           </Routes>
         </AnimatePresence>
