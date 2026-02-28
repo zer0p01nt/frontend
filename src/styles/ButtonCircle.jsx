@@ -32,4 +32,10 @@ export const ButtonCircle = styled.button`
   background-color: var(--color-neutral-brand-primary);
   background-repeat: no-repeat;
   background-position: center center;
+  transition: background-color 0.3s ease;
+
+  &:hover,
+  &:active {
+    background-color: var(--color-blue-500);
+  }
 `;
